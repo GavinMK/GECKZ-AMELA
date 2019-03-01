@@ -10,6 +10,16 @@ from django.db import models
 
 class Guy(models.Model):
     name = models.CharField(max_length=20, blank=True, null=False, primary_key=True)
+    age = models.SmallIntegerField()
 
     class Meta:
         db_table = 'guy'
+
+
+class User(models.Model):
+    username = models.CharField(max_length=15, primary_key=True, null=False)
+    first_name = models.CharField(max_length=20)
+    last_name = models.CharField(max_length=20)
+    #password?
+    email = models.CharField(max_length=30)
+    last_login = models.DateTimeField()
