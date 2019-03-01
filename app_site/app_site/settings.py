@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'streaming.apps.StreamingConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -76,11 +77,11 @@ WSGI_APPLICATION = 'app_site.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'app_site',
-		'USER': 'projectuser',
-		'PASSWORD': 'password',
-		'HOST': 'localhost',
-		'PORT': '',
+        'NAME': 'name_of_db',
+        'USER': '<user for db>',
+        'PASSWORD': '<password>',
+		'HOST': '<wherever it is hosted>',
+		'PORT': '<whatever the port is>',
     }
 }
 
