@@ -9,18 +9,8 @@ from django.db import models
 from django.utils import timezone
 
 
-class User(models.Model):
-    username = models.CharField(max_length=15)
-    first_name = models.CharField(max_length=20)
-    last_name = models.CharField(max_length=20)
-    password = models.CharField(max_length=20)
-    email = models.CharField(max_length=30)
-    last_login = models.DateTimeField(default=timezone.now)
-
-
 class Preferences(models.Model):
     email_opt_in = models.BooleanField(default=True)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
 
 class Metadata(models.Model):
@@ -32,11 +22,66 @@ class Metadata(models.Model):
     streaming_service = models.CharField(max_length=20)
 
 
+class Billing(models.Model):
+    cc_info = models.IntegerField(default=0)
+    next_payment_date = models.DateField(default=timezone.now)
+    num_sub_slots = models.IntegerField(default=10)
+    num_rentals = models.IntegerField(default=0)
+    transaction_info = models.CharField(max_length=50)
+
+
+class CommentSection(models.Model):
+    num_comments = models.IntegerField(default=0)
+
+
+class Comment(models.Model):
+    content = models.CharField(max_length=20)
+    timestamp = models.DateTimeField(default=timezone.now)
+    part_of = models.ForeignKey(CommentSection, on_delete=models.CASCADE)
+
+
+class RatingSection(models.Model):
+    num_of_ratings = models.IntegerField(default=0)
+
+
+class Rating(models.Model):
+    rating = models.IntegerField(default=0)
+    part_of = models.ForeignKey(RatingSection, on_delete=models.CASCADE)
+
+
+class Inbox(models.Model):
+    num_messages = models.IntegerField(default=0)
+    num_read_messages = models.IntegerField(default=0)
+    num_unread_messages = models.IntegerField(default=0)
+
+
+class User(models.Model):
+    username = models.CharField(max_length=15)
+    first_name = models.CharField(max_length=20)
+    last_name = models.CharField(max_length=20)
+    password = models.CharField(max_length=20)
+    email = models.CharField(max_length=30)
+    last_login = models.DateTimeField(default=timezone.now)
+    preferences = models.OneToOneField(Preferences, on_delete=models.CASCADE)
+    comment_section = models.OneToOneField(CommentSection, on_delete=models.CASCADE)
+    inbox = models.OneToOneField(Inbox, on_delete=models.CASCADE)
+    billing = models.OneToOneField(Billing, on_delete=models.CASCADE)
+
+
+class Message(models.Model):
+    content = models.CharField(max_length=20)
+    timestamp = models.DateTimeField(default=timezone.now)
+    from_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    part_of = models.OneToOneField(Inbox, on_delete=models.CASCADE)
+
+
 class Media(models.Model):
     title = models.CharField(max_length=50)
     description = models.TextField(default='')
     air_date = models.DateField(auto_now=True)
-    linked_to = models.OneToOneField(Metadata, on_delete=models.CASCADE)
+    metadata = models.OneToOneField(Metadata, on_delete=models.CASCADE)
+    comment_section = models.OneToOneField(CommentSection, on_delete=models.CASCADE)
+    rating_section = models.OneToOneField(RatingSection, on_delete=models.CASCADE)
 
     class Meta:
         abstract = True
@@ -70,53 +115,4 @@ class TVEpisode(PlayableMedia):
 class Movie(Media, PlayableMedia):
     pass
 
-
-class Billing(models.Model):
-    cc_info = models.IntegerField(default=0)
-    next_payment_date = models.DateField(default=timezone.now)
-    num_sub_slots = models.IntegerField(default=10)
-    num_rentals = models.IntegerField(default=0)
-    transaction_info = models.CharField(max_length=50)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-
-
-class Inbox(models.Model):
-    num_messages = models.IntegerField(default=0)
-    num_read_messages = models.IntegerField(default=0)
-    num_unread_messages = models.IntegerField(default=0)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-
-
-class Message(models.Model):
-    content = models.CharField(max_length=20)
-    timestamp = models.DateTimeField(default=timezone.now)
-    from_user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-
-class CommentSection(models.Model):
-    num_comments = models.IntegerField(default=0)
-
-
-class MediaCommentSection(CommentSection):
-    owned_by = models.OneToOneField(Media, on_delete=models.CASCADE)
-
-
-class UserCommentSection(CommentSection):
-    owned_by = models.OneToOneField(User, on_delete=models.CASCADE)
-
-
-class Comment(models.Model):
-    content = models.CharField(max_length=20)
-    timestamp = models.DateTimeField(default=timezone.now)
-    part_of = models.ForeignKey(CommentSection, on_delete=models.CASCADE)
-
-
-class RatingSection(models.Model):
-    num_of_ratings = models.IntegerField(default=0)
-    part_of = models.OneToOneField(Media, on_delete=models.CASCADE)
-
-
-class Rating(models.Model):
-    rating = models.IntegerField(default=0)
-    part_of = models.ForeignKey(RatingSection, on_delete=models.CASCADE)
 
