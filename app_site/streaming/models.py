@@ -6,6 +6,7 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
+from django.utils import timezone
 
 
 class Guy(models.Model):
@@ -22,7 +23,7 @@ class User(models.Model):
     last_name = models.CharField(max_length=20)
     password = models.CharField(max_length=20)
     email = models.CharField(max_length=30)
-    last_login = models.DateTimeField()
+    last_login = models.DateTimeField(default=timezone.now)
 
 
 class Preferences(models.Model):
@@ -32,14 +33,11 @@ class Preferences(models.Model):
 
 
 class Media(models.Model):
-    file_location = models.CharField()
+    file_location = models.CharField(max_length=20)
     title = models.CharField(max_length=50)
     description = models.TextField()
     air_date = models.DateField()
     runtime = models.TimeField()  # may be better way to store this.. unsure
-
-    class Meta:
-        abstract = True
 
 
 class TVShow(models.Model):
@@ -82,7 +80,7 @@ class Inbox(models.Model):
 
 class Message(models.Model):
     # message_id = models.IntegerField(primary_key=True, null=False)
-    content = models.CharField()
+    content = models.CharField(max_length=20)
     timestamp = models.DateTimeField()
     from_user = models.ForeignKey(User, on_delete=models.CASCADE)
 
@@ -92,20 +90,17 @@ class Movie(Media):
 
 
 class Metadata(models.Model):
-    title = models.CharField()
-    cast = models.CharField()
-    genre = models.CharField()
+    title = models.CharField(max_length=20)
+    cast = models.CharField(max_length=20)
+    genre = models.CharField(max_length=20)
     release_year = models.IntegerField()
-    studio = models.CharField()
-    streaming_service = models.CharField()
+    studio = models.CharField(max_length=20)
+    streaming_service = models.CharField(max_length=20)
     linked_to = models.ForeignKey(Media, on_delete=models.CASCADE)
 
 
 class CommentSection(models.Model):
     num_comments = models.IntegerField()
-
-    class Meta:
-        abstract = True
 
 
 class MediaCommentSection(CommentSection):
@@ -117,7 +112,7 @@ class UserCommentSection(CommentSection):
 
 
 class Comment(models.Model):
-    content = models.CharField()
+    content = models.CharField(max_length=20)
     timestamp = models.DateTimeField()
     part_of = models.ForeignKey(CommentSection, on_delete=models.CASCADE)
 
@@ -128,6 +123,6 @@ class RatingSection(models.Model):
 
 
 class Rating(models.Model):
-    rating = models.IntegerField(max_length=5)
+    rating = models.IntegerField()
     part_of = models.ForeignKey(RatingSection, on_delete=models.CASCADE)
 
