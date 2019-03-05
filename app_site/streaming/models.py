@@ -23,17 +23,6 @@ class Preferences(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
 
-class Media(models.Model):
-    title = models.CharField(max_length=50)
-    description = models.TextField(default='')
-    air_date = models.DateField(auto_now=True)
-
-
-class PlayableMedia(Media):
-    file_location = models.CharField(max_length=20)
-    runtime = models.DurationField(default=0)
-
-
 class Metadata(models.Model):
     title = models.CharField(max_length=20)
     cast = models.CharField(max_length=20)
@@ -41,7 +30,24 @@ class Metadata(models.Model):
     release_year = models.IntegerField(default=0)
     studio = models.CharField(max_length=20)
     streaming_service = models.CharField(max_length=20)
-    linked_to = models.OneToOneField(Media, on_delete=models.CASCADE)
+
+
+class Media(models.Model):
+    title = models.CharField(max_length=50)
+    description = models.TextField(default='')
+    air_date = models.DateField(auto_now=True)
+    linked_to = models.OneToOneField(Metadata, on_delete=models.CASCADE)
+
+    class Meta:
+        abstract = True
+
+
+class PlayableMedia(models.Model):
+    file_location = models.CharField(max_length=20)
+    runtime = models.DurationField(default=0)
+
+    class Meta:
+        abstract = True
 
 
 class TVShow(Media):
@@ -61,7 +67,7 @@ class TVEpisode(PlayableMedia):
     part_of = models.ForeignKey(TVSeason, on_delete=models.CASCADE)
 
 
-class Movie(PlayableMedia):
+class Movie(Media, PlayableMedia):
     pass
 
 
