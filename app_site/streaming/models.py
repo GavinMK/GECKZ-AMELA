@@ -9,14 +9,6 @@ from django.db import models
 from django.utils import timezone
 
 
-class Guy(models.Model):
-    name = models.CharField(max_length=20, blank=True, null=False, primary_key=True)
-    age = models.SmallIntegerField()
-
-    class Meta:
-        db_table = 'guy'
-
-
 class User(models.Model):
     username = models.CharField(max_length=15)
     first_name = models.CharField(max_length=20)
@@ -27,102 +19,98 @@ class User(models.Model):
 
 
 class Preferences(models.Model):
-    # username = models.CharField(max_length=15, primary_key=True, null=False)
     email_opt_in = models.BooleanField(default=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
 
 class Media(models.Model):
-    file_location = models.CharField(max_length=20)
     title = models.CharField(max_length=50)
-    description = models.TextField()
-    air_date = models.DateField()
-    runtime = models.TimeField()  # may be better way to store this.. unsure
+    description = models.TextField(default='')
+    air_date = models.DateField(auto_now=True)
 
 
-class TVShow(models.Model):
-    # tv_show_id = models.IntegerField(primary_key=True)
-    num_seasons = models.IntegerField()
-
-
-class TVSeason(models.Model):
-    # tv_show_id = models.IntegerField(primary_key=True)
-    season_number = models.IntegerField()
-    num_episodes = models.IntegerField()
-    description = models.TextField()
-    year = models.IntegerField()
-    part_of = models.ForeignKey(TVShow, on_delete=models.CASCADE)
-
-
-class TVEpisode(Media):
-    # tv_episode_id = models.IntegerField(primary_key=True)
-    episode_number = models.IntegerField()
-    part_of = models.ForeignKey(TVSeason, on_delete=models.CASCADE)
-
-
-class Billing(models.Model):
-    # username = models.CharField(max_length=15, primary_key=True, null=False)
-    cc_info = models.IntegerField()
-    next_payment_date = models.DateField()
-    num_sub_slots = models.IntegerField(default=10)
-    num_rentals = models.IntegerField(default=0)
-    transaction_info = models.CharField(max_length=50)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-
-class Inbox(models.Model):
-    #username = models.CharField(max_length=15, primary_key=True, null=False)
-    num_messages = models.IntegerField()
-    num_read_messages = models.IntegerField()
-    num_unread_messages = models.IntegerField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-
-class Message(models.Model):
-    # message_id = models.IntegerField(primary_key=True, null=False)
-    content = models.CharField(max_length=20)
-    timestamp = models.DateTimeField()
-    from_user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-
-class Movie(Media):
-    cost = models.IntegerField()
+class PlayableMedia(Media):
+    file_location = models.CharField(max_length=20)
+    runtime = models.DurationField(default=0)
 
 
 class Metadata(models.Model):
     title = models.CharField(max_length=20)
     cast = models.CharField(max_length=20)
     genre = models.CharField(max_length=20)
-    release_year = models.IntegerField()
+    release_year = models.IntegerField(default=0)
     studio = models.CharField(max_length=20)
     streaming_service = models.CharField(max_length=20)
-    linked_to = models.ForeignKey(Media, on_delete=models.CASCADE)
+    linked_to = models.OneToOneField(Media, on_delete=models.CASCADE)
+
+
+class TVShow(Media):
+    num_seasons = models.IntegerField(default=0)
+
+
+class TVSeason(models.Model):
+    season_number = models.IntegerField(default=0)
+    num_episodes = models.IntegerField(default=0)
+    description = models.TextField(default='')
+    year = models.IntegerField(default=0)
+    part_of = models.ForeignKey(TVShow, on_delete=models.CASCADE)
+
+
+class TVEpisode(PlayableMedia):
+    episode_number = models.IntegerField(default=0)
+    part_of = models.ForeignKey(TVSeason, on_delete=models.CASCADE)
+
+
+class Movie(PlayableMedia):
+    pass
+
+
+class Billing(models.Model):
+    cc_info = models.IntegerField(default=0)
+    next_payment_date = models.DateField(default=timezone.now)
+    num_sub_slots = models.IntegerField(default=10)
+    num_rentals = models.IntegerField(default=0)
+    transaction_info = models.CharField(max_length=50)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+
+class Inbox(models.Model):
+    num_messages = models.IntegerField(default=0)
+    num_read_messages = models.IntegerField(default=0)
+    num_unread_messages = models.IntegerField(default=0)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+
+class Message(models.Model):
+    content = models.CharField(max_length=20)
+    timestamp = models.DateTimeField(default=timezone.now)
+    from_user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 class CommentSection(models.Model):
-    num_comments = models.IntegerField()
+    num_comments = models.IntegerField(default=0)
 
 
 class MediaCommentSection(CommentSection):
-    owned_by = models.ForeignKey(Media, on_delete=models.CASCADE)
+    owned_by = models.OneToOneField(Media, on_delete=models.CASCADE)
 
 
 class UserCommentSection(CommentSection):
-    owned_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    owned_by = models.OneToOneField(User, on_delete=models.CASCADE)
 
 
 class Comment(models.Model):
     content = models.CharField(max_length=20)
-    timestamp = models.DateTimeField()
+    timestamp = models.DateTimeField(default=timezone.now)
     part_of = models.ForeignKey(CommentSection, on_delete=models.CASCADE)
 
 
 class RatingSection(models.Model):
-    num_of_ratings = models.IntegerField()
-    part_of = models.ForeignKey(Media, on_delete=models.CASCADE)
+    num_of_ratings = models.IntegerField(default=0)
+    part_of = models.OneToOneField(Media, on_delete=models.CASCADE)
 
 
 class Rating(models.Model):
-    rating = models.IntegerField()
+    rating = models.IntegerField(default=0)
     part_of = models.ForeignKey(RatingSection, on_delete=models.CASCADE)
 
