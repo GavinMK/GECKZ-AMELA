@@ -1,3 +1,7 @@
 {% for entry in objects %}
         <p> {{ entry }}</p>
 {%  endfor  %}
+{% for entry in movie %}
+    <p>{{ entry }}:</p>
+    <img src="{{ entry.file_location }}" alt="DUN GOFED"/>
+{%  endfor %}

@@ -20,10 +20,16 @@ class Metadata(models.Model):
     studio = models.CharField(max_length=20)
     streaming_service = models.CharField(max_length=20)
 
+    def __str__(self):
+        return self.title
+
 
 class Actor(models.Model):
     name = models.CharField(max_length=40)
     part_of = models.ForeignKey(Metadata, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
 
 
 class Billing(models.Model):
@@ -70,9 +76,12 @@ class Media(models.Model):
     class Meta:
         abstract = True
 
+    def __str__(self):
+        return self.title
+
 
 class PlayableMedia(models.Model):
-    file_location = models.CharField(max_length=20)
+    file_location = models.CharField(max_length=50)
     runtime = models.DurationField(default=0)
 
     class Meta:
@@ -92,8 +101,12 @@ class TVSeason(models.Model):
 
 
 class TVEpisode(PlayableMedia):
+    title = models.CharField(max_length=25)
     episode_number = models.IntegerField(default=0)
     part_of = models.ForeignKey(TVSeason, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.title
 
 
 class Movie(Media, PlayableMedia):
@@ -113,6 +126,9 @@ class User(models.Model):
     billing = models.OneToOneField(Billing, on_delete=models.CASCADE)
     subscriptions = models.ManyToManyField(TVShow, blank=True)
     rentals = models.ManyToManyField(Movie, blank=True)
+
+    def __str__(self):
+        return self.username
 
 
 class Message(models.Model):
