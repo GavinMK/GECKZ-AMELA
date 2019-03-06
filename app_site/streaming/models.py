@@ -44,19 +44,8 @@ class CommentSection(models.Model):
     num_comments = models.IntegerField(default=0)
 
 
-class Comment(models.Model):
-    content = models.CharField(max_length=20)
-    timestamp = models.DateTimeField(default=timezone.now)
-    part_of = models.ForeignKey(CommentSection, on_delete=models.CASCADE)
-
-
 class RatingSection(models.Model):
     num_of_ratings = models.IntegerField(default=0)
-
-
-class Rating(models.Model):
-    rating = models.IntegerField(default=0)
-    part_of = models.ForeignKey(RatingSection, on_delete=models.CASCADE)
 
 
 class Inbox(models.Model):
@@ -100,7 +89,7 @@ class TVSeason(models.Model):
     part_of = models.ForeignKey(TVShow, on_delete=models.CASCADE)
 
 
-class TVEpisode(PlayableMedia):
+class TVEpisode(Media, PlayableMedia):
     title = models.CharField(max_length=25)
     episode_number = models.IntegerField(default=0)
     part_of = models.ForeignKey(TVSeason, on_delete=models.CASCADE)
@@ -129,6 +118,19 @@ class User(models.Model):
 
     def __str__(self):
         return self.username
+
+
+class Comment(models.Model):
+    content = models.CharField(max_length=20)
+    timestamp = models.DateTimeField(default=timezone.now)
+    part_of = models.ForeignKey(CommentSection, on_delete=models.CASCADE)
+    posted_by = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
+class Rating(models.Model):
+    rating = models.IntegerField(default=0)
+    part_of = models.ForeignKey(RatingSection, on_delete=models.CASCADE)
+    posted_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 class Message(models.Model):
