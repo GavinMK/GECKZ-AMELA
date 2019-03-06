@@ -25,7 +25,7 @@ SECRET_KEY = '%x0td#6e1xz8ofvvep0gdd(+0liu3q!i@grdn*5zu#u$!0jfw)'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['app-env.vubramjtee.us-west-2.elasticbeanstalk.com', '127.0.0.1']
 
 
 # Application definition
@@ -77,11 +77,11 @@ WSGI_APPLICATION = 'app_site.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'name_of_db',
-        'USER': '<user for db>',
-        'PASSWORD': '<password>',
-		'HOST': '<wherever it is hosted>',
-		'PORT': '<whatever the port is>',
+        'NAME': 'test',
+        'USER': 'amela',
+        'PASSWORD': 'Rod!4800',
+		'HOST': 'geckz.c4wdoufytnsx.us-east-1.rds.amazonaws.com',
+		'PORT': '3306',
     }
 }
 
@@ -110,7 +110,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Los_Angeles'
 
 USE_I18N = True
 
@@ -123,3 +123,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATIC_ROOT = 'static'
