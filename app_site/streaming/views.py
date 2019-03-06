@@ -14,6 +14,6 @@ def index(request):
     template = loader.get_template('streaming/index.html')
     context = {
         'objects': User.objects.values(),
-        'movie': Movie.objects.filter(title='Pokemon')
+        'movie': Movie.objects.values()
     }
     return HttpResponse(template.render(context, request))
