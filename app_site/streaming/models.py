@@ -15,15 +15,19 @@ class Preferences(models.Model):
 
 class Metadata(models.Model):
     title = models.CharField(max_length=20)
-    cast = models.CharField(max_length=20)
     genre = models.CharField(max_length=20)
     release_year = models.IntegerField(default=0)
     studio = models.CharField(max_length=20)
     streaming_service = models.CharField(max_length=20)
 
 
+class Actor(models.Model):
+    name = models.CharField(max_length=40)
+    part_of = models.ForeignKey(Metadata, on_delete=models.CASCADE)
+
+
 class Billing(models.Model):
-    cc_info = models.IntegerField(default=0)
+    cc_info = models.BigIntegerField(default=0)
     next_payment_date = models.DateField(default=timezone.now)
     num_sub_slots = models.IntegerField(default=10)
     num_rentals = models.IntegerField(default=0)
@@ -53,26 +57,6 @@ class Inbox(models.Model):
     num_messages = models.IntegerField(default=0)
     num_read_messages = models.IntegerField(default=0)
     num_unread_messages = models.IntegerField(default=0)
-
-
-class User(models.Model):
-    username = models.CharField(max_length=15)
-    first_name = models.CharField(max_length=20)
-    last_name = models.CharField(max_length=20)
-    password = models.CharField(max_length=20)
-    email = models.CharField(max_length=30)
-    last_login = models.DateTimeField(default=timezone.now)
-    preferences = models.OneToOneField(Preferences, on_delete=models.CASCADE)
-    comment_section = models.OneToOneField(CommentSection, on_delete=models.CASCADE)
-    inbox = models.OneToOneField(Inbox, on_delete=models.CASCADE)
-    billing = models.OneToOneField(Billing, on_delete=models.CASCADE)
-
-
-class Message(models.Model):
-    content = models.CharField(max_length=20)
-    timestamp = models.DateTimeField(default=timezone.now)
-    from_user = models.ForeignKey(User, on_delete=models.CASCADE)
-    part_of = models.OneToOneField(Inbox, on_delete=models.CASCADE)
 
 
 class Media(models.Model):
@@ -116,3 +100,23 @@ class Movie(Media, PlayableMedia):
     pass
 
 
+class User(models.Model):
+    username = models.CharField(max_length=15)
+    first_name = models.CharField(max_length=20)
+    last_name = models.CharField(max_length=20)
+    password = models.CharField(max_length=20)
+    email = models.CharField(max_length=30)
+    last_login = models.DateTimeField(default=timezone.now)
+    preferences = models.OneToOneField(Preferences, on_delete=models.CASCADE)
+    comment_section = models.OneToOneField(CommentSection, on_delete=models.CASCADE)
+    inbox = models.OneToOneField(Inbox, on_delete=models.CASCADE)
+    billing = models.OneToOneField(Billing, on_delete=models.CASCADE)
+    subscriptions = models.ManyToManyField(TVShow, blank=True)
+    rentals = models.ManyToManyField(Movie, blank=True)
+
+
+class Message(models.Model):
+    content = models.CharField(max_length=20)
+    timestamp = models.DateTimeField(default=timezone.now)
+    from_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    part_of = models.ForeignKey(Inbox, on_delete=models.CASCADE)
