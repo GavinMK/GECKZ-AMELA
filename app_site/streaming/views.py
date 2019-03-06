@@ -16,6 +16,7 @@ def index(request):
         'objects': User.objects.values(),
         'movie': Movie.objects.values(),
         'show': TVShow.objects.values(),
-        'meta': Metadata.objects.values()
+        'meta': Metadata.objects.values(),
+        'pokemon': Movie.objects.filter(title='Pokemon')
     }
     return HttpResponse(template.render(context, request))
