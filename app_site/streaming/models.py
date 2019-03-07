@@ -12,6 +12,10 @@ from django.utils import timezone
 class Preferences(models.Model):
     email_opt_in = models.BooleanField(default=True)
 
+    def __str__(self):
+        query = User.objects.filter(preferences=self)
+        return "Unassigned" if len(query) == 0 else query[0]
+
 
 class Metadata(models.Model):
     title = models.CharField(max_length=20)
@@ -39,19 +43,46 @@ class Billing(models.Model):
     num_rentals = models.IntegerField(default=0)
     transaction_info = models.CharField(max_length=50)
 
+    def __str__(self):
+        query = User.objects.filter(billing=self)
+        return "Unassigned" if len(query) == 0 else query[0]
+
 
 class CommentSection(models.Model):
     num_comments = models.IntegerField(default=0)
 
+    def __str__(self):
+        tv_show_query = TVShow.objects.filter(comment_section=self)
+        if len(tv_show_query) > 0: return tv_show_query[0]
+        #tv_episode_query = TVEpisode.objects.filter(comment_section=self)
+        #if len(tv_episode_query) > 0: return tv_episode_query[0]
+        movie_query = Movie.objects.filter(comment_section=self)
+        if len(movie_query) > 0: return movie_query[0]
+        user_query = User.objects.filter(comment_section=self)
+        return "Unassigned" if len(user_query) == 0 else user_query[0]
+
 
 class RatingSection(models.Model):
     num_of_ratings = models.IntegerField(default=0)
+
+    def __str__(self):
+        tv_show_query = TVShow.objects.filter(rating_section=self)
+        if len(tv_show_query) > 0: return tv_show_query[0]
+        tv_episode_query = TVEpisode.objects.filter(comment_section=self)
+        if len(tv_episode_query) > 0: return tv_episode_query[0]
+        movie_query = Movie.objects.filter(rating_section=self)
+        if len(movie_query) > 0: return movie_query[0]
+        return "Unassigned"
 
 
 class Inbox(models.Model):
     num_messages = models.IntegerField(default=0)
     num_read_messages = models.IntegerField(default=0)
     num_unread_messages = models.IntegerField(default=0)
+
+    def __str__(self):
+        query = User.objects.filter(inbox=self)
+        return "Unassigned" if len(query) == 0 else query[0]
 
 
 class Media(models.Model):
