@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect
 
 from django.shortcuts import render
 
+
 from streaming.models import User, Movie, TVShow, Metadata, Preferences, CommentSection, Inbox, Billing
 
 from django.db import models
@@ -13,7 +14,9 @@ from django.utils import timezone
 
 from django.template import loader
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+
+from .forms import CreateUser
 
 
 def validate_password(password_candidate):
@@ -68,3 +71,8 @@ def index(request):
         'pokemon': Movie.objects.filter(title='Pokemon')
     }
     return HttpResponse(template.render(context, request))
+
+
+def create_user(request):
+    form = CreateUser()
+    return render(request, 'streaming/createUser.html', {'form': form})
