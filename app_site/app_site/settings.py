@@ -55,7 +55,7 @@ ROOT_URLCONF = 'app_site.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -128,3 +128,5 @@ STATIC_ROOT = 'static'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'streaming/media')
 MEDIA_URL = 'streaming/media/'
+
+LOGIN_REDIRECT_URL = '/streaming'

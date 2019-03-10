@@ -69,6 +69,16 @@ def index(request):
     }
     return HttpResponse(template.render(context, request))
 
+def authenticate(request):
+    entered_username = request.POST.get('username')
+    entered_password = request.POST.get('password')
+    user_query = User.objects.filter(username = entered_username)
+    if len(user_query) != 1:
+        return HttpResponse("Wrong username")
+    else:
+        if user_query[0].password == entered_password:
+            HttpResponseRedirect(reverse('index'))
+        return HttpResponse("Wrong password")
 
 def create_user_page(request):
     template = loader.get_template('streaming/createUser.html')
