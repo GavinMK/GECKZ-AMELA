@@ -3,11 +3,13 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render
 
-from streaming.models import User, Movie, TVShow, Metadata
+from .models import User, Movie, TVShow, Metadata
 
 from django.template import loader
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+
+from .forms import CreateUser
 
 
 def index(request):
@@ -20,3 +22,8 @@ def index(request):
         'pokemon': Movie.objects.filter(title='Pokemon')
     }
     return HttpResponse(template.render(context, request))
+
+
+def create_user(request):
+    form = CreateUser()
+    return render(request, 'streaming/createUser.html', {'form': form})
