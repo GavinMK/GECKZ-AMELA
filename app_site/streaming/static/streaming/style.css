@@ -26,7 +26,12 @@ body {
 
 .form-style h1{
     font-size: 13px;
-    color: #fffafa;
+    color: red;
+}
+
+.form-style h2{
+	font-size: 13px;
+	color: #fffafa;
 }
 
 .form-style fieldset{
