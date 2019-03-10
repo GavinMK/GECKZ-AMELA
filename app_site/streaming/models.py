@@ -7,13 +7,14 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import AbstractUser
 
 
 class Preferences(models.Model):
     email_opt_in = models.BooleanField(default=True)
 
     def __str__(self):
-        query = User.objects.filter(preferences=self)
+        query = SiteUser.objects.filter(preferences=self)
         return "Unassigned" if len(query) == 0 else query[0]
 
 
@@ -44,7 +45,7 @@ class Billing(models.Model):
     transaction_info = models.CharField(max_length=50)
 
     def __str__(self):
-        query = User.objects.filter(billing=self)
+        query = SiteUser.objects.filter(billing=self)
         return "Unassigned" if len(query) == 0 else query[0]
 
 
@@ -58,7 +59,7 @@ class CommentSection(models.Model):
         #if len(tv_episode_query) > 0: return tv_episode_query[0]
         movie_query = Movie.objects.filter(comment_section=self)
         if len(movie_query) > 0: return movie_query[0]
-        user_query = User.objects.filter(comment_section=self)
+        user_query = SiteUser.objects.filter(comment_section=self)
         return "Unassigned" if len(user_query) == 0 else user_query[0]
 
 
@@ -81,7 +82,7 @@ class Inbox(models.Model):
     num_unread_messages = models.IntegerField(default=0)
 
     def __str__(self):
-        query = User.objects.filter(inbox=self)
+        query = SiteUser.objects.filter(inbox=self)
         return "Unassigned" if len(query) == 0 else query[0]
 
 
@@ -133,13 +134,7 @@ class Movie(Media, PlayableMedia):
     pass
 
 
-class User(models.Model):
-    username = models.CharField(max_length=15)
-    first_name = models.CharField(max_length=20)
-    last_name = models.CharField(max_length=20)
-    password = models.CharField(max_length=20)
-    email = models.CharField(max_length=30)
-    last_login = models.DateTimeField(default=timezone.now)
+class SiteUser(AbstractUser):
     preferences = models.OneToOneField(Preferences, on_delete=models.CASCADE)
     comment_section = models.OneToOneField(CommentSection, on_delete=models.CASCADE)
     inbox = models.OneToOneField(Inbox, on_delete=models.CASCADE)
@@ -155,17 +150,17 @@ class Comment(models.Model):
     content = models.CharField(max_length=20)
     timestamp = models.DateTimeField(default=timezone.now)
     part_of = models.ForeignKey(CommentSection, on_delete=models.CASCADE)
-    posted_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    posted_by = models.ForeignKey(SiteUser, on_delete=models.CASCADE)
 
 
 class Rating(models.Model):
     rating = models.IntegerField(default=0)
     part_of = models.ForeignKey(RatingSection, on_delete=models.CASCADE)
-    posted_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    posted_by = models.ForeignKey(SiteUser, on_delete=models.CASCADE)
 
 
 class Message(models.Model):
     content = models.CharField(max_length=20)
     timestamp = models.DateTimeField(default=timezone.now)
-    from_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    from_user = models.ForeignKey(SiteUser, on_delete=models.CASCADE)
     part_of = models.ForeignKey(Inbox, on_delete=models.CASCADE)

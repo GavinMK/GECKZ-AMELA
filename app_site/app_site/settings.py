@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'app_site.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'test',
+        'NAME': 'newuser',
         'USER': 'amela',
         'PASSWORD': 'Rod!4800',
 		'HOST': 'geckz.c4wdoufytnsx.us-east-1.rds.amazonaws.com',
@@ -129,4 +129,7 @@ STATIC_ROOT = 'static'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'streaming/media')
 MEDIA_URL = 'streaming/media/'
 
+AUTH_USER_MODEL = 'streaming.SiteUser'
+
+LOGIN_URL = '/streaming/login'
 LOGIN_REDIRECT_URL = '/streaming'
