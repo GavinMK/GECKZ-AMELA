@@ -78,3 +78,24 @@ body {
     font-size: 15px;
 }
 
+.form-style  input[type=submit] {
+	-webkit-transition-duration: 0.4s;
+	transition-duration: 0.4s;
+}
+
+.form-style  input[type=submit]:hover{
+	background-color: #1a1a1a;
+	color: #fffafa;
+	border: 1px solid #fffafa;
+}
+
+.form-style a{
+	color: #fffafa;
+	-webkit-transition-duration: 0.4s;
+	transition-duration: 0.4s;
+}
+
+.form-style a:hover{
+	color: #ffd700;
+}
+

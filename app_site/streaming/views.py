@@ -10,7 +10,7 @@ from datetime import datetime
 from django.shortcuts import render
 
 
-from streaming.models import User, Movie, TVShow, Metadata, Preferences, CommentSection, Inbox, Billing
+from .models import User, Movie, TVShow, Metadata, Preferences, CommentSection, Inbox, Billing
 
 from django.db import models
 
@@ -20,7 +20,7 @@ from django.template import loader
 
 from django.http import HttpResponse, HttpResponseRedirect
 
-from .forms import user_form
+from .forms import user_form, login_form
 
 
 def validate_password(password_candidate):
@@ -34,6 +34,7 @@ def validate_password(password_candidate):
 def hash_password(password):
     #TODO actually hash the password
     return password
+
 
 def generate_user(data):
     username = data['username']
@@ -92,3 +93,8 @@ def create_user_page(request):
                     context['error_message'] = "That password is invalid"
     print('render new')
     return HttpResponse(template.render(context, request))
+
+
+def login(request):
+    form = login_form()
+    return render(request, 'streaming/login.html', {'form': form})
