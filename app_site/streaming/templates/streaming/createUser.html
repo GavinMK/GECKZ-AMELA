@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'streaming/style.css' %}">
+<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Raleway"/>
+
+<body>
+<div class="form-style">
+
+<form action="/streaming/createuser/" method="post">
+    {%  csrf_token %}
+    <br><br>
+    <header>Create Account</header><br><br>
+    <fieldset>
+        <legend>Account Information:</legend>
+        <label for="username">Username: </label><br>
+        <input id="username" type="text" name="username" required><br><br>
+        <label for="password">Password: </label><br>
+        <input id="password" type="password" name="password" required><br>
+        <h1>
+            <input type="checkbox" onclick="togglePassword()">Show Password
+        </h1>
+    </fieldset>
+    <br>
+    <fieldset>
+        <legend>Personal Information:</legend>
+        <label for="first_name">First Name: </label><br>
+        <input id="first_name" type="text" name="first_name" required><br><br>
+        <label for="last_name">Last Name: </label><br>
+        <input id="last_name" type="text" name="last_name" required><br><br>
+        <label for="email">Email: </label><br>
+        <input id="email" type="email" name="email" required><br>
+    </fieldset>
+    <br><br>
+    <input type="submit" value="Submit">
+</form>
+</div>
+</body>
+<script src="{% static 'streaming/js/utility.js' %}"></script>

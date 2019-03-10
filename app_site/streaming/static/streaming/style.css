@@ -1,0 +1,80 @@
+body {
+    background-color: #1a1a1a;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+.form-style{
+	font-family: Raleway;
+    width: 450px;
+	margin: 0 auto;
+}
+
+.form-style header{
+    font-size: 30px;
+    font-weight: bolder;
+    color: #fffafa;
+}
+
+.form-style label{
+	text-align: center;
+	width: 100px;
+	color: #fffafa;
+	font-size: 18px;
+}
+
+.form-style h1{
+    font-size: 13px;
+    color: #fffafa;
+}
+
+.form-style fieldset{
+	border-radius: 10px;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	margin: 0px 0px 10px 0px;
+	border: 1px solid #ffd700;
+	padding: 10px;
+}
+
+.form-style fieldset legend{
+	color: #393e46;
+	background: #ffd700;
+	padding: 0px 8px 3px 8px;
+	font-weight: normal;
+	font-size: 22px;
+}
+
+.form-style textarea{
+	width:250px;
+	height:100px;
+}
+
+.form-style input[type=text],
+.form-style input[type=password],
+.form-style input[type=email],
+.form-style select,
+.form-style textarea{
+	border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border: 1px solid #8b8989;
+	outline: none;
+	color: #393e46;
+	padding: 5px 8px 5px 8px;
+	background: #fffafa;
+	width:50%;
+    font-size: 14px;
+}
+
+.form-style  input[type=submit],
+.form-style  input[type=button]
+{
+	background: #ffd700;
+	border: 1px solid #393e46;
+	padding: 5px 15px 5px 15px;
+	color: #1a1a1a;
+    font-size: 15px;
+}
+
