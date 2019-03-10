@@ -14,12 +14,18 @@
     <fieldset>
         <legend>Account Information:</legend>
         <label for="username">Username: </label><br>
-        <input id="username" type="text" name="username" required><br><br>
-        <label for="password">Password: </label><br>
-        <input id="password" type="password" name="password" required><br>
+        <input id="username" type="text" name="username" required><br>
         <h1>
-            <input type="checkbox" onclick="togglePassword()">Show Password
+            {% if error_message != None %}
+            {{ error_message }}
+            {% endif %}
         </h1>
+        <label for="password">Password: </label><br>
+        <input id="password" type="password" name="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{7,}"
+       title="Password must be at least 7 characters and contain at least 1 number, 1 uppercase letter, and 1 lowercase letter." required><br>
+        <h2>
+            <input type="checkbox" onclick="togglePassword()">Show Password
+        </h2>
     </fieldset>
     <br>
     <fieldset>
