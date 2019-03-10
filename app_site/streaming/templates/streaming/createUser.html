@@ -4,9 +4,11 @@
 <link rel="stylesheet" type="text/css" href="{% static 'streaming/style.css' %}">
 <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Raleway"/>
 
+<body>
 <div class="form-style">
 
-<form action="/index.html" method="post">
+<form action="/streaming/createuser/" method="post">
+    {%  csrf_token %}
     <br><br>
     <header>Create Account</header><br><br>
     <fieldset>
@@ -15,18 +17,10 @@
         <input id="username" type="text" name="username" required><br><br>
         <label for="password">Password: </label><br>
         <input id="password" type="password" name="password" required><br>
-        <h1><input type="checkbox" onclick="togglePassword()">Show Password</h1>
+        <h1>
+            <input type="checkbox" onclick="togglePassword()">Show Password
+        </h1>
     </fieldset>
-    <script>
-        function togglePassword() {
-          var password = document.getElementById("password");
-          if (password.type === "password") {
-            password.type = "text";
-          } else {
-            password.type = "password";
-          }
-        }
-        </script>
     <br>
     <fieldset>
         <legend>Personal Information:</legend>
@@ -40,3 +34,6 @@
     <br><br>
     <input type="submit" value="Submit">
 </form>
+</div>
+</body>
+<script src="{% static 'streaming/js/utility.js' %}"></script>

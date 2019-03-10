@@ -3,6 +3,10 @@ from __future__ import unicode_literals
 
 from django.http import HttpResponseRedirect
 
+from django.urls import reverse
+
+from datetime import datetime
+
 from django.shortcuts import render
 
 
@@ -16,7 +20,7 @@ from django.template import loader
 
 from django.http import HttpResponse, HttpResponseRedirect
 
-from .forms import CreateUser
+from .forms import user_form
 
 
 def validate_password(password_candidate):
@@ -31,34 +35,26 @@ def hash_password(password):
     #TODO actually hash the password
     return password
 
-
-def create_user(request):
-    # Template must have inputs with ids matching those in the post gets.
-    username = request.POST.get('enteredUser')
-    first_name = request.POST.get('enteredName')
-    last_name = request.POST.get('enteredLast')
-    password = request.POST.get('enteredPass')
-    email = request.POST.get('enteredEmail')
-    try:
-        User.objects.get(username)
-    except (KeyError, User.DoesNotExist):
-        if validate_password(password):
-            password = hash_password(password)
-            # May need to figure out how to do it with the foreign keys
-            preferences = Preferences()
-            comment_section = CommentSection()
-            inbox = Inbox()
-            billing = Billing()
-            model = User(username=username, first_name=first_name, last_name=last_name, password=password, email=email,
-                         last_login=timezone.now, preferences=preferences, comment_section=comment_section,
-                         inbox=inbox, billing=billing)
-            model.save()
-            return HttpResponseRedirect(request, 'WHEREVER IT REDIRECTS TO')
-    else:
-        context = {
-            'error_message': "That user already exists!"
-        }
-        return render(request, "WHEREVER IT REDIRECTS TO", context)
+def generate_user(data):
+    username = data['username']
+    first_name = data['first_name']
+    last_name = data['last_name']
+    password = data['password']
+    email = data['email']
+    password = hash_password(password)
+    # May need to figure out how to do it with the foreign keys
+    preferences = Preferences()
+    preferences.save()
+    comment_section = CommentSection()
+    comment_section.save()
+    inbox = Inbox()
+    inbox.save()
+    billing = Billing()
+    billing.save()
+    return User(username=username, first_name=first_name, last_name=last_name, password=password,
+                 email=email,
+                 last_login=datetime.now(), preferences=preferences, comment_section=comment_section,
+                 inbox=inbox, billing=billing)
 
 
 def index(request):
@@ -73,6 +69,26 @@ def index(request):
     return HttpResponse(template.render(context, request))
 
 
-def create_user(request):
-    form = CreateUser()
-    return render(request, 'streaming/createUser.html', {'form': form})
+def create_user_page(request):
+    template = loader.get_template('streaming/createUser.html')
+    form = user_form()
+    context = {
+        'form': form,
+        'error_message': ''
+    }
+    if request.method == 'POST':
+        form = user_form(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            try:
+                User.objects.get(username=data['username'])
+                context['error_message'] = "That username is taken"
+            except (KeyError, User.DoesNotExist):
+                if validate_password(data['password']):
+                    generate_user(data).save()
+                    return HttpResponseRedirect(reverse('streaming:index'))
+                else:
+                    print("bad pass")
+                    context['error_message'] = "That password is invalid"
+    print('render new')
+    return HttpResponse(template.render(context, request))
