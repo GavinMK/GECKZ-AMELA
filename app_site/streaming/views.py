@@ -21,7 +21,7 @@ from django.template import loader
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from .forms import user_form, login_form
 
 
@@ -100,3 +100,8 @@ def login_page(request):
             else:
                 context['error_message'] = "Wrong username or password"
     return render(request, 'streaming/login.html', context)
+
+
+def logout_requested(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('streaming:login'))
