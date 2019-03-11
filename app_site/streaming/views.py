@@ -96,10 +96,11 @@ def login_page(request):
             user = authenticate(username=data['username'], password=data['password'])
             if user is not None:
                 login(request, user)
-                return HttpResponseRedirect(reverse('streaming:index'))
+                return HttpResponseRedirect(reverse('streaming:homepage'))
             else:
                 context['error_message'] = "Wrong username or password"
     return render(request, 'streaming/login.html', context)
+
 
 @login_required(login_url='login/')
 def logout_requested(request):
@@ -111,3 +112,8 @@ def logout_requested(request):
 def display_movie(request, title):
     movie = Movie.objects.filter(title=title)
     return HttpResponse(movie)
+
+
+@login_required(login_url='login/')
+def homepage(request):
+    return render(request, 'streaming/homepage.html')
