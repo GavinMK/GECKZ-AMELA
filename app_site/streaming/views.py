@@ -101,7 +101,13 @@ def login_page(request):
                 context['error_message'] = "Wrong username or password"
     return render(request, 'streaming/login.html', context)
 
-
+@login_required(login_url='login/')
 def logout_requested(request):
     logout(request)
     return HttpResponseRedirect(reverse('streaming:login'))
+
+
+@login_required(login_url='login/')
+def display_movie(request, title):
+    movie = Movie.objects.filter(title=title)
+    return HttpResponse(movie)
