@@ -25,9 +25,21 @@ body{
 .homepage-style header{
     font-size: 30px;
     font-weight: bolder;
-    color: #fffafa;
+    color: #ffd700;
     font-family: Raleway;
     padding: 15px 50px;
+}
+
+.homepage-style p{
+    font-size: 15px;
+    color: #fffafa;
+    font-family: Raleway;
+}
+
+.homepage-style h1{
+    font-size: 20x;
+    color: #ffd700;
+    font-family: Raleway;
 }
 
 .homepage-style a:active{
