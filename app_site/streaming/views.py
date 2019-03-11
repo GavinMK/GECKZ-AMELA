@@ -77,7 +77,7 @@ def create_user_page(request):
             user_query = SiteUser.objects.filter(username=data['username'])
             if len(user_query) != 1:
                 generate_user(data).save()
-                return HttpResponseRedirect(reverse('streaming:index'))
+                return HttpResponseRedirect(reverse('streaming:homepage'))
             else:
                 context['error_message'] = "That user already exists"
     return render(request, 'streaming/createUser.html', context)
