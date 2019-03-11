@@ -1,0 +1,35 @@
+body{
+	background-color: #1a1a1a;
+}
+
+.homepage-style nav{
+	background: #1a1a1a;
+	padding: 20px 20px 20px 20px;
+	color: #1a1a1a;
+    font-size: 18px;
+    font-family: Oswald;
+}
+
+.homepage-style a {
+    text-align: center;
+    padding: 20px 20px;
+    text-decoration: none;
+    color: #fffafa;
+}
+
+.homepage-style a:hover {
+    background-color: #ffd700;
+    color: #1a1a1a;
+}
+
+.homepage-style header{
+    font-size: 30px;
+    font-weight: bolder;
+    color: #fffafa;
+    font-family: Raleway;
+    padding: 15px 50px;
+}
+
+.homepage-style a:active{
+    background-color: #4CAF50;
+}
