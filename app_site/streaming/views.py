@@ -110,8 +110,12 @@ def logout_requested(request):
 
 @login_required(login_url='login/')
 def display_movie(request, title):
+    template = loader.get_template('streaming/movie.html')
     movie = Movie.objects.filter(title=title)
-    return HttpResponse(movie)
+    context = {
+        'movie': movie,
+    }
+    return HttpResponse(template.render(context, request))
 
 
 @login_required(login_url='login/')
