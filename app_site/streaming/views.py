@@ -9,6 +9,8 @@ from datetime import datetime
 
 from django.shortcuts import render
 
+from .decorators import anonymous_only_redirect
+
 
 from .models import SiteUser, Movie, TVShow, Metadata, Preferences, CommentSection, Inbox, Billing, Actor, TVEpisode
 
@@ -63,8 +65,8 @@ def index(request):
     return HttpResponse(template.render(context, request))
 
 
+@anonymous_only_redirect
 def create_user_page(request):
-    # template = loader.get_template('streaming/createUser.html')
     form = user_form()
     context = {
         'form': form,
@@ -83,6 +85,7 @@ def create_user_page(request):
     return render(request, 'streaming/createUser.html', context)
 
 
+@anonymous_only_redirect
 def login_page(request):
     form = login_form()
     context = {
