@@ -11,8 +11,7 @@
 		<li><a href="#">Friends</a></li>
 		<li><a href="{% url 'streaming:movies' %}">Movies</a></li>
 		<li><a href="{% url 'streaming:shows' %}">TV Shows</a></li>
-		<li><a href="{% url 'streaming:logout' %}">Index</a></li>
-		<li style="float: right;"><a href="#">Logged in as: {{ user }}</a><a href="/streaming/logout/">Logout</a></li>
+		<li style="float: right;"><a href="#">Logged in as: {{ user }}</a><a href="{% url 'streaming:logout' %}">Logout</a></li>
 		</ul>
 	</nav>
 
