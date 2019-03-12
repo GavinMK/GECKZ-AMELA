@@ -4,19 +4,24 @@
 	<div class="homepage-style">
 
 	<nav class="bar">
-		<a href="/streaming/homepage">Home</a>
-		<a href="#">Account</a>
-		<a href="#">Messages</a>
-		<a href="#">Friends</a>
-		<a href="/streaming/movies/">Movies</a>
-		<a href="/streaming/shows/">TV Shows</a>
-		<a href="/streaming/">Index</a>
-		<a href="/streaming/logout/" style="float: right;">Logout</a>
+		<ul>
+		<li><a href="/streaming/homepage">Home</a></li>
+		<li><a href="#">Account</a></li>
+		<li><a href="#">Messages</a></li>
+		<li><a href="#">Friends</a></li>
+		<li><a href="/streaming/movies/">Movies</a></li>
+		<li><a href="/streaming/shows/">TV Shows</a></li>
+		<li><a href="/streaming/">Index</a></li>
+		<li style="float: right;"><a href="/streaming/logout/">Logout</a></li>
+		</ul>
 	</nav>
 
 	</div>
+	
+	<article>
 	{% block content %}
 		Error: navPage.html inherited without overwriting content! Fix that, you dingus!
 	{% endblock %}
+	</article>
 
 {% endblock %}

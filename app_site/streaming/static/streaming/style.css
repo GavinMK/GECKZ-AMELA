@@ -2,16 +2,31 @@ body{
 	background-color: #1a1a1a;
 }
 
+a {
+	color: #ffd700;
+}
+
 nav{
-	background: #1a1a1a;
-	padding: 20px 20px 20px 20px;
+	background: #111;
+	padding: 0px 20px;
 	color: #1a1a1a;
     font-size: 18px;
     font-family: Oswald;
 }
 
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 14px 4px;
+  overflow: hidden;
+  /*background-color: #333;*/
+}
+
+nav li {
+  float: left;
+}
+
 nav a {
-	float:left;
     text-align: center;
     padding: 20px 20px;
     text-decoration: none;
@@ -47,8 +62,15 @@ h1{
     font-family: Raleway;
 }
 
+article{
+    /*background-color: #111;*/
+	margin:40px;
+	padding:10px;
+    font-family: Raleway;
+}
+
 .center {
-	float:center;
+	text-align: center;
 }
 
 
