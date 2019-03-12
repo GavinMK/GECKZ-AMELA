@@ -1,45 +1,45 @@
-<!DOCTYPE html>
-{% load static %}
+{% extends "simplePage.html" %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'streaming/style.css' %}">
-<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Raleway"/>
+{% block content %}
+	<div class="form-style">
 
-<body>
-<div class="form-style">
+	<form action="{% url 'streaming:createUser' %}" method="post">
+		{%  csrf_token %}
+		<br><br>
+		<header>Create Account</header><br><br>
+		<fieldset>
+			<legend>Account Information:</legend>
+			<label for="username">Username: </label><br>
+			<input id="username" type="text" name="username" required><br>
+			<h1>
+				{% if error_message != None %}
+				{{ error_message }}
+				{% endif %}
+			</h1>
+			<label for="password">Password: </label><br>
+			<input id="password" type="password" name="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{7,}"
+		   title="Password must be at least 7 characters and contain at least 1 number, 1 uppercase letter, and 1 lowercase letter." required><br>
+			<h2>
+				<input type="checkbox" onclick="togglePassword()">Show Password
+			</h2>
+		</fieldset>
+		<br>
+		<fieldset>
+			<legend>Personal Information:</legend>
+			<label for="first_name">First Name: </label><br>
+			<input id="first_name" type="text" name="first_name" required><br><br>
+			<label for="last_name">Last Name: </label><br>
+			<input id="last_name" type="text" name="last_name" required><br><br>
+			<label for="email">Email: </label><br>
+			<input id="email" type="email" name="email" required><br>
+		</fieldset>
+		<br><br>
+		<input type="submit" value="Submit">
+	</form>
+	</div>
+{% endblock %}
 
-<form action="{% url 'streaming:createUser' %}" method="post">
-    {%  csrf_token %}
-    <br><br>
-    <header>Create Account</header><br><br>
-    <fieldset>
-        <legend>Account Information:</legend>
-        <label for="username">Username: </label><br>
-        <input id="username" type="text" name="username" required><br>
-        <h1>
-            {% if error_message != None %}
-            {{ error_message }}
-            {% endif %}
-        </h1>
-        <label for="password">Password: </label><br>
-        <input id="password" type="password" name="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{7,}"
-       title="Password must be at least 7 characters and contain at least 1 number, 1 uppercase letter, and 1 lowercase letter." required><br>
-        <h2>
-            <input type="checkbox" onclick="togglePassword()">Show Password
-        </h2>
-    </fieldset>
-    <br>
-    <fieldset>
-        <legend>Personal Information:</legend>
-        <label for="first_name">First Name: </label><br>
-        <input id="first_name" type="text" name="first_name" required><br><br>
-        <label for="last_name">Last Name: </label><br>
-        <input id="last_name" type="text" name="last_name" required><br><br>
-        <label for="email">Email: </label><br>
-        <input id="email" type="email" name="email" required><br>
-    </fieldset>
-    <br><br>
-    <input type="submit" value="Submit">
-</form>
-</div>
-</body>
-<script src="{% static 'streaming/js/utility.js' %}"></script>
+{% block script %}
+	{% load static %}
+	<script src="{% static 'streaming/js/utility.js' %}"></script>
+{% endblock %}
