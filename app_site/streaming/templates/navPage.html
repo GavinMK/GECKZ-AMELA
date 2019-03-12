@@ -1,17 +1,17 @@
 {% extends "base.html" %}
-
+<!-- This template should be extended by any template that needs to have the navbar at the top. -->
 {% block body %}
 	<div class="homepage-style">
 
 	<nav class="bar">
 		<ul>
-		<li><a href="/streaming/homepage">Home</a></li>
+		<li><a href="{% url 'streaming:homepage' %}">Home</a></li>
 		<li><a href="#">Account</a></li>
 		<li><a href="#">Messages</a></li>
 		<li><a href="#">Friends</a></li>
-		<li><a href="/streaming/movies/">Movies</a></li>
-		<li><a href="/streaming/shows/">TV Shows</a></li>
-		<li><a href="/streaming/">Index</a></li>
+		<li><a href="{% url 'streaming:movies' %}">Movies</a></li>
+		<li><a href="{% url 'streaming:shows' %}">TV Shows</a></li>
+		<li><a href="{% url 'streaming:logout' %}">Index</a></li>
 		<li style="float: right;"><a href="#">Logged in as: {{ user }}</a><a href="/streaming/logout/">Logout</a></li>
 		</ul>
 	</nav>
