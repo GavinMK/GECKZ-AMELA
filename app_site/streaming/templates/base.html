@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+{% load static %}
+
+<head>
+	<link rel="stylesheet" type="text/css" href="{% static 'streaming/normalize.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'streaming/style.css' %}">
+	<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Raleway"/>
+	<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Oswald" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}AMELA{% endblock %}</title>
+</head>
+<body>
+	{% block body %}
+		Error: base.html inherited without overwriting body! Fix that, you dingus!
+	{% endblock %}
+</body>
+
+{% block scripts %}{% endblock %}
