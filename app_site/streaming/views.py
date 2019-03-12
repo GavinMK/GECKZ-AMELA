@@ -164,6 +164,7 @@ def display_episode(request, title, season_number, episode_number):
     }
     return HttpResponse(template.render(context, request))
 
+
 @login_required(login_url='login/')
 def homepage(request):
     return render(request, 'streaming/homepage.html')

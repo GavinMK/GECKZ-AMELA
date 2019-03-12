@@ -3,5 +3,6 @@
 
 from django.shortcuts import redirect
 
+
 def redirect_root(request):
-    return redirect('/streaming/', permanent=True) #permanent redirect
+    return redirect('streaming', permanent=True) #permanent redirect
