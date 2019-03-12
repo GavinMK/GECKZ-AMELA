@@ -4,7 +4,6 @@
 <link rel="stylesheet" type="text/css" href="{% static 'streaming/style-homepage.css' %}">
 <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Raleway"/>
 <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Oswald" />
-<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <body>
 <div class="homepage-style">
@@ -20,20 +19,23 @@
   <a href="/streaming/logout/" style="float: right;">Logout</a>
 </nav>
 <br><br><br><br><br>
-<h1>Logged in as: {{ user }}</h1>
-{% for entry in objects %}
-        <p> {{ entry }}</p>
-{%  endfor  %}
-{% for entry in movie %}
-    <p>{{ entry }}:</p>
-{%  endfor %}
+
 {% for entry in show %}
-    <p>{{ entry }}:</p>
-{%  endfor %}
-{% for entry in meta %}
-    <p>{{ entry }}:</p>
-{%  endfor %}
-{% for entry in pokemon %}
-  <img src="{{ entry.file_location }}" alt="Oops"/>
+  <header>{{ entry.title }}</header>
 {% endfor %}
+{% for entry in episode %}
+  <p>{{ entry.title }}</p>
+  <p>Season {{ entry.season_number }} Episode {{ entry.episode_number }}</p>
+  <p>Genre: {{ entry.metadata.genre }}</p>
+  <p>Description: {{ entry.description }}</p>
+  <p>Release year: {{ entry.metadata.release_year }}</p>
+  <p>Production Studio: {{ entry.metadata.studio }}</p>
+  <p>Streaming Service: {{ entry.metadata.streaming_service }}</p>
+  <p>Runtime: {{ entry.runtime }}</p>
+  <p>Actors:</p>
+  {% for actor in actors %}
+    <p>{{ actor.name }}</p>
+  {% endfor %}
+{%  endfor %}
 </div>
+</body>

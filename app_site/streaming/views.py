@@ -9,8 +9,10 @@ from datetime import datetime
 
 from django.shortcuts import render
 
+from .decorators import anonymous_only_redirect
 
-from .models import SiteUser, Movie, TVShow, Metadata, Preferences, CommentSection, Inbox, Billing
+
+from .models import *
 
 from django.db import models
 
@@ -63,8 +65,8 @@ def index(request):
     return HttpResponse(template.render(context, request))
 
 
+@anonymous_only_redirect
 def create_user_page(request):
-    # template = loader.get_template('streaming/createUser.html')
     form = user_form()
     context = {
         'form': form,
@@ -83,6 +85,7 @@ def create_user_page(request):
     return render(request, 'streaming/createUser.html', context)
 
 
+@anonymous_only_redirect
 def login_page(request):
     form = login_form()
     context = {
@@ -109,10 +112,57 @@ def logout_requested(request):
 
 
 @login_required(login_url='login/')
-def display_movie(request, title):
-    movie = Movie.objects.filter(title=title)
-    return HttpResponse(movie)
+def movies(request):
+    template = loader.get_template('streaming/mediaList.html')
+    movie_list = Movie.objects.all()
+    context = {
+        'media': movie_list,
+    }
+    return HttpResponse(template.render(context, request))
 
+
+@login_required(login_url='login/')
+def shows(request):
+    template = loader.get_template('streaming/mediaList.html')
+    show_list = TVShow.objects.all()
+    context = {
+        'media': show_list,
+    }
+    return HttpResponse(template.render(context, request))
+
+
+@login_required(login_url='login/')
+def display_media(request, title):
+    template = loader.get_template('streaming/mediaDisplay.html')
+    media = Movie.objects.filter(title=title)
+    if not media: media = TVShow.objects.filter(title=title)
+    if not media: return HttpResponse("Invalid Media Request")
+
+    actors = Actor.objects.filter(part_of=media[0].metadata)
+    context = {
+        'media': media,
+        'actors': actors,
+    }
+    return HttpResponse(template.render(context, request))
+
+
+@login_required(login_url='login/')
+def display_episode(request, title, season_number, episode_number):
+    template = loader.get_template('streaming/tvEpisode.html')
+    show = TVShow.objects.filter(title=title)
+    if not show: return HttpResponse("Invalid show")
+    season = TVSeason.objects.filter(part_of=show[0], season_number=season_number)
+    if not season: return HttpResponse("Invalid season number")
+    episode = TVEpisode.objects.filter(part_of=season[0], episode_number=episode_number)
+    if not episode: return HttpResponse("Invalid episode number")
+
+    actors = Actor.objects.filter(part_of=episode[0].metadata)
+    context = {
+        'show': show,
+        'episode': episode,
+        'actors': actors,
+    }
+    return HttpResponse(template.render(context, request))
 
 @login_required(login_url='login/')
 def homepage(request):
