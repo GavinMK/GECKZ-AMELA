@@ -22,8 +22,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '%x0td#6e1xz8ofvvep0gdd(+0liu3q!i@grdn*5zu#u$!0jfw)'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
 ALLOWED_HOSTS = ['app-env.vubramjtee.us-west-2.elasticbeanstalk.com', '127.0.0.1']
 
@@ -71,13 +69,16 @@ TEMPLATES = [
 WSGI_APPLICATION = 'app_site.wsgi.application'
 
 
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
+
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'newuser',
+        'NAME': 'test',
         'USER': 'amela',
         'PASSWORD': 'Rod!4800',
 		'HOST': 'geckz.c4wdoufytnsx.us-east-1.rds.amazonaws.com',

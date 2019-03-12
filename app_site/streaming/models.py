@@ -19,7 +19,7 @@ class Preferences(models.Model):
 
 
 class Metadata(models.Model):
-    title = models.CharField(max_length=20)
+    title = models.CharField(max_length=40)
     genre = models.CharField(max_length=20)
     release_year = models.IntegerField(default=0)
     studio = models.CharField(max_length=20)
@@ -31,7 +31,7 @@ class Metadata(models.Model):
 
 class Actor(models.Model):
     name = models.CharField(max_length=40)
-    part_of = models.ForeignKey(Metadata, on_delete=models.CASCADE) #part_of = models.ManyToManyField(Metadata, on_delete=models.CASCADE)
+    part_of = models.ManyToManyField(Metadata, blank=True)
 
     def __str__(self):
         return self.name

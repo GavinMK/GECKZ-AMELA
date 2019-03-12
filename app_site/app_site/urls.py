@@ -23,7 +23,7 @@ from . import views
 from .views import redirect_root
 
 urlpatterns = [
-    path('streaming/', include('streaming.urls'), name='streaming'),
+    path('streaming/', include('streaming.urls')),
     path('admin/', admin.site.urls),
     path('', views.redirect_root),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
