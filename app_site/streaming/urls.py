@@ -9,5 +9,5 @@ urlpatterns = [
     path('login/', views.login_page, name='login'),
     path('logout/', views.logout_requested, name='logout'),
     path('homepage/', views.homepage, name='homepage'),
-    path('movie/<str:title>/', views.display_movie, name='display_movie'),
+    path('media/<str:title>/', views.display_media, name='display_media'),
 ]

@@ -10,7 +10,7 @@ from datetime import datetime
 from django.shortcuts import render
 
 
-from .models import SiteUser, Movie, TVShow, Metadata, Preferences, CommentSection, Inbox, Billing, Actor
+from .models import SiteUser, Movie, TVShow, Metadata, Preferences, CommentSection, Inbox, Billing, Actor, TVEpisode
 
 from django.db import models
 
@@ -109,14 +109,16 @@ def logout_requested(request):
 
 
 @login_required(login_url='login/')
-def display_movie(request, title):
-    template = loader.get_template('streaming/movie.html')
-    movie = Movie.objects.filter(title=title)
-    actors = Actor.objects.filter(part_of=movie[0].metadata)
-    context = {
-        'movie': movie,
-        'actors': actors,
+def display_media(request, title):
+    template = loader.get_template('streaming/media.html')
+    media = Movie.objects.filter(title=title)
+    if not media: media = TVShow.objects.filter(title=title)
+    if not media: return HttpResponse("Invalid Media Request")
 
+    actors = Actor.objects.filter(part_of=media[0].metadata)
+    context = {
+        'media': media,
+        'actors': actors,
     }
     return HttpResponse(template.render(context, request))
 
