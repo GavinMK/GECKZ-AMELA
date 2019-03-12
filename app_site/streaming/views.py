@@ -112,8 +112,28 @@ def logout_requested(request):
 
 
 @login_required(login_url='login/')
+def movies(request):
+    template = loader.get_template('streaming/mediaList.html')
+    movie_list = Movie.objects.all()
+    context = {
+        'media': movie_list,
+    }
+    return HttpResponse(template.render(context, request))
+
+
+@login_required(login_url='login/')
+def shows(request):
+    template = loader.get_template('streaming/mediaList.html')
+    show_list = TVShow.objects.all()
+    context = {
+        'media': show_list,
+    }
+    return HttpResponse(template.render(context, request))
+
+
+@login_required(login_url='login/')
 def display_media(request, title):
-    template = loader.get_template('streaming/media.html')
+    template = loader.get_template('streaming/mediaDisplay.html')
     media = Movie.objects.filter(title=title)
     if not media: media = TVShow.objects.filter(title=title)
     if not media: return HttpResponse("Invalid Media Request")
