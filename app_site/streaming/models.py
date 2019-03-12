@@ -31,7 +31,7 @@ class Metadata(models.Model):
 
 class Actor(models.Model):
     name = models.CharField(max_length=40)
-    part_of = models.ManyToManyField(Metadata, on_delete=models.CASCADE)
+    part_of = models.ForeignKey(Metadata, on_delete=models.CASCADE) #part_of = models.ManyToManyField(Metadata, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name

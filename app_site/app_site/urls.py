@@ -18,7 +18,12 @@ from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
 
+from django.conf.urls import url
+from . import views
+from .views import redirect_root
+
 urlpatterns = [
     path('streaming/', include('streaming.urls')),
     path('admin/', admin.site.urls),
+    url(r'^$', redirect_root), #redirects the site's main page (see views.py in this directory)
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
