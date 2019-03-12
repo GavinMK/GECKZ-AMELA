@@ -1,37 +1,17 @@
-<!DOCTYPE html>
-{% load static %}
+{% extends "navPage.html" %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'streaming/style-homepage.css' %}">
-<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Raleway"/>
-<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Oswald" />
-
-<body>
-<div class="homepage-style">
-
-<nav class="bar">
-  <a href="/streaming/homepage" style="float: left;">Home</a>
-  <a href="#" style="float: left;">Account</a>
-  <a href="#" style="float: left;">Messages</a>
-  <a href="#" style="float: left;">Friends</a>
-  <a href="/streaming/movies/" style="float: left;">Movies</a>
-  <a href="/streaming/shows/" style="float: left;">TV Shows</a>
-  <a href="/streaming/" style="float: left;">Index</a>
-  <a href="/streaming/logout/" style="float: right;">Logout</a>
-</nav>
-<br><br><br><br><br>
-
-{% for entry in media %}
-    <header>{{ entry.title }}</header>
-    <p>Genre: {{ entry.metadata.genre }}</p>
-    <p>Description: {{ entry.description }}</p>
-    <p>Release year: {{ entry.metadata.release_year }}</p>
-    <p>Production Studio: {{ entry.metadata.studio }}</p>
-    <p>Streaming Service: {{ entry.metadata.streaming_service }}</p>
-    <p>Runtime: {{ entry.runtime }}</p>
-    <p>Actors:</p>
-    {% for actor in actors %}
-      <p>{{ actor.name }}</p>
-    {% endfor %}
-{%  endfor %}
-</div>
-</body>
+{% block content %}
+	{% for entry in media %}
+		<header>{{ entry.title }}</header>
+		<p>Genre: {{ entry.metadata.genre }}</p>
+		<p>Description: {{ entry.description }}</p>
+		<p>Release year: {{ entry.metadata.release_year }}</p>
+		<p>Production Studio: {{ entry.metadata.studio }}</p>
+		<p>Streaming Service: {{ entry.metadata.streaming_service }}</p>
+		<p>Runtime: {{ entry.runtime }}</p>
+		<p>Actors:</p>
+		{% for actor in actors %}
+		  <p>{{ actor.name }}</p>
+		{% endfor %}
+	{%  endfor %}
+{% endblock %}

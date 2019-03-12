@@ -1,28 +1,7 @@
-<!DOCTYPE html>
-{% load static %}
+{% extends "navPage.html" %}
 
+{% block content %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'streaming/normalize.css' %}">
-<link rel="stylesheet" type="text/css" href="{% static 'streaming/style-homepage.css' %}">
-<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Raleway"/>
-<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Oswald" />
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<body>
-<div class="homepage-style">
-
-<nav class="bar">
-    <a href="/streaming/homepage" style="float: left;">Home</a>
-    <a href="#" style="float: left;">Account</a>
-    <a href="#" style="float: left;">Messages</a>
-    <a href="#" style="float: left;">Friends</a>
-    <a href="/streaming/movies/" style="float: left;">Movies</a>
-    <a href="/streaming/shows/" style="float: left;">TV Shows</a>
-    <a href="/streaming/" style="float: left;">Index</a>
-    <a href="/streaming/logout/" style="float: right;">Logout</a>
-</nav>
-<br><br><br><br><br>
 <header>Welcome, {{ user }}.</header>
 
-</div>
-</body>
+{% endblock %}
