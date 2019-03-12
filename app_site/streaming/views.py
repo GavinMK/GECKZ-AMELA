@@ -10,7 +10,7 @@ from datetime import datetime
 from django.shortcuts import render
 
 
-from .models import SiteUser, Movie, TVShow, Metadata, Preferences, CommentSection, Inbox, Billing, Actor, TVEpisode
+from .models import *
 
 from django.db import models
 
@@ -122,6 +122,24 @@ def display_media(request, title):
     }
     return HttpResponse(template.render(context, request))
 
+
+@login_required(login_url='login/')
+def display_episode(request, title, season_number, episode_number):
+    template = loader.get_template('streaming/tvEpisode.html')
+    show = TVShow.objects.filter(title=title)
+    if not show: return HttpResponse("Invalid show")
+    season = TVSeason.objects.filter(part_of=show[0], season_number=season_number)
+    if not season: return HttpResponse("Invalid season number")
+    episode = TVEpisode.objects.filter(part_of=season[0], episode_number=episode_number)
+    if not episode: return HttpResponse("Invalid episode number")
+
+    actors = Actor.objects.filter(part_of=episode[0].metadata)
+    context = {
+        'show': show,
+        'episode': episode,
+        'actors': actors,
+    }
+    return HttpResponse(template.render(context, request))
 
 @login_required(login_url='login/')
 def homepage(request):

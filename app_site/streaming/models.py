@@ -54,9 +54,9 @@ class CommentSection(models.Model):
 
     def __str__(self):
         tv_query = TVShow.objects.filter(comment_section=self)
-        if tv_query: return tv_query[0] + ' Comment Section'
+        if tv_query: return tv_query[0].__str__() + ' Comment Section'
         ep_query = TVEpisode.objects.filter(comment_section=self)
-        if ep_query: return ep_query[0] + ' Comment Section'
+        if ep_query: return ep_query[0].__str__() + ' Comment Section'
         movie_query = Movie.objects.filter(comment_section=self)
         if movie_query: return movie_query[0].__str__() + ' Comment Section'
         user_query = SiteUser.objects.filter(comment_section=self)
@@ -69,9 +69,9 @@ class RatingSection(models.Model):
 
     def __str__(self):
         tv_query = TVShow.objects.filter(rating_section=self)
-        if tv_query: return tv_query[0] + ' Rating Section'
+        if tv_query: return tv_query[0].__str__() + ' Rating Section'
         ep_query = TVEpisode.objects.filter(rating_section=self)
-        if ep_query: return ep_query[0] + ' Rating Section'
+        if ep_query: return ep_query[0].__str__() + ' Rating Section'
         movie_query = Movie.objects.filter(rating_section=self)
         if movie_query: return movie_query[0].__str__() + ' Rating Section'
         return 'Unassigned'
@@ -121,6 +121,9 @@ class TVSeason(models.Model):
     description = models.TextField(default='')
     year = models.IntegerField(default=0)
     part_of = models.ForeignKey(TVShow, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.part_of.title.__str__() + ' Season ' + str(self.season_number) or ''
 
 
 class TVEpisode(Media, PlayableMedia):
