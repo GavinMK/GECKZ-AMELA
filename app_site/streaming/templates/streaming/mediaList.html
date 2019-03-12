@@ -3,7 +3,7 @@
 {% block content %}
 
 	{% for entry in media %}
-	<a href="/streaming/media/{{ entry.title }}/">{{ entry.title }}</a><br><br>
+	<a href="{% url 'streaming:display_media' title=entry.title %}">{{ entry.title }}</a><br><br>
 	{% endfor %}
 
 {% endblock %}

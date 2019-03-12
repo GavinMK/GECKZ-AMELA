@@ -3,7 +3,7 @@
 {% block content %}
 	<div class="form-style">
 
-	<form action="/streaming/login/" method="post">
+	<form action="{% url 'streaming:login' %}" method="post">
 		{%  csrf_token %}
 		<br><br>
 		<header>Concept Site</header><br><br>
@@ -24,10 +24,9 @@
 			<input type="submit" value="Submit">
 		</fieldset>
 		<h2><a href="">Forgot Password</a></h2>
-		<h2><a href="../createuser/">Create an Account</a></h2>
+		<h2><a href="{% url 'streaming:createUser' %}">Create an Account</a></h2>
 	</form>
 {% endblock %}
-
 
 {% block script %}
 	{% load static %}
