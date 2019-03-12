@@ -10,7 +10,7 @@ from datetime import datetime
 from django.shortcuts import render
 
 
-from .models import SiteUser, Movie, TVShow, Metadata, Preferences, CommentSection, Inbox, Billing
+from .models import SiteUser, Movie, TVShow, Metadata, Preferences, CommentSection, Inbox, Billing, Actor
 
 from django.db import models
 
@@ -112,8 +112,11 @@ def logout_requested(request):
 def display_movie(request, title):
     template = loader.get_template('streaming/movie.html')
     movie = Movie.objects.filter(title=title)
+    actors = Actor.objects.filter(part_of=movie[0].metadata)
     context = {
         'movie': movie,
+        'actors': actors,
+
     }
     return HttpResponse(template.render(context, request))
 
