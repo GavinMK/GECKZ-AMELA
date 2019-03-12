@@ -1,1 +1,13 @@
-<h1>{{ movie.title }}</h1>
+{% for entry in movie %}
+    <p>{{ entry.title }}</p>
+    <p>Genre: {{ entry.metadata.genre }}</p>
+    <p>Description: {{ entry.description }}</p>
+    <p>Release year: {{ entry.metadata.release_year }}</p>
+    <p>Production Studio: {{ entry.metadata.studio }}</p>
+    <p>Streaming Service: {{ entry.metadata.streaming_service }}</p>
+    <p>Runtime: {{ entry.runtime }}</p>
+    <p>Actors:</p>
+    {% for actor in actors %}
+      <p>{{ actor.name }}</p>
+    {% endfor %}
+{%  endfor %}
