@@ -53,27 +53,28 @@ class CommentSection(models.Model):
     num_comments = models.IntegerField(default=0)
 
     def __str__(self):
-        tv_show_query = TVShow.objects.filter(comment_section=self)
-        if len(tv_show_query) > 0: return tv_show_query[0]
-        #tv_episode_query = TVEpisode.objects.filter(comment_section=self)
-        #if len(tv_episode_query) > 0: return tv_episode_query[0]
+        tv_query = TVShow.objects.filter(comment_section=self)
+        if tv_query: return tv_query[0] + ' Comment Section'
+        ep_query = TVEpisode.objects.filter(comment_section=self)
+        if ep_query: return ep_query[0] + ' Comment Section'
         movie_query = Movie.objects.filter(comment_section=self)
-        if len(movie_query) > 0: return movie_query[0]
+        if movie_query: return movie_query[0].__str__() + ' Comment Section'
         user_query = SiteUser.objects.filter(comment_section=self)
-        return "Unassigned" if len(user_query) == 0 else user_query[0]
+        if user_query: return user_query[0].__str__() + ' Comment Section'
+        return 'Unassigned'
 
 
 class RatingSection(models.Model):
     num_of_ratings = models.IntegerField(default=0)
 
     def __str__(self):
-        tv_show_query = TVShow.objects.filter(rating_section=self)
-        if len(tv_show_query) > 0: return tv_show_query[0]
-        tv_episode_query = TVEpisode.objects.filter(comment_section=self)
-        if len(tv_episode_query) > 0: return tv_episode_query[0]
+        tv_query = TVShow.objects.filter(rating_section=self)
+        if tv_query: return tv_query[0] + ' Rating Section'
+        ep_query = TVEpisode.objects.filter(rating_section=self)
+        if ep_query: return ep_query[0] + ' Rating Section'
         movie_query = Movie.objects.filter(rating_section=self)
-        if len(movie_query) > 0: return movie_query[0]
-        return "Unassigned"
+        if movie_query: return movie_query[0].__str__() + ' Rating Section'
+        return 'Unassigned'
 
 
 class Inbox(models.Model):
@@ -82,8 +83,9 @@ class Inbox(models.Model):
     num_unread_messages = models.IntegerField(default=0)
 
     def __str__(self):
-        query = SiteUser.objects.filter(inbox=self)
-        return "Unassigned" if len(query) == 0 else query[0]
+        user = SiteUser.objects.filter(inbox=self)
+        if user: return user[0].__str__() + ' Inbox'
+        return 'Unassigned'
 
 
 class Media(models.Model):
