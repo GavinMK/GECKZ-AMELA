@@ -19,18 +19,18 @@ class Preferences(models.Model):
 
 
 class Metadata(models.Model):
-    title = models.CharField(max_length=40)
-    genre = models.CharField(max_length=20)
+    title = models.CharField(max_length=50)
+    genre = models.CharField(max_length=50)
     release_year = models.IntegerField(default=0)
-    studio = models.CharField(max_length=20)
-    streaming_service = models.CharField(max_length=20)
+    studio = models.CharField(max_length=50)
+    streaming_service = models.CharField(max_length=50)
 
     def __str__(self):
         return self.title
 
 
 class Actor(models.Model):
-    name = models.CharField(max_length=40)
+    name = models.CharField(max_length=50)
     part_of = models.ManyToManyField(Metadata, blank=True)
 
     def __str__(self):
@@ -92,7 +92,7 @@ class Media(models.Model):
     title = models.CharField(max_length=50)
     description = models.TextField(default='')
     air_date = models.DateField(auto_now=True)
-    metadata = models.OneToOneField(Metadata, on_delete=models.CASCADE)
+    metadata = models.ForeignKey(Metadata, on_delete=models.CASCADE)
     comment_section = models.OneToOneField(CommentSection, on_delete=models.CASCADE)
     rating_section = models.OneToOneField(RatingSection, on_delete=models.CASCADE)
 
@@ -127,7 +127,7 @@ class TVSeason(models.Model):
 
 
 class TVEpisode(Media, PlayableMedia):
-    title = models.CharField(max_length=25)
+    title = models.CharField(max_length=50)
     episode_number = models.IntegerField(default=0)
     part_of = models.ForeignKey(TVSeason, on_delete=models.CASCADE)
 
@@ -152,7 +152,7 @@ class SiteUser(AbstractUser):
 
 
 class Comment(models.Model):
-    content = models.CharField(max_length=20)
+    content = models.CharField(max_length=500)
     timestamp = models.DateTimeField(default=timezone.now)
     part_of = models.ForeignKey(CommentSection, on_delete=models.CASCADE)
     posted_by = models.ForeignKey(SiteUser, on_delete=models.CASCADE)
@@ -165,7 +165,7 @@ class Rating(models.Model):
 
 
 class Message(models.Model):
-    content = models.CharField(max_length=20)
+    content = models.CharField(max_length=500)
     timestamp = models.DateTimeField(default=timezone.now)
     from_user = models.ForeignKey(SiteUser, on_delete=models.CASCADE)
     part_of = models.ForeignKey(Inbox, on_delete=models.CASCADE)
