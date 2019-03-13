@@ -148,6 +148,7 @@ def display_media(request, title):
         'media': media,
         'actors': actors,
         'episodes': episode_list,
+        'comments': media[0].comment_section.comment_set.all()
     }
     return HttpResponse(template.render(context, request))
 
@@ -167,6 +168,7 @@ def display_episode(request, title, season_number, episode_number):
         'show': show,
         'episode': episode,
         'actors': actors,
+        'comments': episode[0].comment_section.comment_set.all()
     }
     return HttpResponse(template.render(context, request))
 
