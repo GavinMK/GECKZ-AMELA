@@ -1,8 +1,6 @@
 {% extends "base.html" %}
 <!-- This template should be extended by any template that needs to have the navbar at the top. -->
 {% block body %}
-	<div class="homepage-style">
-
 	<nav class="bar">
 		<ul>
 		<li><a href="{% url 'streaming:homepage' %}">Home</a></li>
@@ -11,12 +9,11 @@
 		<li><a href="#">Friends</a></li>
 		<li><a href="{% url 'streaming:movies' %}">Movies</a></li>
 		<li><a href="{% url 'streaming:shows' %}">TV Shows</a></li>
-		<li style="float: right;"><a href="#">Logged in as: {{ user }}</a><a href="{% url 'streaming:logout' %}">Logout</a></li>
+		<li style="float: right;"><a href="{% url 'streaming:logout' %}">Logout</a></li>
+		<li style="float: right;color: #ffd700;padding-right: 20px;">Logged in as: {{ user }} </li>
 		</ul>
 	</nav>
 
-	</div>
-	
 	<article>
 	{% block content %}
 		Error: navPage.html inherited without overwriting content! Fix that, you dingus!

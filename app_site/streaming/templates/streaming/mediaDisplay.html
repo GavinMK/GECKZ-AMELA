@@ -2,19 +2,18 @@
 
 {% block content %}
 	{% for entry in media %}
-		<header>{{ entry.title }}</header>
-		<p>Genre: {{ entry.metadata.genre }}</p>
-		<p>Description: {{ entry.description }}</p>
-		<p>Release year: {{ entry.metadata.release_year }}</p>
-		<p>Production Studio: {{ entry.metadata.studio }}</p>
-		<p>Streaming Service: {{ entry.metadata.streaming_service }}</p>
+		<header>{{ entry.title }} <span>({{ entry.metadata.release_year }})</span></header>
+		<p>Genre: <span>{{ entry.metadata.genre }}</span></p>
+		<p>Description: <span>{{ entry.description }}</span></p>
+		<p>Production Studio: <span>{{ entry.metadata.studio }}</span></p>
+		<p>Streaming Service: <span>{{ entry.metadata.streaming_service }}</span></p>
 		<!---<p>Runtime: {{ entry.runtime }}</p>-->
 		<p>Actors:</p>
 		{% for actor in actors %}
-		  <p>{{ actor.name }}</p>
+		  <span>{{ actor.name }}</span><br><br>
 		{% endfor %}
 		{% for episode in episodes %}
-			<a href="{% url 'streaming:display_episode' title=entry.title season_number=episode.part_of.season_number episode_number=episode.episode_number %}">Season {{ episode.part_of.season_number }} Episode {{ episode.episode_number }} {{ episode.title }}</a><br><br>
+			<a href="{% url 'streaming:display_episode' title=entry.title season_number=episode.part_of.season_number episode_number=episode.episode_number %}" style="text-decoration: underline;">Season {{ episode.part_of.season_number }} Episode {{ episode.episode_number }} {{ episode.title }}</a><br><br>
 		{% endfor %}
 	{%  endfor %}
 {% endblock %}

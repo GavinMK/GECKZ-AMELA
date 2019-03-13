@@ -19,13 +19,14 @@
 			<label for="password">Password: </label><br>
 			<input id="password" type="password" name="password" required><br>
 			<h2>
-				<input type="checkbox" onclick="togglePassword()">Show Password
+				<input type="checkbox" onclick="togglePassword()"> Show Password
 			</h2>
 			<input type="submit" value="Submit">
 		</fieldset>
 		<h2><a href="">Forgot Password</a></h2>
 		<h2><a href="{% url 'streaming:createUser' %}">Create an Account</a></h2>
 	</form>
+	</div>
 {% endblock %}
 
 {% block script %}
