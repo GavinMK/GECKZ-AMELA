@@ -8,15 +8,15 @@
 	{% for entry in episode %}
 	  <p>{{ entry.title }}</p>
 	  <p>Season {{ entry.season_number }} Episode {{ entry.episode_number }}</p>
-	  <p>Genre: {{ entry.metadata.genre }}</p>
-	  <p>Description: {{ entry.description }}</p>
-	  <p>Release year: {{ entry.metadata.release_year }}</p>
-	  <p>Production Studio: {{ entry.metadata.studio }}</p>
-	  <p>Streaming Service: {{ entry.metadata.streaming_service }}</p>
-	  <p>Runtime: {{ entry.runtime }}</p>
+        <p>Genre: <span>{{ entry.metadata.genre }}</span></p>
+        <p>Description: <span>{{ entry.description }}</span></p>
+        <p>Release year: <span>{{ entry.metadata.release_year }}</span></p>
+        <p>Production Studio: <span>{{ entry.metadata.studio }}</span></p>
+	  <p>Streaming Service: <span>{{ entry.metadata.streaming_service }}</span></p>
+        <p>Runtime: <span>{{ entry.runtime }}</span></p>
 	  <p>Actors:</p>
 	  {% for actor in actors %}
-		<p>{{ actor.name }}</p>
+          <p><span>{{ actor.name }}</span></p>
 	  {% endfor %}
         <br><br>
         {% for comment in comments %}
