@@ -1,6 +1,7 @@
 {% extends "simplePage.html" %}
 
 {% block content %}
+{% load static %}
 	<div class="form-style">
 
 	<form action="{% url 'streaming:login' %}" method="post">
@@ -27,9 +28,5 @@
 		<h2><a href="{% url 'streaming:createUser' %}">Create an Account</a></h2>
 	</form>
 	</div>
-{% endblock %}
-
-{% block script %}
-	{% load static %}
-	<script src="{% static 'streaming/js/utility.js' %}"></script>
+<script src="{% static 'streaming/js/utility.js' %}"></script>
 {% endblock %}
