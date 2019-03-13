@@ -1,9 +1,13 @@
 {% extends "navPage.html" %}
 
 {% block content %}
+<div class="media-style">
 
 	{% for entry in media %}
-	<a href="{% url 'streaming:display_media' title=entry.title %}">{{ entry.title }}</a><br><br>
+	<figure>
+		<a href="{% url 'streaming:display_media' title=entry.title %}"><img src="">{{ entry.title }}</a><br><br>
+	</figure>
 	{% endfor %}
 
+</div>
 {% endblock %}
