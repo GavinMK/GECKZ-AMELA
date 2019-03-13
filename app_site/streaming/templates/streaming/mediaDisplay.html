@@ -16,5 +16,10 @@
 		{% for episode in episodes %}
 			<a href="{% url 'streaming:display_episode' title=entry.title season_number=episode.part_of.season_number episode_number=episode.episode_number %}">Season {{ episode.part_of.season_number }} Episode {{ episode.episode_number }} {{ episode.title }}</a><br><br>
 		{% endfor %}
+        <br><br>
+        {% for comment in comments %}
+            <p>Posted By: {{ comment.posted_by }}</p>
+            <p>{{ comment.content }}</p>
+        {% endfor %}
 	{%  endfor %}
 {% endblock %}

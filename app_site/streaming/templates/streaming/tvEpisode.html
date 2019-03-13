@@ -18,6 +18,13 @@
 	  {% for actor in actors %}
 		<p>{{ actor.name }}</p>
 	  {% endfor %}
+        <br><br>
+        {% for comment in comments %}
+            <p>Posted By: {{ comment.posted_by }}</p>
+            <p>{{ comment.content }}</p>
+        {% endfor %}
 	{%  endfor %}
+
+
 	
 {% endblock %}

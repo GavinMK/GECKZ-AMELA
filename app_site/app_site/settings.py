@@ -78,7 +78,7 @@ DEBUG = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'test',
+        'NAME': 'production_copy',
         'USER': 'amela',
         'PASSWORD': 'Rod!4800',
 		'HOST': 'geckz.c4wdoufytnsx.us-east-1.rds.amazonaws.com',
