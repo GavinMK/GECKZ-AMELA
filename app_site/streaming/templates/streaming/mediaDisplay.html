@@ -8,10 +8,13 @@
 		<p>Release year: {{ entry.metadata.release_year }}</p>
 		<p>Production Studio: {{ entry.metadata.studio }}</p>
 		<p>Streaming Service: {{ entry.metadata.streaming_service }}</p>
-		<p>Runtime: {{ entry.runtime }}</p>
+		<!---<p>Runtime: {{ entry.runtime }}</p>-->
 		<p>Actors:</p>
 		{% for actor in actors %}
 		  <p>{{ actor.name }}</p>
+		{% endfor %}
+		{% for episode in episodes %}
+			<a href="{% url 'streaming:display_episode' title=entry.title season_number=episode.part_of.season_number episode_number=episode.episode_number %}">Season {{ episode.part_of.season_number }} Episode {{ episode.episode_number }} {{ episode.title }}</a><br><br>
 		{% endfor %}
 	{%  endfor %}
 {% endblock %}

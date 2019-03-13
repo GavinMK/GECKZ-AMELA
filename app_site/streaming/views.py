@@ -134,14 +134,20 @@ def shows(request):
 @login_required(login_url='login/')
 def display_media(request, title):
     template = loader.get_template('streaming/mediaDisplay.html')
+    episode_list = []
     media = Movie.objects.filter(title=title)
-    if not media: media = TVShow.objects.filter(title=title)
+    if not media:
+        media = TVShow.objects.filter(title=title)
+        season_list = TVSeason.objects.filter(part_of=media[0])
+        for season in season_list:
+            episode_list += list(TVEpisode.objects.filter(part_of=season))
     if not media: return HttpResponse("Invalid Media Request")
 
     actors = Actor.objects.filter(part_of=media[0].metadata)
     context = {
         'media': media,
         'actors': actors,
+        'episodes': episode_list,
     }
     return HttpResponse(template.render(context, request))
 
