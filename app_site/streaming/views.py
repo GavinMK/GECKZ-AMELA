@@ -176,5 +176,14 @@ def display_episode(request, title, season_number, episode_number):
 
 
 @login_required(login_url='login/')
+def user_page(request):
+    template = loader.get_template('streaming/userpage.html')
+    context = {
+        'comments': request.user.comment_section.comment_set.all(),
+    }
+    return HttpResponse(template.render(context, request))
+
+
+@login_required(login_url='login/')
 def homepage(request):
     return render(request, 'streaming/homepage.html')

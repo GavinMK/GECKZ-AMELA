@@ -1,0 +1,13 @@
+{% extends "navPage.html" %}
+
+{% block content %}
+
+  <h1><span>Comments:</span></h1>
+  {% for comment in comments %}
+
+      <p>Posted By: {{ comment.posted_by }}</p>
+      <p>{{ comment.content }}</p>
+
+  {% endfor %}
+
+{% endblock %}
