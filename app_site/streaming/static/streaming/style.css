@@ -7,6 +7,86 @@ a {
 	text-decoration: none;
 }
 
+a:hover{
+	color: #fffafa;
+}
+
+header{
+	text-align: center;
+    font-size: 30px;
+    color: #ffd700;
+    font-family: Raleway;
+    padding: 15px 50px;;
+}
+
+section {
+	padding-bottom: 30px;
+	float: right;
+	margin: 0 1.5%;
+	width: 63%;
+}
+
+#side{
+	float: left;
+	margin: 0 1.5%;
+	width: 30%;
+}
+
+#photo{
+	height: 4in;
+	width: 3.5in;
+}
+
+fieldset{
+	border-radius: 10px;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	margin: 0px 0px 10px 0px;
+	border: 1px solid #ffd700;
+	padding-left: 35px;
+	padding-right: 35px;
+}
+
+legend,
+fieldset legend{
+	color: #393e46;
+	background: #ffd700;
+	padding: 0px 8px 3px 8px;
+	font-weight: normal;
+	font-size: 22px;
+}
+
+span{
+	color: #fffafa;
+}
+
+p{
+    font-size: 15px;
+    color: #ffd700;
+    font-family: Raleway;
+	padding-bottom: 10px;
+}
+
+h1{
+    font-size: 20px;
+    color: #ffd700;
+    font-family: Raleway;
+}
+
+article{
+    /*background-color: #111;*/
+	margin:40px;
+	padding:10px;
+    font-family: Raleway;
+}
+
+hr {
+	color: #ffd700;
+	margin-top: 20px;
+	margin-bottom: 20px;
+  	border-width: 1px;
+}
+
 nav{
 	background: #111;
 	padding: 10px 20px;
@@ -44,38 +124,6 @@ nav a.active {
   color: white;
 }
 
-header{
-	text-align: center;
-    font-size: 30px;
-    color: #ffd700;
-    font-family: Raleway;
-    padding: 15px 50px;
-}
-
-span{
-	color: #fffafa;
-}
-
-p{
-    font-size: 15px;
-    color: #ffd700;
-    font-family: Raleway;
-	padding-bottom: 10px;
-}
-
-h1{
-    font-size: 20px;
-    color: #ffd700;
-    font-family: Raleway;
-}
-
-article{
-    /*background-color: #111;*/
-	margin:40px;
-	padding:10px;
-    font-family: Raleway;
-}
-
 .center {
 	text-align: center;
 }
@@ -87,6 +135,11 @@ article{
     grid-template-rows: repeat(2, 25vw);
     grid-gap: 15px;
 	font-size: 17px;
+}
+
+.media-style a:hover{
+	text-decoration: underline;
+	color: #fffafa;
 }
 
 .media-style img{
@@ -123,23 +176,6 @@ article{
 .form-style h2{
 	font-size: 13px;
 	color: #fffafa;
-}
-
-.form-style fieldset{
-	border-radius: 10px;
-	-webkit-border-radius: 10px;
-	-moz-border-radius: 10px;
-	margin: 0px 0px 10px 0px;
-	border: 1px solid #ffd700;
-	padding: 10px;
-}
-
-.form-style fieldset legend{
-	color: #393e46;
-	background: #ffd700;
-	padding: 0px 8px 3px 8px;
-	font-weight: normal;
-	font-size: 22px;
 }
 
 .form-style textarea{
