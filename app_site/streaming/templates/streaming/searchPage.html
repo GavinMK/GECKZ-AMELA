@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="media-style">
-	<form action="{% url 'streaming:search' %}" method="get">
+	<form action="{% url 'streaming:search' %}" method="post">
 		{%  csrf_token %}
 		<fieldset>
 			<legend>Search</legend>

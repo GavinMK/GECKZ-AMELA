@@ -12,3 +12,7 @@ class user_form(forms.Form):
 class login_form(forms.Form):
     username = forms.CharField(label='Username', max_length=15)
     password = forms.CharField(label='Password', max_length=20)
+
+
+class search_form(forms.Form):
+    request = forms.CharField(label='request', max_length=128)

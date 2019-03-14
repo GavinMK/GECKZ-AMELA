@@ -24,7 +24,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 
 from django.contrib.auth import authenticate, login, logout
-from .forms import user_form, login_form
+from .forms import user_form, login_form, search_form
 
 
 def validate_password(password_candidate):
@@ -132,11 +132,19 @@ def shows(request):
 
 @login_required(login_url='login/')
 def search(request):
-    template = loader.get_template('streaming/mediaList.html')
-    show_list = TVShow.objects.all()
+    template = loader.get_template('streaming/searchPage.html')
+    media_list = TVShow.objects.all() + Movie.objects.all()
+
     context = {
-        'media': show_list,
+        'media': media_list,
     }
+    if request.method == 'POST':
+        form = search_form(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            request = data['request']
+            context['media'] = []
+
     return HttpResponse(template.render(context, request))
 
 
