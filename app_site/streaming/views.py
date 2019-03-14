@@ -135,20 +135,22 @@ def shows(request):
 def display_media(request, title):
     template = loader.get_template('streaming/mediaDisplay.html')
     episode_list = []
-    media = Movie.objects.filter(title=title)
+    media = []
+    if Movie.objects.filter(title=title).exists():
+        media = Movie.objects.get(title=title)
     if not media:
-        media = TVShow.objects.filter(title=title)
-        season_list = TVSeason.objects.filter(part_of=media[0])
+        media = TVShow.objects.get(title=title)
+        season_list = TVSeason.objects.filter(part_of=media)
         for season in season_list:
             episode_list += list(TVEpisode.objects.filter(part_of=season))
     if not media: return HttpResponse("Invalid Media Request")
 
-    actors = Actor.objects.filter(part_of=media[0].metadata)
+    actors = Actor.objects.filter(part_of=media.metadata)
     context = {
         'media': media,
         'actors': actors,
         'episodes': episode_list,
-        'comments': media[0].comment_section.comment_set.all()
+        'comments': media.comment_section.comment_set.all()
     }
     return HttpResponse(template.render(context, request))
 
@@ -156,19 +158,28 @@ def display_media(request, title):
 @login_required(login_url='login/')
 def display_episode(request, title, season_number, episode_number):
     template = loader.get_template('streaming/tvEpisode.html')
-    show = TVShow.objects.filter(title=title)
+    show = TVShow.objects.get(title=title)
     if not show: return HttpResponse("Invalid show")
-    season = TVSeason.objects.filter(part_of=show[0], season_number=season_number)
+    season = TVSeason.objects.get(part_of=show, season_number=season_number)
     if not season: return HttpResponse("Invalid season number")
-    episode = TVEpisode.objects.filter(part_of=season[0], episode_number=episode_number)
+    episode = TVEpisode.objects.get(part_of=season, episode_number=episode_number)
     if not episode: return HttpResponse("Invalid episode number")
 
-    actors = Actor.objects.filter(part_of=episode[0].metadata)
+    actors = Actor.objects.filter(part_of=episode.metadata)
     context = {
         'show': show,
         'episode': episode,
         'actors': actors,
-        'comments': episode[0].comment_section.comment_set.all()
+        'comments': episode.comment_section.comment_set.all()
+    }
+    return HttpResponse(template.render(context, request))
+
+
+@login_required(login_url='login/')
+def user_page(request):
+    template = loader.get_template('streaming/userpage.html')
+    context = {
+        'comments': request.user.comment_section.comment_set.all(),
     }
     return HttpResponse(template.render(context, request))
 

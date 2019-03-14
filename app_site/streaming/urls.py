@@ -9,6 +9,7 @@ urlpatterns = [
     path('login/', views.login_page, name='login'),
     path('logout/', views.logout_requested, name='logout'),
     path('', views.homepage, name='homepage'),
+    path('account/', views.user_page, name='user_page'),
     path('movies/', views.movies, name='movies'),
     path('shows/', views.shows, name='shows'),
     path('media/<str:title>/', views.display_media, name='display_media'),
