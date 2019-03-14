@@ -14,4 +14,5 @@ urlpatterns = [
     path('shows/', views.shows, name='shows'),
     path('media/<str:title>/', views.display_media, name='display_media'),
     path('media/<str:title>/<int:season_number>/<int:episode_number>/', views.display_episode, name='display_episode'),
+    path('search/<str:request>/', views.search, name="search")
 ]

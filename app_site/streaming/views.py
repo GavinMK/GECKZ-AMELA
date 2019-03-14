@@ -130,6 +130,16 @@ def shows(request):
     }
     return HttpResponse(template.render(context, request))
 
+@login_required(login_url='login/')
+def search(request):
+    template = loader.get_template('streaming/mediaList.html')
+    show_list = TVShow.objects.all()
+    context = {
+        'media': show_list,
+    }
+    return HttpResponse(template.render(context, request))
+
+
 
 @login_required(login_url='login/')
 def display_media(request, title):
