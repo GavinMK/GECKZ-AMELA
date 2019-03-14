@@ -176,3 +176,7 @@ def display_episode(request, title, season_number, episode_number):
 @login_required(login_url='login/')
 def homepage(request):
     return render(request, 'streaming/homepage.html')
+
+@login_required(login_url='login/')
+def account_page(request):
+    return render(request, 'streaming/accountPage.html')
