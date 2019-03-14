@@ -2,29 +2,24 @@
 
 {% block content %}
 
-	{% for entry in show %}
-	  <header>{{ entry.title }}</header>
-	{% endfor %}
-	{% for entry in episode %}
-	  <p>{{ entry.title }}</p>
-	  <p>Season {{ entry.season_number }} Episode {{ entry.episode_number }}</p>
-        <p>Genre: <span>{{ entry.metadata.genre }}</span></p>
-        <p>Description: <span>{{ entry.description }}</span></p>
-        <p>Release year: <span>{{ entry.metadata.release_year }}</span></p>
-        <p>Production Studio: <span>{{ entry.metadata.studio }}</span></p>
-	  <p>Streaming Service: <span>{{ entry.metadata.streaming_service }}</span></p>
-        <p>Runtime: <span>{{ entry.runtime }}</span></p>
-	  <p>Actors:</p>
-	  {% for actor in actors %}
-          <p><span>{{ actor.name }}</span></p>
-	  {% endfor %}
-        <br><br>
-        {% for comment in comments %}
-            <p>Posted By: {{ comment.posted_by }}</p>
-            <p>{{ comment.content }}</p>
-        {% endfor %}
-	{%  endfor %}
+	<header>{{ show.title }}</header>
 
+  <p>{{ episode.title }}</p>
+  <p>Season {{ episode.season_number }} Episode {{ episode.episode_number }}</p>
+      <p>Genre: <span>{{ episode.metadata.genre }}</span></p>
+      <p>Description: <span>{{ episode.description }}</span></p>
+      <p>Release year: <span>{{ episode.metadata.release_year }}</span></p>
+      <p>Production Studio: <span>{{ episode.metadata.studio }}</span></p>
+  <p>Streaming Service: <span>{{ episode.metadata.streaming_service }}</span></p>
+      <p>Runtime: <span>{{ episode.runtime }}</span></p>
+  <p>Actors:</p>
+  {% for actor in actors %}
+        <p><span>{{ actor.name }}</span></p>
+  {% endfor %}
+  <br><br>
+  {% for comment in comments %}
+      <p>Posted By: {{ comment.posted_by }}</p>
+      <p>{{ comment.content }}</p>
+  {% endfor %}
 
-	
 {% endblock %}
