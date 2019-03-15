@@ -146,9 +146,16 @@ def search(request):
         # We go through each word in the query, and check to make sure it matches at least some of the data
         # Each result has to match all of the words.
         for word in words:
-            partial_tv_results = tv_show_list.filter(title__icontains=word)
-            partial_movie_results = movie_list.filter(title__icontains=word)
-
+            db_query = (Q(metadata__genre__icontains=word) |
+                Q(metadata__release_year__icontains=word) |
+                Q(metadata__studio__icontains=word) |
+                Q(metadata__release_year__icontains=word) |
+                Q(metadata__streaming_service__icontains=word) |
+                Q(metadata__actor__name__icontains=word) |
+                Q(title__icontains=word)
+            )
+            partial_tv_results = tv_show_list.filter(db_query)
+            partial_movie_results = movie_list.filter(db_query)
             tv_results &= partial_tv_results
             movie_results &= partial_movie_results
         results = set(tv_results) | set(movie_results)
