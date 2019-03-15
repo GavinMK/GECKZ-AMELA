@@ -4,7 +4,7 @@
 <div class="media-style">
 	<form action="{% url 'streaming:search' %}" method="get">
 		<fieldset>
-			<input class="searchfield" id="searchbox" name="q" type="text" placeholder="Search" value={{ query }}>
+			<input class="searchfield" id="searchbox" name="q" type="text" placeholder="Search" value="{{ query }}">
 			
 			{% comment %}
 			<h2>
