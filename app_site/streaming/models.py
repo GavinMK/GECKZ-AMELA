@@ -157,11 +157,17 @@ class Comment(models.Model):
     part_of = models.ForeignKey(CommentSection, on_delete=models.CASCADE)
     posted_by = models.ForeignKey(SiteUser, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.part_of.__str__() + ' comment by ' + self.posted_by.__str__() + ' at ' + self.timestamp.strftime('%x %X')
+
 
 class Rating(models.Model):
     rating = models.IntegerField(default=0)
     part_of = models.ForeignKey(RatingSection, on_delete=models.CASCADE)
     posted_by = models.ForeignKey(SiteUser, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.part_of.__str__() + ' rating by ' + self.posted_by.__str__() + ' = ' + str(self.rating)
 
 
 class Message(models.Model):
@@ -169,3 +175,6 @@ class Message(models.Model):
     timestamp = models.DateTimeField(default=timezone.now)
     from_user = models.ForeignKey(SiteUser, on_delete=models.CASCADE)
     part_of = models.ForeignKey(Inbox, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.part_of.__str__() + ' message from ' + self.from_user.__str__() + ' at ' + self.timestamp.strftime('%x %X')
