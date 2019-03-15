@@ -15,6 +15,7 @@ from .decorators import anonymous_only_redirect
 from .models import *
 
 from django.db import models
+from django.db.models import Q
 
 from django.utils import timezone
 
@@ -130,20 +131,33 @@ def shows(request):
     }
     return HttpResponse(template.render(context, request))
 
+
 @login_required(login_url='login/')
 def search(request):
     template = loader.get_template('streaming/searchPage.html')
-    media_list = TVShow.objects.all() + Movie.objects.all()
+    tv_show_list = TVShow.objects.order_by('title')
+    movie_list = Movie.objects.order_by('title')
+    context = dict()
+    query = request.GET.get('q')
+    if query:
+        words = query.split(" ")
+        tv_results = tv_show_list
+        movie_results = movie_list
+        # We go through each word in the query, and check to make sure it matches at least some of the data
+        # Each result has to match all of the words.
+        for word in words:
+            partial_tv_results = tv_show_list.filter(title__icontains=word)
+            partial_movie_results = movie_list.filter(title__icontains=word)
 
-    context = {
-        'media': media_list,
-    }
-    if request.method == 'POST':
-        form = search_form(request.POST)
-        if form.is_valid():
-            data = form.cleaned_data
-            request = data['request']
-            context['media'] = []
+            tv_results &= partial_tv_results
+            movie_results &= partial_movie_results
+        results = set(tv_results) | set(movie_results)
+        context['media'] = results
+        context['query'] = query
+    else:
+        context['media'] = set(tv_show_list) | set(movie_list)
+        context['query'] = ""
+
 
     return HttpResponse(template.render(context, request))
 

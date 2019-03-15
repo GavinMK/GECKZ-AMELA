@@ -2,19 +2,9 @@
 
 {% block content %}
 <div class="media-style">
-	<form action="{% url 'streaming:search' %}" method="post">
-		{%  csrf_token %}
+	<form action="{% url 'streaming:search' %}" method="get">
 		<fieldset>
-			<legend>Search</legend>
-			{% comment %}
-			<h1>
-				{% if error_message != None %}
-				{{ error_message }}
-				{% endif %}
-			</h1>
-			{% endcomment %}
-			<label for="request">Search: </label>
-			<input id="request" type="text" name="request">
+			<input class="searchfield" id="searchbox" name="q" type="text" placeholder="Search" value={{ query }}>
 			
 			{% comment %}
 			<h2>
