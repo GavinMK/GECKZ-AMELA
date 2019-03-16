@@ -10,7 +10,13 @@
 		<li><a href="{% url 'streaming:movies' %}">Movies</a></li>
 		<li><a href="{% url 'streaming:shows' %}">TV Shows</a></li>
 		<li style="float: right;"><a href="{% url 'streaming:logout' %}">Logout</a></li>
-		<li style="float: right;color: #ffd700;padding-right: 20px;">Logged in as: {{ user }} </li>
+		<li style="float: right;color: #ffd700;padding: 0px 20px;">Logged in as: {{ user }} </li>
+		<li style="float: right">
+			<form action="{% url 'streaming:search' %}" method="get">
+				<input class="searchfield" id="searchbox" name="q" type="text" placeholder="Search">
+				<input type="submit" value="Go">
+			</form>
+		</li>
 		</ul>
 	</nav>
 
