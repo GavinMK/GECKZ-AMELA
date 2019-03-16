@@ -226,3 +226,7 @@ def user_page(request):
 @login_required(login_url='login/')
 def homepage(request):
     return render(request, 'streaming/homepage.html')
+
+@login_required(login_url='login/')
+def account_page(request):
+    return render(request, 'streaming/accountPage.html')
