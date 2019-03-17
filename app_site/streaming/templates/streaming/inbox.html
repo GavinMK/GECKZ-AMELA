@@ -1,0 +1,9 @@
+{% extends "navPage.html" %}
+
+{% block content %}
+    <header>You are in your inbox, {{user}}.</header>
+    <p>Number of total messages: {{ inbox.num_messages }}</p>
+    <p>Number of read messages: {{ inbox.num_read_messages }}</p>
+    <p>Number of unread messages: {{ inbox.num_unread_messages }}</p>
+
+{% endblock %}

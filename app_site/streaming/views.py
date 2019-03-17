@@ -222,7 +222,6 @@ def user_page(request):
     }
     return HttpResponse(template.render(context, request))
 
-
 @login_required(login_url='login/')
 def homepage(request):
     return render(request, 'streaming/homepage.html')
@@ -230,3 +229,12 @@ def homepage(request):
 @login_required(login_url='login/')
 def account_page(request):
     return render(request, 'streaming/accountPage.html')
+
+@login_required(login_url='login/')
+def inbox(request):
+    template = loader.get_template('streaming/inbox.html')
+    messages_list = Inbox.objects.all()
+    context = {
+        'inbox' : messages_list,
+    }
+    return HttpResponse(template.render(context, request))
