@@ -29,7 +29,7 @@
 {% if episodes %}
 <section>
 		<fieldset>
-			<legend>Episodes</legend>
+			<legend>Episodes</legend><br>
 				{% for episode in episodes %}
 					<a href="{% url 'streaming:display_episode' title=media.title season_number=episode.part_of.season_number episode_number=episode.episode_number %}"
 					   style="text-decoration: underline;">Season {{ episode.part_of.season_number }} Episode {{ episode.episode_number }} {{ episode.title }}</a><br><br>

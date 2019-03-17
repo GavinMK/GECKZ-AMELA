@@ -1,24 +1,20 @@
 {% extends "navPage.html" %}
 
 {% block content %}
-<div class="media-style">
+
+<div class="form-style" style="margin: 0;width: 700px;padding-left: 40px;padding-bottom: 40px;">
 	<form action="{% url 'streaming:search' %}" method="get">
-		<fieldset>
-			<input class="searchfield" id="searchbox" name="q" type="text" placeholder="Search" value="{{ query }}">
-			
-			{% comment %}
-			<h2>
-				<input type="checkbox" onclick="togglePassword()"> Show Password
-			</h2>
-			{% endcomment %}
-			<input type="submit" value="Search">
-		</fieldset>
+		<input class="searchfield" id="searchbox" name="q" type="text" placeholder="Search" value="{{ query }}">
+		<input type="submit" value="Search">
 	</form>
+</div>
+
+<div class="media-style">
 	{% for entry in media %}
 	<figure>
 		<a href="{% url 'streaming:display_media' title=entry.title %}"><img src="">{{ entry.title }}</a><br><br>
 	</figure>
 	{% endfor %}
-
 </div>
+
 {% endblock %}

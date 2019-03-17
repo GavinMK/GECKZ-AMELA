@@ -1,12 +1,54 @@
 {% extends "navPage.html" %}
 
 {% block content %}
-    <header>Here you can edit your preferences.</header>
-    <p>Username: {{user}}</p>
-    <p>Change Password: *implement later, once "forgot password" is implemented on login page*</p>
-    <p>Email Preferences: Not Available</p>
-    <p>Subscription began on *place holder*. Next billing cycle begins *place holder + 1 month*.</p>
-    <p>Credit card information: option to add, view (with **** for last 4 digits and cvv number), or delete credit card info</p>
-    <p>Billing history: Not Available</p>
+    <header style="text-align: left;">Account Information</header>
+    <hr>
+    <p style="text-align: right;">Date Joined:<span>{{ user.date_joined }}</span></p>
+    <section style="width: 43%;float: left;padding-top: 20px;">
+        <fieldset>
+            <legend>User Information:</legend>
+            <p>Username: <span>{{ user }}</span></p>
+            <p>Name: <span>{{ user.first_name }} {{ user.last_name }}</span></p>
+            <p>Email: <span>{{ user.email }}</span></p>
+            <label style="padding-right: 15px; color: #ffd700; font-size: 16px;">Receive Site Notification via:</label>
+                <input type="checkbox" onclick=""><span style="padding-right: 10px; font-size: 15px;"> Email</span>
+                <input type="checkbox" onclick=""><span style="font-size: 15px;"> Account Message Center</span>
+            <p style="padding-bottom: 20px;"></p>
+            <div class="form-style" style="margin: 0;padding-bottom: 20px;">
+                <form action="">
+                    <input type="submit" value="Change User Information/Password">
+                </form>
+            </div>
+        </fieldset>
+    </section>
+
+    <section style="width: 50%;float: right;padding-top: 20px;">
+        <fieldset>
+            <legend>Billing Information:</legend>
+            <p>Next Payment Date: <span>{{ user.billing.next_payment_date }}</span></p>
+            <p>Name on Card: <span>{{ user.first_name }} {{ user.last_name }}</span></p>
+            <p>Credit Card Number: <span>{{ user.billing.cc_info }}</span></p>
+            <p>Expiration Date: <span>01/2021</span></p>
+            <p></p>
+            <div class="form-style" style="margin: 0;padding-bottom: 20px;">
+                <form action="">
+                    <input type="submit" value="Change Billing Information">
+                </form>
+            </div>
+        </fieldset>
+    </section>
+
+    <section style="width: 97%;float: left;padding-top: 20px;">
+        <fieldset>
+            <legend>Transaction Information:</legend>
+                <p>To do: </p>
+                <p>Edit account info</p>
+                <p>Change Password</p>
+                <p>Email Preferences</p>
+                <p>Billing Information</p>
+                <p>Hiding CC Info</p>
+                <p>Billing History? or only current transaction info?</p>
+        </fieldset>
+    </section>
 
 {% endblock %}
