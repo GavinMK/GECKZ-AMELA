@@ -2,6 +2,7 @@
 
 {% block content %}
 	<header>{{ media.title }} <span>({{ media.metadata.release_year }})</span></header><br>
+    <iframe src="{{ media.file_location }}" width="640" height="480" frameborder="0" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen></iframe>
 	<section>
 		<fieldset>
 			<legend>Details</legend>
