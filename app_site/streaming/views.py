@@ -233,8 +233,10 @@ def account_page(request):
 @login_required(login_url='login/')
 def inbox(request):
     template = loader.get_template('streaming/inbox.html')
-    messages_list = Inbox.objects.all()
+    inbox_content = Inbox.objects.all()
+    messages = Message.objects.all() 
     context = {
-        'inbox' : messages_list,
+        'inbox' : inbox_content,
+        'messages_list' : messages,
     }
     return HttpResponse(template.render(context, request))
