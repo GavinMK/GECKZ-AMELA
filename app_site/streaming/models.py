@@ -104,7 +104,7 @@ class Media(models.Model):
 
 
 class PlayableMedia(models.Model):
-    file_location = models.CharField(max_length=50)
+    file_location = models.CharField(max_length=100)
     runtime = models.DurationField(default=0)
 
     class Meta:
@@ -195,7 +195,7 @@ class Rating(models.Model):
 
 
 class Message(models.Model):
-    content = models.CharField(max_length=500)
+    content = models.CharField(max_length=3000)
     timestamp = models.DateTimeField(default=timezone.now)
     from_user = models.ForeignKey(SiteUser, on_delete=models.CASCADE)
     part_of = models.ForeignKey(Inbox, on_delete=models.CASCADE)
