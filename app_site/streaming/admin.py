@@ -59,7 +59,7 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
             (None, {
                 'classes': ('wide',),
-                'fields': ('username', 'password1', 'password2', 'first_name', 'last_name', 'email')}
+                'fields': ('username', 'password1', 'password2', 'first_name', 'last_name', 'email', 'watch_history',)}
              ),
     )
 
@@ -79,3 +79,5 @@ admin.site.register(TVSeason)
 admin.site.register(TVEpisode)
 admin.site.register(Movie)
 admin.site.register(Actor)
+admin.site.register(WatchHistory)
+admin.site.register(WatchEvent)

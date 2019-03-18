@@ -139,9 +139,22 @@ class Movie(Media, PlayableMedia):
     pass
 
 
+class WatchEvent(models.Model):
+    tv = models.ForeignKey(TVEpisode, on_delete=models.CASCADE, blank=True, null=True)
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, blank=True, null=True)
+    time_watched = models.DateTimeField(default=timezone.now)
+    part_of = models.ForeignKey('WatchHistory', on_delete=models.CASCADE)
+
+    def __str__(self):
+        user = None
+        media = self.tv if self.tv else self.movie
+        if SiteUser.objects.get(watch_history = self.part_of).exists() and media:
+            user = SiteUser.objects.get(watch_history = self.part_of)
+            return user.__str__() + ' watched ' + media.__str__() + ' at ' + self.time_watched
+        return 'Unassigned Event'
+
+
 class WatchHistory(models.Model):
-    tv_history = models.ManyToManyField(TVEpisode)
-    movie_history = models.ManyToManyField(Movie)
 
     def __str__(self):
         if SiteUser.objects.filter(watch_history=self).exists():

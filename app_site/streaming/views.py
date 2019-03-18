@@ -219,6 +219,8 @@ def user_page(request):
     template = loader.get_template('streaming/userpage.html')
     context = {
         'comments': request.user.comment_section.comment_set.all(),
+        'tv_history': request.user.watch_history.tv_history.all(),
+        'movie_history': request.user.watch_history.movie_history.all(),
     }
     return HttpResponse(template.render(context, request))
 
