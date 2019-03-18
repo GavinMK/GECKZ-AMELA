@@ -1,0 +1,41 @@
+{% extends "navPage.html" %}
+
+{% block content %}
+    <header>Welcome to your inbox, {{user}}.</header>
+
+    <h1>Received messages:</h1>
+    {% if user.inbox.num_unread_messages > 0 %}
+        {% if user.inbox.num_unread_messages == 1 %}
+            <p>You have 1 unread message!</p>
+        {% else %}
+            <p>You have {{user.inbox.num_unread_messages}} unread messages!</p>
+        {% endif %}
+    {% else %}
+        <p>You have no unread messages.</p>
+    {% endif %}
+    <br>
+
+    {% for message in messages_list reversed %}
+        {% if user.inbox == message.part_of %}
+            <p>From: {{message.from_user}}</p>
+            <p>Received: {{message.timestamp}}</p>
+            <p>&emsp;{{message.content}}</p>
+            <br>
+        {% endif %}
+    {% endfor %}
+
+    <h1>Sent messages:</h1>
+    {% for message in messages_list reversed %}
+        {% if user == message.from_user %}
+            <p>To: {{message.part_of}}</p>
+            <p>Sent: {{message.timestamp}}</p>
+            <p>&emsp;{{message.content}}</p>
+            <br>
+        {% endif %}
+    {% endfor %}
+
+    <p>Number of total messages: {{ user.inbox.num_messages }}</p>
+    <p>Number of read messages: {{ user.inbox.num_read_messages }}</p>
+    <p>Number of unread messages: {{ user.inbox.num_unread_messages }}</p>
+
+{% endblock %}
