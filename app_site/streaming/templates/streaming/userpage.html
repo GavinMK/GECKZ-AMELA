@@ -2,19 +2,28 @@
 
 {% block content %}
 
+  <h1><span>Watch History:</span></h1>
+  <h2><span>TV Shows:</span></h2>
+  {% for entry in tv_history %}
+
+      <p>{{ entry.tv.title }}</p>
+
+  {% endfor %}
+
+  <h2><span>Movies:</span></h2>
+  {% for entry in movie_history %}
+
+      <p>{{ entry.movie.title }}</p>
+
+  {% endfor %}
+
+  <br><br>
+
   <h1><span>Comments:</span></h1>
   {% for comment in comments %}
 
       <p>Posted By: {{ comment.posted_by }}</p>
       <p>{{ comment.content }}</p>
-
-  {% endfor %}
-
-  <h1><span>Watch History:</span></h1>
-  <h2><span>TV Shows:</span></h2>
-  {% for show in tv_history %}
-
-      <p>show.title</p>
 
   {% endfor %}
 
