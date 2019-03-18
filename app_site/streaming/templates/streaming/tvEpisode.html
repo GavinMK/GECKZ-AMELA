@@ -3,23 +3,41 @@
 {% block content %}
 
 	<header>{{ show.title }}</header>
+    <p style="color: #fffafa; text-align: center; font-size: 20px">{{ episode.title }}
+        <span style="color: #ffd700;">({{ episode.metadata.release_year }})</span></p>
+    <iframe src="{{ episode.file_location }}" width="640" height="480" frameborder="0" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen></iframe>
+<section>
+    <fieldset>
+        <legend>Details</legend>
+          <p>Season {{ episode.season_number }} Episode {{ episode.episode_number }}</p>
+              <p>Genre: <span>{{ episode.metadata.genre }}</span></p>
+              <p>Description: <span>{{ episode.description }}</span></p>
+              <p>Production Studio: <span>{{ episode.metadata.studio }}</span></p>
+          <p>Streaming Service: <span>{{ episode.metadata.streaming_service }}</span></p>
+              <p>Runtime: <span>{{ episode.runtime }}</span></p>
+          <p>Actors:</p>
+          {% for actor in actors %}
+                <p><span>{{ actor.name }}</span></p>
+          {% endfor %}
+          <br><br>
+    </fieldset>
+</section>
 
-  <p>{{ episode.title }}</p>
-  <p>Season {{ episode.season_number }} Episode {{ episode.episode_number }}</p>
-      <p>Genre: <span>{{ episode.metadata.genre }}</span></p>
-      <p>Description: <span>{{ episode.description }}</span></p>
-      <p>Release year: <span>{{ episode.metadata.release_year }}</span></p>
-      <p>Production Studio: <span>{{ episode.metadata.studio }}</span></p>
-  <p>Streaming Service: <span>{{ episode.metadata.streaming_service }}</span></p>
-      <p>Runtime: <span>{{ episode.runtime }}</span></p>
-  <p>Actors:</p>
-  {% for actor in actors %}
-        <p><span>{{ actor.name }}</span></p>
-  {% endfor %}
-  <br><br>
-  {% for comment in comments %}
-      <p>Posted By: {{ comment.posted_by }}</p>
-      <p>{{ comment.content }}</p>
-  {% endfor %}
+<section id="side">
+    <fieldset style="border: 0">
+        <legend>Rating:</legend><br>
+            <img id="photo" src=""><br><br>
+    </fieldset>
+</section>
+
+<section>
+    <fieldset>
+        <legend>Comments</legend>
+          {% for comment in comments %}
+              <p>Posted By: {{ comment.posted_by }}</p>
+              <p>{{ comment.content }}</p>
+          {% endfor %}
+</fieldset>
+	</section>
 
 {% endblock %}
