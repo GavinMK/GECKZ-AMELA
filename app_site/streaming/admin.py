@@ -44,10 +44,13 @@ class SiteUserCreationForm(forms.ModelForm):
         b1.save()
         c1 = CommentSection()
         c1.save()
+        w1 = WatchHistory()
+        w1.save()
         user.preferences = p1
         user.inbox = i1
         user.billing = b1
         user.comment_section = c1
+        user.watch_history = w1
         if commit:
             user.save()
         return user
@@ -59,7 +62,7 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
             (None, {
                 'classes': ('wide',),
-                'fields': ('username', 'password1', 'password2', 'first_name', 'last_name', 'email')}
+                'fields': ('username', 'password1', 'password2', 'first_name', 'last_name', 'email', 'watch_history',)}
              ),
     )
 
@@ -79,3 +82,5 @@ admin.site.register(TVSeason)
 admin.site.register(TVEpisode)
 admin.site.register(Movie)
 admin.site.register(Actor)
+admin.site.register(WatchHistory)
+admin.site.register(WatchEvent)

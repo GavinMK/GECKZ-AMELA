@@ -2,6 +2,23 @@
 
 {% block content %}
 
+  <h1><span>Watch History:</span></h1>
+  <h2><span>TV Shows:</span></h2>
+  {% for entry in tv_history %}
+
+      <p><span>{{ entry.time_watched }} - </span><a href="{% url 'streaming:display_episode' title=entry.tv.part_of.part_of.title season_number=entry.tv.part_of.season_number episode_number=entry.tv.episode_number %}" style="text-decoration: underline;">Season {{ entry.tv.part_of.season_number }} Episode {{ entry.tv.episode_number }}: {{ entry.tv.title }}</a></p>
+
+  {% endfor %}
+
+  <h2><span>Movies:</span></h2>
+  {% for entry in movie_history %}
+
+      <p><span>{{ entry.time_watched }} - </span><a href="{% url 'streaming:display_media' title=entry.movie.title %}" style="text-decoration: underline;">{{ entry.movie.title }}</a></p>
+
+  {% endfor %}
+
+  <br><br>
+
   <h1><span>Comments:</span></h1>
   {% for comment in comments %}
 
