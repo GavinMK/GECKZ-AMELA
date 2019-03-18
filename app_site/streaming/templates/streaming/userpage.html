@@ -2,7 +2,12 @@
 
 {% block content %}
 
+<header style="text-align: left; padding-bottom: 0;">{{ user.first_name }} {{ user.last_name }}</header>
+<p style="padding-left: 50px;color: #fffafa;font-size: 20px;">@{{ user }}</p>
+    <hr>
+    <p style="text-align: right;"><span>Member since</span> {{ user.date_joined }}</p>
   <h1><span>Watch History:</span></h1>
+
   <h2><span>TV Shows:</span></h2>
   {% for entry in tv_history %}
 
@@ -19,12 +24,29 @@
 
   <br><br>
 
-  <h1><span>Comments:</span></h1>
-  {% for comment in comments %}
+<section style="width: 97%;">
+        <fieldset>
+            <legend>Bio:</legend>
+            <p>Info here...</p>
 
-      <p>Posted By: {{ comment.posted_by }}</p>
-      <p>{{ comment.content }}</p>
+        </fieldset>
+    </section>
 
-  {% endfor %}
+<section style="width: 97%;float: right;padding-top: 20px;">
+    <fieldset>
+        <legend>Comments</legend><br>
+            <div class="form-style" style="margin: 0;padding-bottom: 20px;">
+                <form action="" style="margin: 0;">
+                    <textarea style="text-align: left; width: 130%; height: 20px;" placeholder="Leave me a comment..."></textarea>
+                    <input type="submit" value="Comment" style="text-align: left;">
+                </form>
+            </div>
+            {% for comment in comments %}
+                <p><span>Posted By: </span>{{ comment.posted_by }}</p>
+                <span>"{{ comment.content }}"</span><br>
+                <hr>
+             {% endfor %}
+    </fieldset>
+</section>
 
 {% endblock %}
