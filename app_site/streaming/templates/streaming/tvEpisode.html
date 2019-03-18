@@ -5,7 +5,8 @@
 	<header>{{ show.title }}</header>
     <p style="color: #fffafa; text-align: center; font-size: 20px">{{ episode.title }}
         <span style="color: #ffd700;">({{ episode.metadata.release_year }})</span></p>
-    <iframe src="{{ episode.file_location }}" width="640" height="480" frameborder="0" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen></iframe>
+    <!--<iframe src="{{ episode.file_location }}" width="640" height="480" frameborder="0" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen></iframe>-->
+    <script src="{{ media.file_location }}"></script>
 <section>
     <fieldset>
         <legend>Details</legend>
