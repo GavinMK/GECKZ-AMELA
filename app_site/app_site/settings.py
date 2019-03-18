@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '%x0td#6e1xz8ofvvep0gdd(+0liu3q!i@grdn*5zu#u$!0jfw)'
 
 
-ALLOWED_HOSTS = ['app-env.vubramjtee.us-west-2.elasticbeanstalk.com', '127.0.0.1']
+ALLOWED_HOSTS = ['app-env.vubramjtee.us-west-2.elasticbeanstalk.com', '127.0.0.1', 'geckz.me']
 
 
 # Application definition

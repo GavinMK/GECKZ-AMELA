@@ -16,7 +16,7 @@ header{
     font-size: 30px;
     color: #ffd700;
     font-family: Raleway;
-    padding: 15px 50px;;
+    padding: 15px 50px;
 }
 
 section {
@@ -47,8 +47,7 @@ fieldset{
 	padding-right: 35px;
 }
 
-legend,
-fieldset legend{
+legend{
 	color: #393e46;
 	background: #ffd700;
 	padding: 0px 8px 3px 8px;
@@ -61,7 +60,7 @@ span{
 }
 
 p{
-    font-size: 15px;
+    font-size: 16px;
     color: #ffd700;
     font-family: Raleway;
 	padding-bottom: 10px;
@@ -81,10 +80,9 @@ article{
 }
 
 hr {
-	color: #ffd700;
 	margin-top: 20px;
 	margin-bottom: 20px;
-  	border-width: 1px;
+  	border: 1px solid #ffd700;
 }
 
 nav{
@@ -173,7 +171,8 @@ nav a.active {
     color: red;
 }
 
-.form-style h2{
+.form-style h2,
+h2{
 	font-size: 13px;
 	color: #fffafa;
 }
