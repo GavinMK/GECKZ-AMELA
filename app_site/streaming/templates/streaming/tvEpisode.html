@@ -10,7 +10,7 @@
 <section>
     <fieldset>
         <legend>Details</legend>
-          <p>Season {{ episode.season_number }} Episode {{ episode.episode_number }}</p>
+          <p>Season {{ episode.part_of.season_number }} Episode {{ episode.episode_number }}</p>
               <p>Genre: <span>{{ episode.metadata.genre }}</span></p>
               <p>Description: <span>{{ episode.description }}</span></p>
               <p>Production Studio: <span>{{ episode.metadata.studio }}</span></p>
