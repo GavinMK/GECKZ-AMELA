@@ -148,9 +148,9 @@ class WatchEvent(models.Model):
     def __str__(self):
         user = None
         media = self.tv if self.tv else self.movie
-        if SiteUser.objects.get(watch_history = self.part_of).exists() and media:
+        if SiteUser.objects.filter(watch_history = self.part_of).exists() and media:
             user = SiteUser.objects.get(watch_history = self.part_of)
-            return user.__str__() + ' watched ' + media.__str__() + ' at ' + self.time_watched
+            return user.__str__() + ' watched ' + media.__str__() + ' at ' + self.time_watched.strftime('%x %X')
         return 'Unassigned Event'
 
 
