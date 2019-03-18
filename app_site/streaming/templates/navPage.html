@@ -13,7 +13,7 @@
 		<li style="float: right;"><a href="{% url 'streaming:logout' %}">Logout</a></li>
 		<li style="float: right;color: #ffd700;padding-left: 30px;">Logged in as: {{ user }} </li>
 		<li style="float: right; text-align: right;">
-			<div class="form-style" style="width: 350px;">
+			<div class="form-style" style="width: 310px;">
 				<form action="{% url 'streaming:search' %}" method="get">
 					<input class="searchfield" id="searchbox" name="q" type="text" placeholder="Search">
 					<input type="submit" value="Go">
