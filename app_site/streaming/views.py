@@ -166,6 +166,7 @@ def search(request):
     else:
         context['media'] = set(tv_show_list) | set(movie_list)
         context['query'] = ""
+    context['count'] = len(context['media'])
     return HttpResponse(template.render(context, request))
 
 @login_required(login_url='login/')
@@ -182,6 +183,7 @@ def user_search(request):
     else:
         context['users'] = user_list
         context['query'] = ""
+    context['count'] = len(context['media'])
     return HttpResponse(template.render(context, request))
 
 
