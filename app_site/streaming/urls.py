@@ -4,7 +4,6 @@ from . import views
 
 app_name = 'streaming'
 urlpatterns = [
-    path('datadump/', views.index, name='index'),
     path('createuser/', views.create_user_page, name='createUser'),
     path('login/', views.login_page, name='login'),
     path('logout/', views.logout_requested, name='logout'),

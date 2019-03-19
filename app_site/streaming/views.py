@@ -55,20 +55,6 @@ def generate_user(data):
                                         inbox=inbox, billing=billing, watch_history=history)
 
 
-@login_required(login_url='login/')
-def index(request):
-    template = loader.get_template('streaming/index.html')
-    context = {
-        'objects': SiteUser.objects.values(),
-        'movie': Movie.objects.values(),
-        'show': TVShow.objects.values(),
-        'meta': Metadata.objects.values(),
-        'pokemon': Movie.objects.filter(title='Pokemon'),
-        'user': request.user.username
-    }
-    return HttpResponse(template.render(context, request))
-
-
 @anonymous_only_redirect
 def create_user_page(request):
     form = user_form()
