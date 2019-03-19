@@ -166,8 +166,22 @@ def search(request):
     else:
         context['media'] = set(tv_show_list) | set(movie_list)
         context['query'] = ""
+    return HttpResponse(template.render(context, request))
 
-
+@login_required(login_url='login/')
+def user_search(request):
+    template = loader.get_template('streaming/userSearchPage.html')
+    user_list = SiteUser.objects.all()
+    context = dict()
+    query = request.GET.get('q')
+    if query:
+        db_query = Q(username__icontains=query)
+        results = user_list.filter(db_query)
+        context['users'] = results
+        context['query'] = query
+    else:
+        context['users'] = user_list
+        context['query'] = ""
     return HttpResponse(template.render(context, request))
 
 
@@ -224,6 +238,13 @@ def user_page(request):
         'comments': request.user.comment_section.comment_set.all(),
         'history': media_history.order_by('-time_watched'),
     }
+    return HttpResponse(template.render(context, request))
+
+
+@login_required(login_url='login/')
+def friends(request):
+    template = loader.get_template('streaming/friendPage.html')
+    context = dict()
     return HttpResponse(template.render(context, request))
 
 @login_required(login_url='login/')

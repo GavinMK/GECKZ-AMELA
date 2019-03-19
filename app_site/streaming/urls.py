@@ -17,4 +17,6 @@ urlpatterns = [
     path('media/<str:title>/', views.display_media, name='display_media'),
     path('media/<str:title>/<int:season_number>/<int:episode_number>/', views.display_episode, name='display_episode'),
     path('search/', views.search, name="search"),
+    path('friends/', views.friends, name="friends"),
+    path('usersearch/', views.user_search, name="usersearch"),
 ]
