@@ -9,11 +9,13 @@
 		<fieldset style="border: 0">
 			<legend>Rating:</legend><br>
 				<img id="photo" src=""><br><br>
+			{% if not episodes %}
 			<div class="form-style" style="width: 200px;text-align: center;">
                 <form action="">
                     <input type="submit" value="WATCH" style="font-size: 20px;">
                 </form>
             </div>
+			{% endif %}
 		</fieldset>
 		<br><br>
 		<fieldset style="size: 50px;">
