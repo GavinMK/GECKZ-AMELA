@@ -27,6 +27,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from .forms import user_form, login_form, search_form, billing_form, change_form
 
+from django.core.paginator import Paginator
 
 def validate_password(password_candidate):
     valid = False
@@ -46,24 +47,12 @@ def generate_user(data):
     inbox.save()
     billing = Billing()
     billing.save()
+    history = WatchHistory()
+    history.save()
     return SiteUser.objects.create_user(data['username'], email=data['email'], password=data['password'],
                                         first_name=data['first_name'], last_name=data['last_name'],
                                         preferences=preferences, comment_section=comment_section,
-                                        inbox=inbox, billing=billing)
-
-
-@login_required(login_url='login/')
-def index(request):
-    template = loader.get_template('streaming/index.html')
-    context = {
-        'objects': SiteUser.objects.values(),
-        'movie': Movie.objects.values(),
-        'show': TVShow.objects.values(),
-        'meta': Metadata.objects.values(),
-        'pokemon': Movie.objects.filter(title='Pokemon'),
-        'user': request.user.username
-    }
-    return HttpResponse(template.render(context, request))
+                                        inbox=inbox, billing=billing, watch_history=history)
 
 
 @anonymous_only_redirect
@@ -139,6 +128,7 @@ def search(request):
     movie_list = Movie.objects.order_by('title')
     context = dict()
     query = request.GET.get('q')
+    results = None
     if query:
         words = query.split(" ")
         tv_results = tv_show_list
@@ -158,12 +148,36 @@ def search(request):
             partial_movie_results = movie_list.filter(db_query)
             tv_results &= partial_tv_results
             movie_results &= partial_movie_results
-        results = set(tv_results) | set(movie_results)
-        context['media'] = results
+        results = tuple(set(tv_results) | set(movie_results))
         context['query'] = query
     else:
-        context['media'] = set(tv_show_list) | set(movie_list)
+        results = tuple(set(tv_show_list) | set(movie_list))
         context['query'] = ""
+    paginator = Paginator(results, 8)
+    page = request.GET.get('p', 1)
+    media = paginator.get_page(page)
+    context['media'] = media
+
+
+    context['count'] = len(results)
+    return HttpResponse(template.render(context, request))
+
+@login_required(login_url='login/')
+def user_search(request):
+    template = loader.get_template('streaming/userSearchPage.html')
+    user_list = SiteUser.objects.all()
+    context = dict()
+    query = request.GET.get('q')
+    if query:
+        db_query = Q(username__icontains=query)
+        results = user_list.filter(db_query)
+        context['users'] = results
+        context['query'] = query
+    else:
+        context['users'] = user_list
+        context['query'] = ""
+    context['count'] = len(context['users'])
+    return HttpResponse(template.render(context, request))
 
 
 @login_required(login_url='login/')
@@ -211,14 +225,23 @@ def display_episode(request, title, season_number, episode_number):
 
 
 @login_required(login_url='login/')
-def user_page(request):
+def user_page(request, username=None):
     template = loader.get_template('streaming/userpage.html')
-    media_history = WatchEvent.objects.filter(part_of=request.user.watch_history)
+    if not username: username = request.user.username
+    user = SiteUser.objects.get(username=username)
+    media_history = WatchEvent.objects.filter(part_of=user.watch_history)
     context = {
-        'comments': request.user.comment_section.comment_set.all(),
-        'tv_history': media_history.filter(movie=None),
-        'movie_history': media_history.filter(tv=None),
+        'user': user,
+        'comments': user.comment_section.comment_set.all(),
+        'history': media_history.order_by('-time_watched'),
     }
+    return HttpResponse(template.render(context, request))
+
+
+@login_required(login_url='login/')
+def friends(request):
+    template = loader.get_template('streaming/friendPage.html')
+    context = dict()
     return HttpResponse(template.render(context, request))
 
 @login_required(login_url='login/')
@@ -233,7 +256,7 @@ def account_page(request):
 def inbox(request):
     template = loader.get_template('streaming/inbox.html')
     inbox_content = Inbox.objects.all()
-    messages = Message.objects.all() 
+    messages = Message.objects.all()
     context = {
         'inbox' : inbox_content,
         'messages_list' : messages,

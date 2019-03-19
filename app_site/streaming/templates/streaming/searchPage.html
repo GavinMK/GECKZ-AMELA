@@ -1,20 +1,46 @@
 {% extends "navPage.html" %}
+{% load static %}
 
 {% block content %}
 
-<div class="form-style" style="margin: 0;width: 700px;padding-left: 40px;padding-bottom: 40px;">
-	<form action="{% url 'streaming:search' %}" method="get">
-		<input class="searchfield" id="searchbox" name="q" type="text" placeholder="Search" value="{{ query }}">
-		<input type="submit" value="Search">
-	</form>
-</div>
+	<div class="form-style" style="margin: 0;width: 700px;padding-left: 40px;padding-bottom: 40px;">
+		<form action="{% url 'streaming:search' %}" method="get">
+			<input class="searchfield" id="searchbox" name="q" type="text" placeholder="Search for Movies and Shows" value="{{ query }}">
+			<input type="submit" value="Search">
+		</form>
+	</div>
 
-<div class="media-style">
-	{% for entry in media %}
-	<figure>
-		<a href="{% url 'streaming:display_media' title=entry.title %}"><img src="">{{ entry.title }}</a><br><br>
-	</figure>
-	{% endfor %}
-</div>
+	{% if media %}
+		<h1>
+			{{ count }} result{{ count|pluralize }} found:
+		</h1>
+		<div class="media-style">
 
+			{% for entry in media %}
+			<figure>
+				<a href="{% url 'streaming:display_media' title=entry.title %}"><img src="{% static "streaming/images/"|add:entry.thumbnail_path %}">{{ entry.title }}</a><br><br>
+			</figure>
+			{% endfor %}
+
+		</div>
+	{% else %}
+		<h1>
+			No results found for '{{ query }}'.
+		</h1>
+	{% endif %}
+	{% if media.paginator.num_pages > 1 %}
+		<div class="pagination center">
+			<span class="step-links">
+				&lt;
+				{% for i in media.paginator.page_range %}
+					{% if media.number == forloop.counter %}
+						<b>{{ i }} </b>
+					{% else %}
+						<a href="?q={{ query }}&p={{ forloop.counter }}">{{ forloop.counter }}</a> 
+					{% endif %}
+				{% endfor %}
+				&gt;
+			</span>
+		</div>
+	{% endif %}
 {% endblock %}

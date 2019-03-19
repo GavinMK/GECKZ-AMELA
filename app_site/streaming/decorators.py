@@ -10,3 +10,14 @@ def anonymous_only_redirect(function):
         else:
             return function(request, *args, **kwargs)
     return wrap
+
+
+def subscription_required(function):
+    def wrap(request, *args, **kwargs):
+        if request.user.subscriptions.filter(title=kwargs['title']).exists() or \
+                request.user.rentals.filter(title=kwargs['title']).exists():
+            return function(request, *args, **kwargs)
+        else:
+            return HttpResponseRedirect(reverse('streaming:homepage'))
+    return wrap
+
