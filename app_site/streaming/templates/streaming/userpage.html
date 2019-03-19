@@ -6,23 +6,23 @@
 <p style="padding-left: 50px;color: #fffafa;font-size: 20px;">@{{ user }}</p>
     <hr>
     <p style="text-align: right;"><span>Member since</span> {{ user.date_joined }}</p>
-  <h1><span>Watch History:</span></h1>
 
-  <h2><span>TV Shows:</span></h2>
-  {% for entry in tv_history %}
+  <section style="width: 97%;">
+    <fieldset>
+      <legend>Watch History:</legend>
 
-      <p><span>{{ entry.time_watched }} - </span><a href="{% url 'streaming:display_episode' title=entry.tv.part_of.part_of.title season_number=entry.tv.part_of.season_number episode_number=entry.tv.episode_number %}" style="text-decoration: underline;">Season {{ entry.tv.part_of.season_number }} Episode {{ entry.tv.episode_number }}: {{ entry.tv.title }}</a></p>
+      {% for entry in history %}
+          {% if entry.tv %}
+              <p><span>{{ entry.time_watched }} - </span><a href="{% url 'streaming:display_episode' title=entry.tv.part_of.part_of.title season_number=entry.tv.part_of.season_number episode_number=entry.tv.episode_number %}" style="text-decoration: underline;">{{ entry.tv.part_of.part_of.title }} - Season {{ entry.tv.part_of.season_number }} Episode {{ entry.tv.episode_number }}: {{ entry.tv.title }}</a></p>
+          {% endif %}
+          {% if entry.movie %}
+              <p><span>{{ entry.time_watched }} - </span><a href="{% url 'streaming:display_media' title=entry.movie.title %}" style="text-decoration: underline;">{{ entry.movie.title }}</a></p>
+          {% endif %}
 
-  {% endfor %}
+      {% endfor %}
 
-  <h2><span>Movies:</span></h2>
-  {% for entry in movie_history %}
-
-      <p><span>{{ entry.time_watched }} - </span><a href="{% url 'streaming:display_media' title=entry.movie.title %}" style="text-decoration: underline;">{{ entry.movie.title }}</a></p>
-
-  {% endfor %}
-
-  <br><br>
+    </fieldset>
+  </section>
 
 <section style="width: 97%;">
         <fieldset>

@@ -46,10 +46,12 @@ def generate_user(data):
     inbox.save()
     billing = Billing()
     billing.save()
+    history = WatchHistory()
+    history.save()
     return SiteUser.objects.create_user(data['username'], email=data['email'], password=data['password'],
                                         first_name=data['first_name'], last_name=data['last_name'],
                                         preferences=preferences, comment_section=comment_section,
-                                        inbox=inbox, billing=billing)
+                                        inbox=inbox, billing=billing, watch_history=history)
 
 
 @login_required(login_url='login/')
@@ -220,8 +222,7 @@ def user_page(request):
     media_history = WatchEvent.objects.filter(part_of=request.user.watch_history)
     context = {
         'comments': request.user.comment_section.comment_set.all(),
-        'tv_history': media_history.filter(movie=None),
-        'movie_history': media_history.filter(tv=None),
+        'history': media_history.order_by('-time_watched'),
     }
     return HttpResponse(template.render(context, request))
 
@@ -237,7 +238,7 @@ def account_page(request):
 def inbox(request):
     template = loader.get_template('streaming/inbox.html')
     inbox_content = Inbox.objects.all()
-    messages = Message.objects.all() 
+    messages = Message.objects.all()
     context = {
         'inbox' : inbox_content,
         'messages_list' : messages,
