@@ -11,6 +11,12 @@ a:hover{
 	color: #fffafa;
 }
 
+li{
+	list-style: none;
+	text-align: left;
+	padding-bottom: 20px;
+}
+
 header{
 	text-align: center;
     font-size: 30px;
@@ -30,11 +36,6 @@ aside{
 	float: left;
 	margin: 0 1.5%;
 	width: 30%;
-}
-
-#photo{
-	height: 4in;
-	width: 3.5in;
 }
 
 fieldset{
@@ -83,6 +84,31 @@ hr {
 	margin-top: 20px;
 	margin-bottom: 20px;
   	border: 1px solid #ffd700;
+}
+
+#photo{
+	height: 4in;
+	width: 3.5in;
+}
+
+#friendsList{
+	-webkit-transition-duration: 0.2s;
+	transition-duration: 0.2s;
+}
+
+#friendsList:hover{
+	font-size: 20px;
+	text-decoration: none;
+}
+
+#photo{
+	height: 4in;
+	width: 3.5in;
+}
+
+#search{
+	margin-left: 40px;
+	color: #fffafa;
 }
 
 nav{
