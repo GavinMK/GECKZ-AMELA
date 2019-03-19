@@ -25,7 +25,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 
 from django.contrib.auth import authenticate, login, logout
-from .forms import user_form, login_form, search_form
+from .forms import user_form, login_form, search_form, message_form
 
 from django.core.paginator import Paginator
 
@@ -271,11 +271,32 @@ def account_page(request):
 
 @login_required(login_url='login/')
 def inbox(request):
+    form = message_form()
+
     template = loader.get_template('streaming/inbox.html')
     inbox_content = Inbox.objects.all()
     messages = Message.objects.all()
+
+    usernameList = []
+    for message in messages:
+        usernameList.append(message.part_of.__str__()[:-6])
+
+    messages_and_names = list(zip(messages, usernameList))
+
     context = {
+        'form' : form,
+        'error_message' : None,
         'inbox' : inbox_content,
-        'messages_list' : messages,
+        'messages_list' : messages_and_names,
     }
+    if request.method == 'POST':
+        form = message_form(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            user_query = SiteUser.objects.filter(username=data['username'])
+            if len(user_query) != 1:
+                print("good form")
+            else:
+                context['error_message'] = "That user does not exist"
+
     return HttpResponse(template.render(context, request))

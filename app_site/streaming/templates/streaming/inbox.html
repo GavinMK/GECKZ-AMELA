@@ -1,40 +1,62 @@
 {% extends "navPage.html" %}
 
 {% block content %}
-    <header>Welcome to your inbox, {{user}}.</header>
+    <header>Inbox</header>
+    <hr>
 
-    <h1>Received messages:</h1>
+    <p style="padding-left: 0px;color: #fffafa;font-size: 20px;">Received messages:</p>
     {% if user.inbox.num_unread_messages > 0 %}
         {% if user.inbox.num_unread_messages == 1 %}
-            <p>You have 1 unread message!</p>
+            <p>You have <strong>1</strong> unread message!</p>
         {% else %}
             <p>You have {{user.inbox.num_unread_messages}} unread messages!</p>
         {% endif %}
     {% else %}
         <p>You have no unread messages.</p>
     {% endif %}
-    <br>
 
-    {% for message in messages_list reversed %}
+    {% for message, name in messages_list reversed %}
         {% if user.inbox == message.part_of %}
-            <p>From: {{message.from_user}}</p>
-            <p>Received: {{message.timestamp}}</p>
-            <p>&emsp;{{message.content}}</p>
-            <br>
+            <section style="width: 97%;">
+                <fieldset>
+                    <legend>From: {{message.from_user}}</legend>
+                    <p>Received: {{message.timestamp}}</p>
+                    <p style="padding-left: 0px;color: #fffafa;font-size: 15px;">&emsp;{{message.content}}</p>
+                </fieldset>
+            </section>
         {% endif %}
     {% endfor %}
 
-    <h1>Sent messages:</h1>
-    {% for message in messages_list reversed %}
+    <p style="padding-left: 0px;color: #fffafa;font-size: 20px;">Sent messages:</p>
+    {% for message, name in messages_list reversed %}
         {% if user == message.from_user %}
-            <p>To: {{message.part_of}}</p>
-            <p>Sent: {{message.timestamp}}</p>
-            <p>&emsp;{{message.content}}</p>
-            <br>
+            <section style="width: 97%;">
+                <fieldset>
+                    <legend>To: {{name}}</legend>
+                    <p>Sent: {{message.timestamp}}</p>
+                    <p style="padding-left: 0px;color: #fffafa;font-size: 15px;">&emsp;{{message.content}}</p>
+                </fieldset>
+            </section>
         {% endif %}
     {% endfor %}
 
-    <p>Number of total messages: {{ user.inbox.num_messages }}</p>
+    <form action="{% url 'streaming:inbox' %}" method="post">
+        {% csrf_token %}
+        <section style="width: 97%;float: right;padding-top: 20px;">
+            <fieldset>
+                <legend>Send a message</legend><br>
+                    <div class="form-style" style="margin: 0;padding-bottom: 20px;">
+                        <form action="" style="margin: 0;">
+                            <textarea style="text-align: left; width: 50%; height: 20px;" placeholder="Username"></textarea>
+                            <textarea style="text-align: left; width: 130%; height: 100px;" placeholder="Write your message here..."></textarea>
+                            <input type="submit" value="Send" style="text-align: left;">
+                        </form>
+                    </div>
+            </fieldset>
+        </section>
+    </form>
+
+    <p>Number of total messages: {{ user.inbox.num_messages }}</p>    
     <p>Number of read messages: {{ user.inbox.num_read_messages }}</p>
     <p>Number of unread messages: {{ user.inbox.num_unread_messages }}</p>
 
