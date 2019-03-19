@@ -95,6 +95,7 @@ class Media(models.Model):
     metadata = models.ForeignKey(Metadata, on_delete=models.CASCADE)
     comment_section = models.OneToOneField(CommentSection, on_delete=models.CASCADE)
     rating_section = models.OneToOneField(RatingSection, on_delete=models.CASCADE)
+    thumbnail_path = models.TextField(default='')
 
     class Meta:
         abstract = True
