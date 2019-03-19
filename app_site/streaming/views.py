@@ -25,7 +25,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 
 from django.contrib.auth import authenticate, login, logout
-from .forms import user_form, login_form, search_form
+from .forms import user_form, login_form, search_form, billing_form, change_form
 
 from django.core.paginator import Paginator
 
@@ -153,8 +153,6 @@ def search(request):
     else:
         results = tuple(set(tv_show_list) | set(movie_list))
         context['query'] = ""
-
-
     paginator = Paginator(results, 8)
     page = request.GET.get('p', 1)
     media = paginator.get_page(page)
@@ -180,7 +178,6 @@ def user_search(request):
         context['query'] = ""
     context['count'] = len(context['users'])
     return HttpResponse(template.render(context, request))
-
 
 
 @login_required(login_url='login/')
@@ -265,3 +262,13 @@ def inbox(request):
         'messages_list' : messages,
     }
     return HttpResponse(template.render(context, request))
+
+
+def billing(request):
+    form = billing_form()
+    return render(request, 'streaming/billing.html', {'form': form})
+
+
+def change(request):
+    form = change_form()
+    return render(request, 'streaming/ChangeInfo.html', {'form': form})

@@ -1,0 +1,42 @@
+{% extends "simplePage.html" %}
+
+{% block content %}
+{% load static %}
+	<div class="form-style" style="width: 500px;">
+
+	<form action="{% url 'streaming:change' %}" method="post">
+		{%  csrf_token %}
+		<br>
+		<header>Change Account Information</header>
+        <p>Must enter password to submit changes</p>
+		<fieldset>
+			<legend>Account Information:</legend>
+			<label for="username">Username: </label><br>
+			<input id="username" type="text" name="username" value="{{ user }}" required><br><br>
+            <label for="password">Password: </label><br>
+			<input id="password" type="password" name="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{7,}"
+		   title="Enter current password to submit changes." required><br><br>
+			<label for="new_password">New Password: </label><br>
+			<input id="new_password" type="password" name="new_password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{7,}"
+		   title="Password must be at least 7 characters and contain at least 1 number, 1 uppercase letter, and 1 lowercase letter."><br>
+			<h2>
+				<input type="checkbox" onclick="togglePassword()"> Show Password
+			</h2>
+		</fieldset>
+		<br>
+		<fieldset>
+			<legend>Personal Information:</legend>
+			<label for="first_name">First Name: </label><br>
+			<input id="first_name" type="text" name="first_name" value="{{ user.first_name }}" required><br><br>
+			<label for="last_name">Last Name: </label><br>
+			<input id="last_name" type="text" name="last_name" value="{{ user.last_name }}" required><br><br>
+			<label for="email">Email: </label><br>
+			<input id="email" type="email" name="email" value="{{ user.email }}" required><br>
+		</fieldset>
+		<br>
+		<input type="submit" value="Submit">
+	</form>
+        <h2><a href="{% url 'streaming:accountPage' %}">Back to Account</a></h2>
+	</div>
+<script src="{% static 'streaming/js/utility.js' %}"></script>
+{% endblock %}
