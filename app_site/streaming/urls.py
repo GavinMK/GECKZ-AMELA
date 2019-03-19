@@ -18,7 +18,7 @@ urlpatterns = [
     path('media/<str:title>/<int:season_number>/<int:episode_number>/', views.display_episode, name='display_episode'),
     path('search/', views.search, name="search"),
     path('billing/', views.billing, name="billing"),
-    path('change/', views.change, name="change")
+    path('change/', views.change, name="change"),
     path('friends/', views.friends, name="friends"),
     path('usersearch/', views.user_search, name="usersearch"),
 ]
