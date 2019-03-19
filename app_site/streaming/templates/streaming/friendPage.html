@@ -1,0 +1,16 @@
+{% extends "navPage.html" %}
+
+{% block content %}
+
+<header>This is the page that shows you what friends you have</header>
+
+<h1>However, we have not added this feature yet, so you have no friends.</h1>
+
+<div class="form-style" style="margin: 0;width: 700px;padding-left: 40px;padding-bottom: 40px;">
+	<form action="{% url 'streaming:usersearch' %}" method="get">
+		<input class="searchfield" id="searchbox" name="q" type="text" placeholder="Search for Users" value="{{ query }}">
+		<input type="submit" value="Search">
+	</form>
+</div>
+
+{% endblock %}
