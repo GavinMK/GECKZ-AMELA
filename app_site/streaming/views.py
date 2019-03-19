@@ -25,7 +25,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 
 from django.contrib.auth import authenticate, login, logout
-from .forms import user_form, login_form, search_form
+from .forms import user_form, login_form, search_form, billing_form
 
 
 def validate_password(password_candidate):
@@ -166,10 +166,6 @@ def search(request):
         context['query'] = ""
 
 
-    return HttpResponse(template.render(context, request))
-
-
-
 @login_required(login_url='login/')
 def display_media(request, title):
     template = loader.get_template('streaming/mediaDisplay.html')
@@ -243,3 +239,8 @@ def inbox(request):
         'messages_list' : messages,
     }
     return HttpResponse(template.render(context, request))
+
+
+def billing(request):
+    form = billing_form()
+    return render(request, 'streaming/billing.html', {'form': form})

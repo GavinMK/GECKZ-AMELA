@@ -1,0 +1,23 @@
+{% extends "simplePage.html" %}
+
+{% block content %}
+{% load static %}
+	<div class="form-style">
+
+	<form action="{% url 'streaming:billing' %}" method="post">
+		{%  csrf_token %}
+		<br><br>
+        <header></header><br><br>
+		<fieldset>
+			<legend>Billing Information:</legend><br>
+			<label for="name">Name on Card: </label><br>
+			<input id="name" type="text" name="name" required><br><br>
+            <label for="cc_num">Card Number: </label><br>
+			<input id="cc_num" type="text" name="cc_num" maxlength="16" pattern="\d*" required><br><br>
+            <label for="cvc_num">CVC Number: </label><br>
+			<input id="cvc_num" type="text" name="cvc_num" maxlength="3" pattern="\d*" required><br><br>
+			<label for="exp_date">Expiration Date: </label><br>
+			<input id="exp_date" type="date" name="exp_date" required><br><br><br>
+            <input type="submit" value="Submit">
+		</fieldset>
+{% endblock %}
