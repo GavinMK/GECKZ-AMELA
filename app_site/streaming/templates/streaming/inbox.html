@@ -1,5 +1,6 @@
 {% extends "navPage.html" %}
 
+{% load static %}
 {% block content %}
     <header>Inbox</header>
     <hr>
@@ -9,7 +10,7 @@
         {% if user.inbox.num_unread_messages == 1 %}
             <p>You have <strong>1</strong> unread message!</p>
         {% else %}
-            <p>You have {{user.inbox.num_unread_messages}} unread messages!</p>
+            <p>You have <strong>{{user.inbox.num_unread_messages}}</strong> unread messages!</p>
         {% endif %}
     {% else %}
         <p>You have no unread messages.</p>
@@ -40,24 +41,34 @@
         {% endif %}
     {% endfor %}
 
-    <form action="{% url 'streaming:inbox' %}" method="post">
-        {% csrf_token %}
-        <section style="width: 97%;float: right;padding-top: 20px;">
-            <fieldset>
-                <legend>Send a message</legend><br>
-                    <div class="form-style" style="margin: 0;padding-bottom: 20px;">
-                        <form action="" style="margin: 0;">
-                            <textarea style="text-align: left; width: 50%; height: 20px;" placeholder="Username"></textarea>
-                            <textarea style="text-align: left; width: 130%; height: 100px;" placeholder="Write your message here..."></textarea>
-                            <input type="submit" value="Send" style="text-align: left;">
-                        </form>
-                    </div>
-            </fieldset>
-        </section>
-    </form>
-
+    <section style="width: 97%;float: right;padding-top: 20px;">
+        <fieldset>
+            <legend>Send a message</legend><br>
+                <div class="form-style" style="margin: 0;padding-bottom: 20px;">
+                    <form action="{% url 'streaming:inbox' %}" method="POST" style="margin: 0;">
+                        {% csrf_token %}
+                        <label for="username">To: </label><br>
+                        <input id="username" type="text" name="username" required><br>
+                        <h1>
+                            {% if error_message != None %}
+                            {{ error_message }}
+                            {% endif %}
+                        </h1>
+                        <label for="content">Message: </label><br>
+                        <input id="content" type="text" name="content" required><br>
+                        <input type="submit" value="Send">
+                    </form>
+                </div>
+                <script src="{% static 'streaming/js/utility.js' %}"></script>
+        </fieldset>
+    </section>
+    
     <p>Number of total messages: {{ user.inbox.num_messages }}</p>    
     <p>Number of read messages: {{ user.inbox.num_read_messages }}</p>
     <p>Number of unread messages: {{ user.inbox.num_unread_messages }}</p>
 
 {% endblock %}
+
+                        <textarea style="text-align: left; width: 50%; height: 20px;" placeholder="Username"></textarea>
+                        <textarea style="text-align: left; width: 130%; height: 100px;" placeholder="Write your message here..."></textarea>
+                        <input type="submit" value="Send" style="text-align: left;">

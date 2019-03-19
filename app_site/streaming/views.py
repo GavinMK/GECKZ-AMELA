@@ -273,7 +273,6 @@ def account_page(request):
 def inbox(request):
     form = message_form()
 
-    template = loader.get_template('streaming/inbox.html')
     inbox_content = Inbox.objects.all()
     messages = Message.objects.all()
 
@@ -289,14 +288,17 @@ def inbox(request):
         'inbox' : inbox_content,
         'messages_list' : messages_and_names,
     }
+
     if request.method == 'POST':
         form = message_form(request.POST)
+        print (form.errors)
         if form.is_valid():
             data = form.cleaned_data
             user_query = SiteUser.objects.filter(username=data['username'])
-            if len(user_query) != 1:
-                print("good form")
+            if len(user_query) == 1:
+                
+                return HttpResponseRedirect(reverse('streaming:homepage'))
             else:
                 context['error_message'] = "That user does not exist"
-
-    return HttpResponse(template.render(context, request))
+        
+    return render(request, 'streaming/inbox.html', context)
