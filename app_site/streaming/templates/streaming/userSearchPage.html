@@ -18,7 +18,7 @@
 			<ul>
 			{% for entry in users %}
 				<li>
-					<a href="TODO ADD LINK">{{ entry.username }}</a><br><br>
+					<a href="{% url 'streaming:user_page_friend' username=entry.username %}">{{ entry.username }}</a><br><br>
 				</li>
 			{% endfor %}
 			</ul>
