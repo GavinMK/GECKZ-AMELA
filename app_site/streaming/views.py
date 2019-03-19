@@ -242,11 +242,14 @@ def display_episode(request, title, season_number, episode_number):
 
 
 @login_required(login_url='login/')
-def user_page(request):
+def user_page(request, username=None):
     template = loader.get_template('streaming/userpage.html')
-    media_history = WatchEvent.objects.filter(part_of=request.user.watch_history)
+    if not username: username = request.user.username
+    user = SiteUser.objects.get(username=username)
+    media_history = WatchEvent.objects.filter(part_of=user.watch_history)
     context = {
-        'comments': request.user.comment_section.comment_set.all(),
+        'user': user,
+        'comments': user.comment_section.comment_set.all(),
         'history': media_history.order_by('-time_watched'),
     }
     return HttpResponse(template.render(context, request))
