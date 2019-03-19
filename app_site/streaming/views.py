@@ -183,7 +183,7 @@ def user_search(request):
     else:
         context['users'] = user_list
         context['query'] = ""
-    context['count'] = len(context['media'])
+    context['count'] = len(context['users'])
     return HttpResponse(template.render(context, request))
 
 
