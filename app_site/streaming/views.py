@@ -220,8 +220,7 @@ def user_page(request):
     media_history = WatchEvent.objects.filter(part_of=request.user.watch_history)
     context = {
         'comments': request.user.comment_section.comment_set.all(),
-        'tv_history': media_history.filter(movie=None),
-        'movie_history': media_history.filter(tv=None),
+        'history': media_history.order_by('-time_watched'),
     }
     return HttpResponse(template.render(context, request))
 
@@ -237,7 +236,7 @@ def account_page(request):
 def inbox(request):
     template = loader.get_template('streaming/inbox.html')
     inbox_content = Inbox.objects.all()
-    messages = Message.objects.all() 
+    messages = Message.objects.all()
     context = {
         'inbox' : inbox_content,
         'messages_list' : messages,
