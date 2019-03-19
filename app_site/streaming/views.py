@@ -245,9 +245,7 @@ def display_episode(request, title, season_number, episode_number):
 def user_page(request, username=None):
     template = loader.get_template('streaming/userpage.html')
     if not username: username = request.user.username
-    print("Searching for user: ", username)
     user = SiteUser.objects.get(username=username)
-    print(user)
     media_history = WatchEvent.objects.filter(part_of=user.watch_history)
     context = {
         'user': user,
