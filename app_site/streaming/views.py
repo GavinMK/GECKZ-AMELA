@@ -25,7 +25,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 
 from django.contrib.auth import authenticate, login, logout
-from .forms import user_form, login_form, search_form, billing_form
+from .forms import user_form, login_form, search_form, billing_form, change_form
 
 
 def validate_password(password_candidate):
@@ -244,3 +244,8 @@ def inbox(request):
 def billing(request):
     form = billing_form()
     return render(request, 'streaming/billing.html', {'form': form})
+
+
+def change(request):
+    form = change_form()
+    return render(request, 'streaming/ChangeInfo.html', {'form': form})
