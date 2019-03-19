@@ -27,6 +27,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from .forms import user_form, login_form, search_form
 
+from django.core.paginator import Paginator
 
 def validate_password(password_candidate):
     valid = False
@@ -141,6 +142,7 @@ def search(request):
     movie_list = Movie.objects.order_by('title')
     context = dict()
     query = request.GET.get('q')
+    results = None
     if query:
         words = query.split(" ")
         tv_results = tv_show_list
@@ -160,13 +162,20 @@ def search(request):
             partial_movie_results = movie_list.filter(db_query)
             tv_results &= partial_tv_results
             movie_results &= partial_movie_results
-        results = set(tv_results) | set(movie_results)
-        context['media'] = results
+        results = tuple(set(tv_results) | set(movie_results))
         context['query'] = query
     else:
-        context['media'] = set(tv_show_list) | set(movie_list)
+        results = tuple(set(tv_show_list) | set(movie_list))
         context['query'] = ""
-    context['count'] = len(context['media'])
+
+
+    paginator = Paginator(results, 8)
+    page = request.GET.get('p', 1)
+    media = paginator.get_page(page)
+    context['media'] = media
+
+
+    context['count'] = len(results)
     return HttpResponse(template.render(context, request))
 
 @login_required(login_url='login/')

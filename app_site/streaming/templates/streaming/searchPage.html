@@ -28,4 +28,19 @@
 			No results found for '{{ query }}'.
 		</h1>
 	{% endif %}
+	{% if media.paginator.num_pages > 1 %}
+		<div class="pagination center">
+			<span class="step-links">
+				&lt;
+				{% for i in media.paginator.page_range %}
+					{% if media.number == forloop.counter %}
+						<b>{{ i }} </b>
+					{% else %}
+						<a href="?q={{ query }}&p={{ forloop.counter }}">{{ forloop.counter }}</a> 
+					{% endif %}
+				{% endfor %}
+				&gt;
+			</span>
+		</div>
+	{% endif %}
 {% endblock %}
