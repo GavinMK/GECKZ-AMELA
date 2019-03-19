@@ -46,10 +46,12 @@ def generate_user(data):
     inbox.save()
     billing = Billing()
     billing.save()
+    history = WatchHistory()
+    history.save()
     return SiteUser.objects.create_user(data['username'], email=data['email'], password=data['password'],
                                         first_name=data['first_name'], last_name=data['last_name'],
                                         preferences=preferences, comment_section=comment_section,
-                                        inbox=inbox, billing=billing)
+                                        inbox=inbox, billing=billing, watch_history=history)
 
 
 @login_required(login_url='login/')
