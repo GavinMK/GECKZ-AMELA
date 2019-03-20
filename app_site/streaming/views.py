@@ -233,10 +233,15 @@ def user_page(request, username=None):
 def watch_media(request, title, season_number=None, episode_number=None):
     template = loader.get_template('streaming/watchMedia.html')
     media = []
+    history = request.user.watch_history
     if Movie.objects.filter(title=title).exists():
         media = Movie.objects.get(title=title)
+        watch_event = WatchEvent(movie=media, part_of=history)
+        watch_event.save()
     if not media and TVEpisode.objects.filter(title=title).exists():
         media = TVEpisode.objects.get(title=title)
+        watch_event = WatchEvent(tv=media, part_of=history)
+        watch_event.save()
     if not media:
         return HttpResponse("Invalid Media Request")
 
