@@ -1,33 +1,17 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
-from django.http import HttpResponseRedirect
-
 from django.urls import reverse
-
-from datetime import datetime
-
 from django.shortcuts import render
-
-from .decorators import anonymous_only_redirect
-
-
+from .decorators import anonymous_only_redirect, subscription_required
 from .models import *
-
-from django.db import models
 from django.db.models import Q
-
-from django.utils import timezone
-
 from django.template import loader
-
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-
 from django.contrib.auth import authenticate, login, logout
-from .forms import user_form, login_form, search_form, billing_form, change_form
-
+from .forms import user_form, login_form, billing_form, change_form
 from django.core.paginator import Paginator
+
 
 def validate_password(password_candidate):
     valid = False
@@ -157,10 +141,9 @@ def search(request):
     page = request.GET.get('p', 1)
     media = paginator.get_page(page)
     context['media'] = media
-
-
     context['count'] = len(results)
     return HttpResponse(template.render(context, request))
+
 
 @login_required(login_url='login/')
 def user_search(request):
@@ -192,7 +175,8 @@ def display_media(request, title):
         season_list = TVSeason.objects.filter(part_of=media)
         for season in season_list:
             episode_list += list(TVEpisode.objects.filter(part_of=season))
-    if not media: return HttpResponse("Invalid Media Request")
+    if not media:
+        return HttpResponse("Invalid Media Request")
 
     actors = Actor.objects.filter(part_of=media.metadata)
     context = {
@@ -208,15 +192,20 @@ def display_media(request, title):
 def display_episode(request, title, season_number, episode_number):
     template = loader.get_template('streaming/tvEpisode.html')
     show = TVShow.objects.get(title=title)
-    if not show: return HttpResponse("Invalid show")
+    if not show:
+        return HttpResponse("Invalid show")
     season = TVSeason.objects.get(part_of=show, season_number=season_number)
-    if not season: return HttpResponse("Invalid season number")
+    if not season:
+        return HttpResponse("Invalid season number")
     episode = TVEpisode.objects.get(part_of=season, episode_number=episode_number)
-    if not episode: return HttpResponse("Invalid episode number")
+    if not episode:
+        return HttpResponse("Invalid episode number")
 
     actors = Actor.objects.filter(part_of=episode.metadata)
     context = {
         'show': show,
+        'season_number': season_number,
+        'episode_number': episode_number,
         'episode': episode,
         'actors': actors,
         'comments': episode.comment_section.comment_set.all()
@@ -227,7 +216,8 @@ def display_episode(request, title, season_number, episode_number):
 @login_required(login_url='login/')
 def user_page(request, username=None):
     template = loader.get_template('streaming/userpage.html')
-    if not username: username = request.user.username
+    if not username:
+        username = request.user.username
     user = SiteUser.objects.get(username=username)
     media_history = WatchEvent.objects.filter(part_of=user.watch_history)
     context = {
@@ -239,18 +229,40 @@ def user_page(request, username=None):
 
 
 @login_required(login_url='login/')
+# @subscription_required [uncomment me when users can subscribe/rent]
+def watch_media(request, title, season_number=None, episode_number=None):
+    template = loader.get_template('streaming/watchMedia.html')
+    media = []
+    if Movie.objects.filter(title=title).exists():
+        media = Movie.objects.get(title=title)
+    if not media and TVEpisode.objects.filter(title=title).exists():
+        media = TVEpisode.objects.get(title=title)
+    if not media:
+        return HttpResponse("Invalid Media Request")
+
+    print(media)
+    context = {
+        'media': media
+    }
+    return HttpResponse(template.render(context, request))
+
+
+@login_required(login_url='login/')
 def friends(request):
     template = loader.get_template('streaming/friendPage.html')
     context = dict()
     return HttpResponse(template.render(context, request))
 
+
 @login_required(login_url='login/')
 def homepage(request):
     return render(request, 'streaming/homepage.html')
 
+
 @login_required(login_url='login/')
 def account_page(request):
     return render(request, 'streaming/accountPage.html')
+
 
 @login_required(login_url='login/')
 def inbox(request):

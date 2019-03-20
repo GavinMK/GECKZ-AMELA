@@ -21,4 +21,6 @@ urlpatterns = [
     path('change/', views.change, name="change"),
     path('friends/', views.friends, name="friends"),
     path('usersearch/', views.user_search, name="usersearch"),
+    path('media/<str:title>/watch', views.watch_media, name='watch_media'),
+    path('media/<str:title>/<int:season_number>/<int:episode_number>/watch', views.watch_media, name='watch_media')
 ]
