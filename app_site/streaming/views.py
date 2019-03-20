@@ -299,13 +299,40 @@ def inbox(request):
             data = form.cleaned_data
             user_query = SiteUser.objects.filter(username=data['username'])
             if len(user_query) == 1:
-                print(data)
+                #print(data) {'username': 'Tro', 'content': 'sup bro'}
+                #print(request.user.username)
 
+                user = SiteUser.objects.get(username=data['username'])
+                user_inbox = user.inbox
 
-                #user = SiteUser.objects.get(username=username)
-                #user_inbox = user.inbox
-                return HttpResponseRedirect(reverse('streaming:homepage'))
+                new_message = Message(content=data['content'], from_user=SiteUser.objects.get(username=request.user.username), part_of=user_inbox)
+                new_message.save()
+
+                return HttpResponseRedirect(reverse('streaming:inbox'))
             else:
                 context['error_message'] = "That user does not exist"
         
     return render(request, 'streaming/inbox.html', context)
+
+@login_required(login_url='login/')
+# @subscription_required [uncomment me when users can subscribe/rent]
+def watch_media(request, title, season_number=None, episode_number=None):
+    template = loader.get_template('streaming/watchMedia.html')
+    media = []
+    history = request.user.watch_history
+    if Movie.objects.filter(title=title).exists():
+        media = Movie.objects.get(title=title)
+        watch_event = WatchEvent(movie=media, part_of=history)
+        watch_event.save()
+    if not media and TVEpisode.objects.filter(title=title).exists():
+        media = TVEpisode.objects.get(title=title)
+        watch_event = WatchEvent(tv=media, part_of=history)
+        watch_event.save()
+    if not media:
+        return HttpResponse("Invalid Media Request")
+
+    print(media)
+    context = {
+        'media': media
+    }
+    return HttpResponse(template.render(context, request))

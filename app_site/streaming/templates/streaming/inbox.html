@@ -5,6 +5,28 @@
     <header>Inbox</header>
     <hr>
 
+    <section style="width: 97%;float: right;padding-top: 20px;">
+        <fieldset>
+            <legend>Send a message</legend><br>
+                <div class="form-style" style="margin: 0;padding-bottom: 20px;">
+                    <form action="{% url 'streaming:inbox' %}" method="POST" style="margin: 0;">
+                        {% csrf_token %}
+                        <label for="username">To: </label><br>
+                        <input id="username" type="text" name="username" required><br>
+                        <h1>
+                            {% if error_message != None %}
+                            {{ error_message }}
+                            {% endif %}
+                        </h1>
+                        <label for="content">Message: </label><br>
+                        <input id="content" type="text" name="content" required><br>
+                        <input type="submit" value="Send">
+                    </form>
+                </div>
+                <script src="{% static 'streaming/js/utility.js' %}"></script>
+        </fieldset>
+    </section>
+
     <p style="padding-left: 0px;color: #fffafa;font-size: 20px;">Received messages:</p>
     {% if user.inbox.num_unread_messages > 0 %}
         {% if user.inbox.num_unread_messages == 1 %}
@@ -40,28 +62,6 @@
             </section>
         {% endif %}
     {% endfor %}
-
-    <section style="width: 97%;float: right;padding-top: 20px;">
-        <fieldset>
-            <legend>Send a message</legend><br>
-                <div class="form-style" style="margin: 0;padding-bottom: 20px;">
-                    <form action="{% url 'streaming:inbox' %}" method="POST" style="margin: 0;">
-                        {% csrf_token %}
-                        <label for="username">To: </label><br>
-                        <input id="username" type="text" name="username" required><br>
-                        <h1>
-                            {% if error_message != None %}
-                            {{ error_message }}
-                            {% endif %}
-                        </h1>
-                        <label for="content">Message: </label><br>
-                        <input id="content" type="text" name="content" required><br>
-                        <input type="submit" value="Send">
-                    </form>
-                </div>
-                <script src="{% static 'streaming/js/utility.js' %}"></script>
-        </fieldset>
-    </section>
     
     <p>Number of total messages: {{ user.inbox.num_messages }}</p>    
     <p>Number of read messages: {{ user.inbox.num_read_messages }}</p>
