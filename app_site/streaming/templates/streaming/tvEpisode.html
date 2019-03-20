@@ -1,6 +1,7 @@
 {% extends "navPage.html" %}
 
 {% block title %}{{ show.title }} S{{ episode.part_of.season_number }}E{{ episode.episode_number }}: {{ episode.title }} - AMELA{% endblock %}
+{% block description %}{{ episode.description|truncatechars:300 }}{% endblock %}
 
 {% load static %}
 {% block content %}
@@ -36,7 +37,7 @@
             <legend>Details</legend>
               <p>Season {{ episode.part_of.season_number }} Episode {{ episode.episode_number }}</p>
                   <p>Genre: <span>{{ episode.metadata.genre }}</span></p>
-                  <p>Description: <span>{{ episode.description }}</span></p>
+                  <p>Description: <span>{{ episode.description|linebreaksbr }}</span></p>
                   <p>Production Studio: <span>{{ episode.metadata.studio }}</span></p>
               <p>Streaming Service: <span>{{ episode.metadata.streaming_service }}</span></p>
                   <p>Runtime: <span>{{ episode.runtime }}</span></p>
