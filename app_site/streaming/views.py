@@ -288,4 +288,4 @@ def billing(request):
 
 def change(request):
     form = change_form()
-    return render(request, 'streaming/ChangeInfo.html', {'form': form})
+    return render(request, 'streaming/changeInfo.html', {'form': form})
