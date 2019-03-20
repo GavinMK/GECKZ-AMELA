@@ -261,13 +261,16 @@ def friends(request):
     context = dict()
     return HttpResponse(template.render(context, request))
 
+
 @login_required(login_url='login/')
 def homepage(request):
     return render(request, 'streaming/homepage.html')
 
+
 @login_required(login_url='login/')
 def account_page(request):
     return render(request, 'streaming/accountPage.html')
+
 
 @login_required(login_url='login/')
 def inbox(request):
@@ -296,7 +299,11 @@ def inbox(request):
             data = form.cleaned_data
             user_query = SiteUser.objects.filter(username=data['username'])
             if len(user_query) == 1:
-                
+                print(data)
+
+
+                #user = SiteUser.objects.get(username=username)
+                #user_inbox = user.inbox
                 return HttpResponseRedirect(reverse('streaming:homepage'))
             else:
                 context['error_message'] = "That user does not exist"
