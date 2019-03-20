@@ -15,7 +15,7 @@
                 <input type="checkbox" onclick=""><span style="font-size: 15px;"> Account Message Center</span>
             <p style="padding-bottom: 20px;"></p>
             <div class="form-style" style="margin: 0;padding-bottom: 20px;">
-                <form action="">
+                <form action="{% url 'streaming:change' %}">
                     <input type="submit" value="Change User Information/Password">
                 </form>
             </div>
@@ -31,7 +31,7 @@
             <p>Expiration Date: <span>01/2021</span></p>
             <p></p>
             <div class="form-style" style="margin: 0;padding-bottom: 20px;">
-                <form action="">
+                <form action="{% url 'streaming:billing' %}">
                     <input type="submit" value="Change Billing Information">
                 </form>
             </div>

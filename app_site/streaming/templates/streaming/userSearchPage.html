@@ -13,21 +13,21 @@
 
 
 	{% if users %}
-		<h1>
+		<h1 id="search">
 			{{ count }} user{{ count|pluralize }} found:
 		</h1>
 		<div class="media-style">
 			<ul>
 			{% for entry in users %}
 				<li>
-					<a href="{% url 'streaming:user_page_friend' username=entry.username %}">{{ entry.username }}</a><br><br>
+					<a id="friendsList" href="{% url 'streaming:user_page_friend' username=entry.username %}">{{ entry.username }}</a><br><br>
 				</li>
 			{% endfor %}
 			</ul>
 		</div>
 	{% else %}
-		<h1>
-			No users found with name '{{ query }}'.
+		<h1 id="search">
+			No users found with name '<span style="color: #ffd700;">{{ query }}</span>'.
 		</h1>
 	{% endif %}
 

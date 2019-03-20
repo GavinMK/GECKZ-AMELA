@@ -13,7 +13,7 @@
 	</div>
 
 	{% if media %}
-		<h1>
+		<h1 id="search">
 			{{ count }} result{{ count|pluralize }} found:
 		</h1>
 		<div class="media-style">
@@ -26,10 +26,11 @@
 
 		</div>
 	{% else %}
-		<h1>
-			No results found for '{{ query }}'.
+		<h1 id="search">
+			No results found for '<span style="color: #ffd700;">{{ query }}</span>'.
 		</h1>
 	{% endif %}
+
 	{% if media.paginator.num_pages > 1 %}
 		<div class="pagination center">
 			<span class="step-links">
