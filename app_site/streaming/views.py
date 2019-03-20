@@ -11,7 +11,6 @@ from django.shortcuts import render
 
 from .decorators import anonymous_only_redirect
 
-
 from .models import *
 
 from django.db import models
@@ -29,10 +28,11 @@ from .forms import user_form, login_form, search_form
 
 from django.core.paginator import Paginator
 
+
 def validate_password(password_candidate):
     valid = False
     if len(password_candidate) > 7:
-        if any(char.isdigit()for char in password_candidate):
+        if any(char.isdigit() for char in password_candidate):
             valid = any(char.isupper() for char in password_candidate)
     return valid
 
@@ -151,13 +151,13 @@ def search(request):
         # Each result has to match all of the words.
         for word in words:
             db_query = (Q(metadata__genre__icontains=word) |
-                Q(metadata__release_year__icontains=word) |
-                Q(metadata__studio__icontains=word) |
-                Q(metadata__release_year__icontains=word) |
-                Q(metadata__streaming_service__icontains=word) |
-                Q(metadata__actor__name__icontains=word) |
-                Q(title__icontains=word)
-            )
+                        Q(metadata__release_year__icontains=word) |
+                        Q(metadata__studio__icontains=word) |
+                        Q(metadata__release_year__icontains=word) |
+                        Q(metadata__streaming_service__icontains=word) |
+                        Q(metadata__actor__name__icontains=word) |
+                        Q(title__icontains=word)
+                        )
             partial_tv_results = tv_show_list.filter(db_query)
             partial_movie_results = movie_list.filter(db_query)
             tv_results &= partial_tv_results
@@ -168,15 +168,13 @@ def search(request):
         results = tuple(set(tv_show_list) | set(movie_list))
         context['query'] = ""
 
-
     paginator = Paginator(results, 8)
     page = request.GET.get('p', 1)
     media = paginator.get_page(page)
     context['media'] = media
-
-
     context['count'] = len(results)
     return HttpResponse(template.render(context, request))
+
 
 @login_required(login_url='login/')
 def user_search(request):
@@ -194,7 +192,6 @@ def user_search(request):
         context['query'] = ""
     context['count'] = len(context['users'])
     return HttpResponse(template.render(context, request))
-
 
 
 @login_required(login_url='login/')
@@ -261,13 +258,16 @@ def friends(request):
     context = dict()
     return HttpResponse(template.render(context, request))
 
+
 @login_required(login_url='login/')
 def homepage(request):
     return render(request, 'streaming/homepage.html')
 
+
 @login_required(login_url='login/')
 def account_page(request):
     return render(request, 'streaming/accountPage.html')
+
 
 @login_required(login_url='login/')
 def inbox(request):
@@ -275,7 +275,7 @@ def inbox(request):
     inbox_content = Inbox.objects.all()
     messages = Message.objects.all()
     context = {
-        'inbox' : inbox_content,
-        'messages_list' : messages,
+        'inbox': inbox_content,
+        'messages_list': messages,
     }
     return HttpResponse(template.render(context, request))

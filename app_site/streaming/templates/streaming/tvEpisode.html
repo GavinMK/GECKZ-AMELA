@@ -1,5 +1,7 @@
 {% extends "navPage.html" %}
 
+{% block title %}{{ show.title }} S{{ episode.part_of.season_number }}E{{ episode.episode_number }}: {{ episode.title }} - AMELA{% endblock %}
+
 {% block content %}
 
 	<header>{{ show.title }}</header>
