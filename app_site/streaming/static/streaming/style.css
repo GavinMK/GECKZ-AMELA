@@ -256,3 +256,27 @@ h2{
 .form-style a:hover{
 	color: #ffd700;
 }
+
+.stars-outer {
+  display: inline-block;
+  position: relative;
+  font-family: FontAwesome;
+}
+ 
+.stars-outer::before {
+  content: "☆☆☆☆☆";
+}
+ 
+.stars-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 0;
+}
+ 
+.stars-inner::before {
+  content: "★★★★★";
+  /*color: #f8ce0b;*/
+}

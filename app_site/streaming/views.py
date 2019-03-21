@@ -199,12 +199,28 @@ def display_media(request, title):
     if not media:
         return HttpResponse("Invalid Media Request")
 
+    num_ratings = media.rating_section.num_of_ratings
+    ratings = Rating.objects.filter(part_of=media.rating_section)
+
+    avg_rating = 0
+
+    for rating in ratings:
+        avg_rating += rating.rating
+    if num_ratings > 0:
+        avg_rating /= num_ratings
+
+    avg_rating_perc = avg_rating * 100/5
+
     actors = Actor.objects.filter(part_of=media.metadata)
     context = {
         'media': media,
         'actors': actors,
         'episodes': episode_list,
-        'comments': media.comment_section.comment_set.all()
+        'comments': media.comment_section.comment_set.all(),
+        'avg_rating_perc': avg_rating_perc,
+        'avg_rating': avg_rating,
+        'num_ratings': num_ratings,
+
     }
     return HttpResponse(template.render(context, request))
 
