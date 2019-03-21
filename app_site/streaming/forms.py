@@ -17,6 +17,12 @@ class login_form(forms.Form):
 class search_form(forms.Form):
     request = forms.CharField(label='request', max_length=128)
 
+
 class message_form(forms.Form):
     username = forms.CharField(label='Username', max_length=15)
     content = forms.CharField(label='Content', max_length=3000)
+
+#this method is reqiured to retrieve data from a template, although the data will always be True,
+#so there need not be an explicit definition of this form
+class mark_message_as_read(forms.Form):
+    pass

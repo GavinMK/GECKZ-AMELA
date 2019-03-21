@@ -294,21 +294,25 @@ def inbox(request):
 
     if request.method == 'POST':
         form = message_form(request.POST)
-        print (form.errors)
+        print(form.errors)
         if form.is_valid():
             data = form.cleaned_data
+
+            print(data)
+
             user_query = SiteUser.objects.filter(username=data['username'])
             if len(user_query) == 1:
-                #print(data) {'username': 'Tro', 'content': 'sup bro'}
-                #print(request.user.username)
 
                 user = SiteUser.objects.get(username=data['username'])
                 user_inbox = user.inbox
 
-                new_message = Message(content=data['content'], from_user=SiteUser.objects.get(username=request.user.username), part_of=user_inbox)
-                new_message.save()
+                if (user != SiteUser.objects.get(username=request.user.username)):
+                    new_message = Message(content=data['content'], from_user=SiteUser.objects.get(username=request.user.username), part_of=user_inbox)
+                    new_message.save()
+                    return HttpResponseRedirect(reverse('streaming:inbox'))
+                else:
+                    context['error_message'] = "You cannot send a message to yourself"
 
-                return HttpResponseRedirect(reverse('streaming:inbox'))
             else:
                 context['error_message'] = "That user does not exist"
         

@@ -12,7 +12,7 @@
                     <form action="{% url 'streaming:inbox' %}" method="POST" style="margin: 0;">
                         {% csrf_token %}
                         <label for="username">To: </label><br>
-                        <input id="username" type="text" name="username" required><br>
+                        <input id="username" placeholder="Username" type="text" name="username" required><br>
                         <h1>
                             {% if error_message != None %}
                             {{ error_message }}
@@ -20,10 +20,10 @@
                         </h1>
                         <label for="content">Message: </label><br>
                         <input id="content" type="text" name="content" required><br>
-                        <input type="submit" value="Send">
+                        <br>
+                        <input type="submit" name="send"value="Send">
                     </form>
                 </div>
-                <script src="{% static 'streaming/js/utility.js' %}"></script>
         </fieldset>
     </section>
 
@@ -41,10 +41,17 @@
     {% for message, name in messages_list reversed %}
         {% if user.inbox == message.part_of %}
             <section style="width: 97%;">
+                {% if not message.read %}
+                    <p>This is an unread message!</p>
+                {% endif %}
                 <fieldset>
                     <legend>From: {{message.from_user}}</legend>
                     <p>Received: {{message.timestamp}}</p>
                     <p style="padding-left: 0px;color: #fffafa;font-size: 15px;">&emsp;{{message.content}}</p>
+                    <form action="{% url 'streaming:inbox' %}" method="POST" style="margin: 0;">
+                        {% csrf_token %}
+                        <input type="submit" name="read" value="Mark as read">
+                    </form>
                 </fieldset>
             </section>
         {% endif %}
@@ -68,7 +75,3 @@
     <p>Number of unread messages: {{ user.inbox.num_unread_messages }}</p>
 
 {% endblock %}
-
-                        <textarea style="text-align: left; width: 50%; height: 20px;" placeholder="Username"></textarea>
-                        <textarea style="text-align: left; width: 130%; height: 100px;" placeholder="Write your message here..."></textarea>
-                        <input type="submit" value="Send" style="text-align: left;">

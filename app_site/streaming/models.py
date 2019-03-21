@@ -200,6 +200,7 @@ class Message(models.Model):
     timestamp = models.DateTimeField(default=timezone.now)
     from_user = models.ForeignKey(SiteUser, on_delete=models.CASCADE)
     part_of = models.ForeignKey(Inbox, on_delete=models.CASCADE)
+    read = models.BooleanField(default=False)
 
     def __str__(self):
         return self.part_of.__str__() + ' message from ' + self.from_user.__str__() + ' at ' + self.timestamp.strftime('%x %X')
