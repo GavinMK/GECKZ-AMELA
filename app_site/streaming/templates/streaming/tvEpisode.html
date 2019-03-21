@@ -1,44 +1,66 @@
 {% extends "navPage.html" %}
-
+{% load static %}
 {% block content %}
 
 	<header>{{ show.title }}</header>
     <p style="color: #fffafa; text-align: center; font-size: 20px">{{ episode.title }}
         <span style="color: #ffd700;">({{ episode.metadata.release_year }})</span></p>
-    <!--<iframe src="{{ episode.file_location }}" width="640" height="480" frameborder="0" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen></iframe>-->
-    <script src="{{ episode.file_location }}"></script>
-<section>
-    <fieldset>
-        <legend>Details</legend>
-          <p>Season {{ episode.part_of.season_number }} Episode {{ episode.episode_number }}</p>
-              <p>Genre: <span>{{ episode.metadata.genre }}</span></p>
-              <p>Description: <span>{{ episode.description }}</span></p>
-              <p>Production Studio: <span>{{ episode.metadata.studio }}</span></p>
-          <p>Streaming Service: <span>{{ episode.metadata.streaming_service }}</span></p>
-              <p>Runtime: <span>{{ episode.runtime }}</span></p>
-          <p>Actors:</p>
-          {% for actor in actors %}
-                <p><span>{{ actor.name }}</span></p>
-          {% endfor %}
-          <br><br>
-    </fieldset>
-</section>
 
-<section id="side">
-    <fieldset style="border: 0">
-        <legend>Rating:</legend><br>
-            <img id="photo" src=""><br><br>
-    </fieldset>
-</section>
+	<aside>
+		<fieldset style="border: 0">
+			<legend>Rating:</legend><br>
+				<img id="photo" src="{% static "streaming/images/"|add:show.thumbnail_path %}"><br><br>
+			<div class="form-style" style="width: 200px;text-align: center;">
+                <form action="{% url 'streaming:watch_media' title=episode.title season_number=season_number episode_number=episode_number %}">
+                    <input type="submit" value="WATCH" style="font-size: 20px;">
+                </form>
+            </div>
+		</fieldset>
+		<br><br>
+		<fieldset style="size: 50px;">
+			<legend style="text-align: center;">Leave a Rating</legend><br>
+			<p>Implement Rating Functionality</p>
+			<div class="form-style" style="width: 200px;text-align: center;">
+                <form action="">
+                    <input type="submit" value="Rate">
+                </form>
+            </div>
+		</fieldset>
+	</aside>
 
-<section>
-    <fieldset>
-        <legend>Comments</legend>
-          {% for comment in comments %}
-              <p>Posted By: {{ comment.posted_by }}</p>
-              <p>{{ comment.content }}</p>
-          {% endfor %}
-</fieldset>
+    <section>
+        <fieldset>
+            <legend>Details</legend>
+              <p>Season {{ episode.part_of.season_number }} Episode {{ episode.episode_number }}</p>
+                  <p>Genre: <span>{{ episode.metadata.genre }}</span></p>
+                  <p>Description: <span>{{ episode.description }}</span></p>
+                  <p>Production Studio: <span>{{ episode.metadata.studio }}</span></p>
+              <p>Streaming Service: <span>{{ episode.metadata.streaming_service }}</span></p>
+                  <p>Runtime: <span>{{ episode.runtime }}</span></p>
+              <p>Actors:</p>
+              {% for actor in actors %}
+                    <p><span>{{ actor.name }}</span></p>
+              {% endfor %}
+              <br><br>
+        </fieldset>
+    </section>
+
+	<section>
+		<fieldset>
+			<legend>Comments</legend><br><br>
+				<div class="form-style" style="margin: 0;padding-bottom: 20px;">
+					<form action="" style="margin: 0;">
+						<textarea style="text-align: left; width: 165%; height: 20px;" placeholder="Leave a comment..."></textarea>
+						<input type="submit" value="Comment">
+					</form>
+				</div>
+				{% for comment in comments %}
+					<hr>
+					<p><span>Posted By: </span>{{ comment.posted_by }}</p>
+					<span>"{{ comment.content }}"</span><br>
+				{% endfor %}
+				<br>
+		</fieldset>
 	</section>
 
 {% endblock %}

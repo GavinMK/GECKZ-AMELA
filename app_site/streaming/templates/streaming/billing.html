@@ -1,0 +1,33 @@
+{% extends "simplePage.html" %}
+
+{% block content %}
+{% load static %}
+	<div class="form-style">
+
+	<form action="{% url 'streaming:billing' %}" method="post">
+		{%  csrf_token %}
+		<br><br>
+        <header></header><br><br>
+		<fieldset>
+			<legend>Billing Information:</legend><br>
+			<label for="name">Name on Card: </label><br>
+			<input id="name" type="text" name="name"
+				   placeholder="John Doe" required><br><br>
+            <label for="cc_num">Card Number: </label><br>
+			<input id="cc_num" type="text" name="cc_num" maxlength="19" pattern="^\d+(?:-\d+)*$" title="Enter numbers and dashes only."
+				   placeholder="1111-2222-3333-4444" required><br><br>
+            <label for="cvc_num">CVC Number: </label><br>
+			<input id="cvc_num" type="text" name="cvc_num" maxlength="3" pattern="\d*" title="Enter numbers only."
+				   placeholder="000" required><br><br>
+			<label for="exp_month">Expiration Month: </label><br>
+			<input id="exp_month" type="text" name="exp_month" maxlength="2" pattern="\d*" title="Enter numbers only."
+				   placeholder="01" required><br><br>
+			<label for="exp_year">Expiration Year: </label><br>
+			<input id="exp_year" type="text" name="exp_year" maxlength="4" pattern="\d*" title="Enter numbers only."
+				   placeholder="2020" required><br><br><br>
+            <input type="submit" value="Submit">
+		</fieldset>
+	</form>
+		<br><h2><a href="{% url 'streaming:accountPage' %}">Back to Account</a></h2>
+</div>
+{% endblock %}
