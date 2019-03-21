@@ -2,9 +2,9 @@
 
 {% block content %}
 
-<header>This is the page that shows you what friends you have</header>
-
-<h1>However, we have not added this feature yet, so you have no friends.</h1>
+<header style="text-align: left;">Friends</header>
+<hr>
+<br>
 
 <div class="form-style" style="margin: 0;width: 700px;padding-left: 40px;padding-bottom: 40px;">
 	<form action="{% url 'streaming:usersearch' %}" method="get">
@@ -12,5 +12,8 @@
 		<input type="submit" value="Search">
 	</form>
 </div>
+
+<p>This is the page that shows you what friends you have</p>
+<p>However, we have not added this feature yet, so you have no friends.</p>
 
 {% endblock %}

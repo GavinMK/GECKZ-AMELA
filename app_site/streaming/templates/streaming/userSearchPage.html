@@ -2,6 +2,10 @@
 
 {% block content %}
 
+<header style="text-align: left;">Friends</header>
+<hr>
+<br>
+
 <div class="form-style" style="margin: 0;width: 700px;padding-left: 40px;padding-bottom: 40px;">
 	<form action="{% url 'streaming:usersearch' %}" method="get">
 		<input class="searchfield" id="searchbox" name="q" type="text" placeholder="Search for Users" value="{{ query }}">

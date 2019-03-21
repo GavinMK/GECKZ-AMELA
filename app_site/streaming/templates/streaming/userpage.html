@@ -2,11 +2,16 @@
 
 {% block content %}
 
+{% if user != request.user %}
 <div class="form-style" style="width:100%;text-align: right;">
         <form action="">
             <input type="submit" value="Follow" style="font-size: 18px;">
+            <input type="submit" value="Message" style="font-size: 18px;margin-left: 30px;">
         </form>
     </div>
+{% else %}
+<br><br>
+{% endif %}
 
 <header style="text-align: left; padding-bottom: 0;">{{ user.first_name }} {{ user.last_name }}</header>
 <p style="padding-left: 50px;color: #fffafa;font-size: 20px;">@{{ user }}</p>
