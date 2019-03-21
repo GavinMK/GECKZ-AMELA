@@ -1,4 +1,5 @@
 from django import forms
+from streaming.models import Comment
 
 
 class user_form(forms.Form):
@@ -25,6 +26,7 @@ class billing_form(forms.Form):
     exp_month = forms.IntegerField(label='Expiration Month')
     exp_year = forms.IntegerField(label='Expiration Month')
 
+
 class change_form(forms.Form):
     username = forms.CharField(label='Username', max_length=20)
     old_password = forms.CharField(label='Password', max_length=20)
@@ -32,3 +34,9 @@ class change_form(forms.Form):
     first_name = forms.CharField(label='First Name', max_length=20)
     last_name = forms.CharField(label='Last Name', max_length=20)
     email = forms.CharField(label='Email', max_length=30)
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']

@@ -9,7 +9,7 @@ from django.template import loader
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
-from .forms import user_form, login_form, billing_form, change_form
+from .forms import user_form, login_form, billing_form, change_form, CommentForm
 from django.core.paginator import Paginator
 
 
@@ -103,6 +103,29 @@ def shows(request):
         'media': show_list,
     }
     return HttpResponse(template.render(context, request))
+
+
+@login_required(login_url='login/')
+def post_comment(request, element):
+    if request.method == 'POST' and element:
+        section = None
+        if SiteUser.objects.filter(username=element).exists():
+            section = SiteUser.objects.get(username=element).comment_section
+        elif TVShow.objects.filter(title=element).exists():
+            section = TVShow.objects.get(title=element).comment_section
+        elif TVEpisode.objects.filter(title=element).exists():
+            section = TVEpisode.objects.get(title=element).comment_section
+        elif Movie.objects.filter(title=element).exists():
+            section = Movie.objects.get(title=element).comment_section
+        comment = Comment(posted_by=request.user, part_of=section)
+        form = CommentForm(request.POST, instance = comment)
+        if form.is_valid():
+            form.save()
+            return HttpResponse("Done")
+        else:
+            print("Not valid")
+    return HttpResponse("Fail")
+
 
 
 @login_required(login_url='login/')
