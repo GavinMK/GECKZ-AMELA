@@ -51,7 +51,7 @@ fieldset{
 legend{
 	color: #393e46;
 	background: #ffd700;
-	padding: 0px 8px 3px 8px;
+	padding: 0 8px 3px 8px;
 	font-weight: normal;
 	font-size: 22px;
 }
@@ -87,8 +87,8 @@ hr {
 }
 
 #photo{
-	height: 4in;
-	width: 3.5in;
+	height: 100%;
+	width: 100%;
 }
 
 #friendsList{
@@ -101,23 +101,25 @@ hr {
 	text-decoration: none;
 }
 
-#photo{
-	height: 4in;
-	width: 3.5in;
-}
-
 #search{
 	margin-left: 40px;
 	color: #fffafa;
 }
 
+#friendsSearch{
+	margin: 0;
+	width: 50%;
+	padding-left: 40px;
+	padding-bottom: 40px;
+}
+
 nav{
 	background: #111;
-	padding: 10px 20px;
+	padding: 15px 20px 0 20px;
 	color: #1a1a1a;
     font-size: 18px;
     font-family: Oswald;
-	height: 60px;
+	width: 97%;
 }
 
 nav ul {
@@ -176,7 +178,7 @@ nav a.active {
 
 .form-style{
 	font-family: Raleway;
-    width: 450px;
+    width: 30%;
 	margin: 0 auto;
 }
 
@@ -188,7 +190,6 @@ nav a.active {
 
 .form-style label{
 	text-align: center;
-	width: 100px;
 	color: #fffafa;
 	font-size: 18px;
 }
