@@ -110,9 +110,24 @@ def search(request):
     template = loader.get_template('streaming/searchPage.html')
     tv_show_list = TVShow.objects.order_by('title')
     movie_list = Movie.objects.order_by('title')
-    context = dict()
+    context = {
+        "filters": {
+            "Title": 1,
+            "Genre": 0,
+            "Release Year": 0,
+            "Studio": 0,
+            "Streaming Service": 0,
+            "Actors": 0,
+        },
+    }
+    for filter in context['filters']:
+        if request.GET.get(filter) == "on":
+            context['filters'][filter] = 1
+        else:
+            context['filters'][filter] = 0
+
+
     query = request.GET.get('q')
-    results = None
     if query:
         words = query.split(" ")
         tv_results = tv_show_list
@@ -120,14 +135,20 @@ def search(request):
         # We go through each word in the query, and check to make sure it matches at least some of the data
         # Each result has to match all of the words.
         for word in words:
-            db_query = (Q(metadata__genre__icontains=word) |
-                Q(metadata__release_year__icontains=word) |
-                Q(metadata__studio__icontains=word) |
-                Q(metadata__release_year__icontains=word) |
-                Q(metadata__streaming_service__icontains=word) |
-                Q(metadata__actor__name__icontains=word) |
-                Q(title__icontains=word)
-            )
+            db_query = Q()
+            if context['filters']['Title']:
+                db_query |= Q(title__icontains=word)
+            if context['filters']['Genre']:
+                db_query |= Q(metadata__genre__icontains=word)
+            if context['filters']['Release Year']:
+                db_query |= Q(metadata__release_year__icontains=word)
+            if context['filters']['Studio']:
+                db_query |= Q(metadata__studio__icontains=word)
+            if context['filters']['Streaming Service']:
+                db_query |= Q(metadata__streaming_service__icontains=word)
+            if context['filters']['Actors']:
+                db_query |= Q(metadata__actor__name__icontains=word)
+
             partial_tv_results = tv_show_list.filter(db_query)
             partial_movie_results = movie_list.filter(db_query)
             tv_results &= partial_tv_results
