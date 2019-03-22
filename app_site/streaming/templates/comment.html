@@ -1,8 +1,8 @@
 <legend>Comments</legend><br><br>
-    <div class="form-style" style="margin: 0;padding-bottom: 20px;width: 500px;">
+    <div class="form-style" style="padding-bottom: 20px;width: 100%;">
         <form action="{% url 'streaming:post_comment' %}" method="post">
             {% csrf_token %}
-            <input type="text" name="content" placeholder="Leave a comment" size="500" required>
+            <input type="text" name="content" placeholder="Leave a comment" size="500" style="width: 60%;" required>
             <input type="hidden" name="url" value="{{ request.get_full_path }}">
             <input type="submit" value="Comment">
         </form>
