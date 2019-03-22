@@ -2,7 +2,9 @@
 from __future__ import unicode_literals
 from django.urls import reverse
 from django.shortcuts import render
+
 from .decorators import anonymous_only_redirect, subscription_required
+
 from .models import *
 from django.db.models import Q
 from django.template import loader
@@ -17,7 +19,7 @@ import re
 def validate_password(password_candidate):
     valid = False
     if len(password_candidate) > 7:
-        if any(char.isdigit()for char in password_candidate):
+        if any(char.isdigit() for char in password_candidate):
             valid = any(char.isupper() for char in password_candidate)
     return valid
 
@@ -164,13 +166,13 @@ def search(request):
         # Each result has to match all of the words.
         for word in words:
             db_query = (Q(metadata__genre__icontains=word) |
-                Q(metadata__release_year__icontains=word) |
-                Q(metadata__studio__icontains=word) |
-                Q(metadata__release_year__icontains=word) |
-                Q(metadata__streaming_service__icontains=word) |
-                Q(metadata__actor__name__icontains=word) |
-                Q(title__icontains=word)
-            )
+                        Q(metadata__release_year__icontains=word) |
+                        Q(metadata__studio__icontains=word) |
+                        Q(metadata__release_year__icontains=word) |
+                        Q(metadata__streaming_service__icontains=word) |
+                        Q(metadata__actor__name__icontains=word) |
+                        Q(title__icontains=word)
+                        )
             partial_tv_results = tv_show_list.filter(db_query)
             partial_movie_results = movie_list.filter(db_query)
             tv_results &= partial_tv_results
@@ -270,9 +272,51 @@ def user_page(request, username=None):
     }
     return HttpResponse(template.render(context, request))
 
+@login_required(login_url='login/')
+def rental_page(request, title):
+    template = loader.get_template('streaming/rentPage.html')
+    media = Movie.objects.get(title=title)
+    if not media:
+        return HttpResponse("Invalid media")
+    if request.method == 'POST':
+        request.user.rentals.add(media)
+        return HttpResponseRedirect(reverse('streaming:watch_media', kwargs={'title': title}))
+    context = {
+        'user': request.user,
+        'media': media
+    }
+    return HttpResponse(template.render(context, request))
+
 
 @login_required(login_url='login/')
-# @subscription_required [uncomment me when users can subscribe/rent]
+def subscription_page(request, title, season_number, episode_number):
+    template = loader.get_template('streaming/subPage.html')
+    show = TVShow.objects.get(title=title)
+    if not show:
+        return HttpResponse("Invalid show")
+    season = TVSeason.objects.get(part_of=show, season_number=season_number)
+    if not season:
+        return HttpResponse("Invalid season number")
+    media = TVEpisode.objects.get(part_of=season, episode_number=episode_number)
+    if not media:
+        return HttpResponse("Invalid episode number")
+    if request.method == 'POST':
+        request.user.subscriptions.add(show)
+        return HttpResponseRedirect(reverse('streaming:watch_media', kwargs={'title': title,
+                                                                             'season_number':season_number,
+                                                                             'episode_number':episode_number}))
+    context = {
+        'user': request.user,
+        'show':show,
+        'season_number': season_number,
+        'episode_number': episode_number,
+        'media': media
+    }
+    return HttpResponse(template.render(context, request))
+
+
+@login_required(login_url='login/')
+@subscription_required
 def watch_media(request, title, season_number=None, episode_number=None):
     template = loader.get_template('streaming/watchMedia.html')
     media = []
@@ -281,14 +325,20 @@ def watch_media(request, title, season_number=None, episode_number=None):
         media = Movie.objects.get(title=title)
         watch_event = WatchEvent(movie=media, part_of=history)
         watch_event.save()
-    if not media and TVEpisode.objects.filter(title=title).exists():
-        media = TVEpisode.objects.get(title=title)
+    if not media:
+        show = TVShow.objects.get(title=title)
+        if not show:
+            return HttpResponse("Invalid show")
+        season = TVSeason.objects.get(part_of=show, season_number=season_number)
+        if not season:
+            return HttpResponse("Invalid season number")
+        media = TVEpisode.objects.get(part_of=season, episode_number=episode_number)
+        if not media:
+            return HttpResponse("Invalid episode number")
         watch_event = WatchEvent(tv=media, part_of=history)
         watch_event.save()
     if not media:
         return HttpResponse("Invalid Media Request")
-
-    print(media)
     context = {
         'media': media
     }
@@ -318,8 +368,8 @@ def inbox(request):
     inbox_content = Inbox.objects.all()
     messages = Message.objects.all()
     context = {
-        'inbox' : inbox_content,
-        'messages_list' : messages,
+        'inbox': inbox_content,
+        'messages_list': messages,
     }
     return HttpResponse(template.render(context, request))
 

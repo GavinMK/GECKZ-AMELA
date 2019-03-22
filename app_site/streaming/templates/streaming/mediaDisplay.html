@@ -1,6 +1,9 @@
 {% extends "navPage.html" %}
 {% load static %}
 
+{% block title %}{{ media.title }} - AMELA{% endblock %}
+{% block description %}{{ media.description|truncatechars:300 }}{% endblock %}
+
 {% block content %}
 	<header>{{ media.title }} <span>({{ media.metadata.release_year }})</span></header><br>
 
@@ -9,7 +12,7 @@
 			<legend>Rating:</legend><br>
 				<img id="photo" src="{% static "streaming/images/"|add:media.thumbnail_path %}"><br><br>
 			{% if not episodes %}
-			<div class="form-style" style="width: 200px;text-align: center;">
+			<div class="form-style" style="width: 100%;text-align: center;">
                 <form action="{% url 'streaming:watch_media' title=media.title%}">
                     <input type="submit" value="WATCH" style="font-size: 20px;">
                 </form>
@@ -17,10 +20,10 @@
 			{% endif %}
 		</fieldset>
 		<br><br>
-		<fieldset style="size: 50px;">
+		<fieldset>
 			<legend style="text-align: center;">Leave a Rating</legend><br>
 			<p>Implement Rating Functionality</p>
-			<div class="form-style" style="width: 200px;text-align: center;">
+			<div class="form-style" style="text-align: center;">
                 <form action="">
                     <input type="submit" value="Rate">
                 </form>
@@ -32,7 +35,7 @@
 		<fieldset>
 			<legend>Details</legend>
 				<p>Genre: <span>{{ media.metadata.genre }}</span></p>
-				<p>Description: <span>{{ media.description }}</span></p>
+				<p>Description: <span>{{ media.description|linebreaksbr }}</span></p>
 				<p>Production Studio: <span>{{ media.metadata.studio }}</span></p>
 				<p>Streaming Service: <span>{{ media.metadata.streaming_service }}</span></p>
 				{% if not episodes %}
