@@ -145,8 +145,8 @@ def post_comment(request):
             comment.save()
 
             return HttpResponseRedirect(redirect)
-
-    return HttpResponse("Failed to post comment")
+    context['error_message'] = 'Comment too long. Please limit to 500 characters.'
+    return render(request, context)
 
 
 
