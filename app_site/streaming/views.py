@@ -273,14 +273,11 @@ def account_page(request):
 @login_required(login_url='login/')
 def inbox(request):
     form = message_form()
-
     inbox_content = Inbox.objects.all()
     messages = Message.objects.all()
-
     usernameList = []
     for message in messages:
         usernameList.append(message.part_of.__str__()[:-6])
-        print(type(message))
 
     messages_and_names = list(zip(messages, usernameList))
 
@@ -292,16 +289,10 @@ def inbox(request):
     }
 
     if request.method == 'POST':
-        
         if 'send' in request.POST: #user wants to send a message
-            print("send was clicked")
             form = message_form(request.POST)
-
             if form.is_valid():
                 data = form.cleaned_data
-
-                print("data",data)
-
                 user_query = SiteUser.objects.filter(username=data['username'])
                 if len(user_query) == 1:
 
@@ -311,6 +302,9 @@ def inbox(request):
                     if (user != SiteUser.objects.get(username=request.user.username)):
                         new_message = Message(content=data['content'], from_user=SiteUser.objects.get(username=request.user.username), part_of=user_inbox)
                         new_message.save()
+                        user_inbox.num_messages += 1
+                        user_inbox.num_unread_messages += 1
+                        user_inbox.save()
                         return HttpResponseRedirect(reverse('streaming:inbox'))
                     else:
                         context['error_message'] = "You cannot send a message to yourself"
@@ -319,14 +313,17 @@ def inbox(request):
                     context['error_message'] = "That user does not exist"
 
         elif 'read' in request.POST: #user wants to mark the message as read
-            print("Mark as read was clicked")
             form = mark_message_as_read_form(request.POST)
             if form.is_valid():
                 data = form.cleaned_data
-                print("data",data) # {'read': 'Message object'}
-                print(type(data['read']))
-
-                #data['read'].read = True
+                for message in messages:
+                    if (message.__str__() == data['read']):
+                        message.read = True
+                        message.part_of.num_read_messages += 1
+                        message.part_of.num_unread_messages -= 1
+                        message.save() #save the changes to the Message object
+                        message.part_of.save() #save the changes to the Inbox object
+                        return HttpResponseRedirect(reverse('streaming:inbox'))
         
     return render(request, 'streaming/inbox.html', context)
 
