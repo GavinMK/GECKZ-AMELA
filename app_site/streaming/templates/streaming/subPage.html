@@ -1,0 +1,13 @@
+{% extends "navPage.html" %}
+{% load static %}
+
+{% block content %}
+	<header>{{ media.title }} <span>({{ media.metadata.release_year }})</span></header><br>
+    <img id="photo" src="{% static "streaming/images/"|add:media.thumbnail_path %}"><br><br>
+    <span>YOU ARE NOT SUBSCRIBED TO THIS TV SHOW. USE A SUBSCRIBE SLOT?</span>
+<form action="{% url 'streaming:subscribe' title=show.title season_number=season_number episode_number=episode_number%}" method="post">
+    {% csrf_token %}
+    <input type="submit" value="SUBSCRIBE" style="font-size: 20px;">
+</form>
+
+{% endblock %}
