@@ -3,11 +3,16 @@
 {% block title %}{{ user }} - AMELA{% endblock %}
 {% block content %}
 
+{% if user != request.user %}
 <div class="form-style" style="width:100%;text-align: right;">
         <form action="">
             <input type="submit" value="Follow" style="font-size: 18px;">
+            <input type="submit" value="Message" style="font-size: 18px;margin-left: 30px;">
         </form>
     </div>
+{% else %}
+<br><br>
+{% endif %}
 
 <header style="text-align: left; padding-bottom: 0;">{{ user.first_name }} {{ user.last_name }}</header>
 <p style="padding-left: 50px;color: #fffafa;font-size: 20px;">@{{ user }}</p>
@@ -23,7 +28,7 @@
     <br><br>
     <fieldset>
     <legend>Comments</legend><br><br>
-        <div class="form-style" style="margin: 0;padding-bottom: 20px;width: 200px;">
+        <div class="form-style" style="margin: 0;padding-bottom: 20px;width: 63%;">
             <form action="">
                 <textarea style="text-align: left; width: 150%; height: 20px;" placeholder="Leave me a comment..."></textarea>
                 <input type="submit" value="Comment">

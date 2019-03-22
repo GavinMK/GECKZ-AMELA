@@ -2,15 +2,18 @@
 
 {% block content %}
 
-<header>This is the page that shows you what friends you have</header>
+<header style="text-align: left;">Friends</header>
+<hr>
+<br>
 
-<h1>However, we have not added this feature yet, so you have no friends.</h1>
-
-<div class="form-style" style="margin: 0;width: 700px;padding-left: 40px;padding-bottom: 40px;">
+<div class="form-style" id="friendsSearch">
 	<form action="{% url 'streaming:usersearch' %}" method="get">
 		<input class="searchfield" id="searchbox" name="q" type="text" placeholder="Search for Users" value="{{ query }}">
 		<input type="submit" value="Search">
 	</form>
 </div>
+
+<p>This is the page that shows you what friends you have</p>
+<p>However, we have not added this feature yet, so you have no friends.</p>
 
 {% endblock %}
