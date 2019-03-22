@@ -199,8 +199,9 @@ def display_media(request, title):
     if not media:
         return HttpResponse("Invalid Media Request")
 
-    num_ratings = media.rating_section.num_of_ratings
+
     ratings = Rating.objects.filter(part_of=media.rating_section)
+    num_ratings =  len(ratings)# media.rating_section.num_of_ratings
 
     avg_rating = 0
 

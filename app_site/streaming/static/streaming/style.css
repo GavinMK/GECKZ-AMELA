@@ -260,7 +260,7 @@ h2{
 .stars-outer {
   display: inline-block;
   position: relative;
-  font-family: FontAwesome;
+  font-family: Raleway;
 }
  
 .stars-outer::before {
