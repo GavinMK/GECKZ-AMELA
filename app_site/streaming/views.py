@@ -311,7 +311,14 @@ def friends(request):
 
 @login_required(login_url='login/')
 def homepage(request):
-    return render(request, 'streaming/homepage.html')
+    template = loader.get_template('streaming/homepage.html')
+    show_list = request.user.subscriptions.all()
+    movie_list = request.user.rentals.all()
+    context = {
+        'shows': show_list,
+        'movies': movie_list
+    }
+    return HttpResponse(template.render(context, request))
 
 
 @login_required(login_url='login/')
