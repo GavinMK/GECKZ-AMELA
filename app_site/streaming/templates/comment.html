@@ -9,7 +9,7 @@
     </div>
     {% for comment in comments %}
         <hr>
-        <p><span>Posted By: </span>{{ comment.posted_by }}</p>
+        <p><span>Posted By: </span><a href="{% url 'streaming:user_page_friend' username=comment.posted_by %}">{{ comment.posted_by }}</a> <span> on {{ comment.timestamp }}</span> <br><br></p>
         <span>"{{ comment.content }}"</span><br>
     {% endfor %}
     <br>
