@@ -36,7 +36,6 @@ class change_form(forms.Form):
     email = forms.CharField(label='Email', max_length=30)
 
 
-class CommentForm(forms.ModelForm):
-    class Meta:
-        model = Comment
-        fields = ['content']
+class CommentForm(forms.Form):
+    content = forms.CharField(label='Username', max_length=500)
+    url = forms.CharField(label='URL', max_length=100)

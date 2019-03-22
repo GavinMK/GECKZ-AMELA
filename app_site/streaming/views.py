@@ -11,6 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from .forms import user_form, login_form, billing_form, change_form, CommentForm
 from django.core.paginator import Paginator
+import re
 
 
 def validate_password(password_candidate):
@@ -106,25 +107,44 @@ def shows(request):
 
 
 @login_required(login_url='login/')
-def post_comment(request, element):
-    if request.method == 'POST' and element:
-        section = None
-        if SiteUser.objects.filter(username=element).exists():
-            section = SiteUser.objects.get(username=element).comment_section
-        elif TVShow.objects.filter(title=element).exists():
-            section = TVShow.objects.get(title=element).comment_section
-        elif TVEpisode.objects.filter(title=element).exists():
-            section = TVEpisode.objects.get(title=element).comment_section
-        elif Movie.objects.filter(title=element).exists():
-            section = Movie.objects.get(title=element).comment_section
-        comment = Comment(posted_by=request.user, part_of=section)
-        form = CommentForm(request.POST, instance = comment)
+def post_comment(request):
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        redirect = ''
         if form.is_valid():
-            form.save()
-            return HttpResponse("Done")
-        else:
-            print("Not valid")
-    return HttpResponse("Fail")
+            section = None
+            clean = form.cleaned_data
+            redirect = clean['url']
+            url = clean['url'].replace("%20", " ")
+            media_match = re.match(r'.*/media/(?P<media_title>[^/]*)/(?P<season>\d+)?/?(?P<episode>\d+)?', url)
+            if media_match:
+                title = media_match.group('media_title')
+                season = media_match.group('season')
+                episode = media_match.group('episode')
+                media = None
+                if TVShow.objects.filter(title=title).exists():
+                    media = TVShow.objects.get(title=title)
+                    if season:
+                        season = TVSeason.objects.get(part_of=media, season_number=int(season))
+                        section = TVEpisode.objects.get(part_of=season, episode_number=int(episode)).comment_section
+                if not media:
+                    media = Movie.objects.get(title=title)
+                if not section:
+                    section = media.comment_section
+            else:
+                if len(url) == 20:
+                    section = request.user.comment_section
+                else:
+                    username = url[url[11:].find('/')+12:]
+                    if username[-1] == '/': username = username[:-1]
+                    section = SiteUser.objects.get(username=username).comment_section
+
+            comment = Comment(posted_by=request.user, content=clean['content'], part_of=section)
+            comment.save()
+
+            return HttpResponseRedirect(redirect)
+
+    return HttpResponse("Failed to post comment")
 
 
 
