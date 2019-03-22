@@ -2,7 +2,9 @@
 from __future__ import unicode_literals
 from django.urls import reverse
 from django.shortcuts import render
+
 from .decorators import anonymous_only_redirect, subscription_required
+
 from .models import *
 from django.db.models import Q
 from django.template import loader
@@ -16,7 +18,7 @@ from django.core.paginator import Paginator
 def validate_password(password_candidate):
     valid = False
     if len(password_candidate) > 7:
-        if any(char.isdigit()for char in password_candidate):
+        if any(char.isdigit() for char in password_candidate):
             valid = any(char.isupper() for char in password_candidate)
     return valid
 
@@ -121,13 +123,13 @@ def search(request):
         # Each result has to match all of the words.
         for word in words:
             db_query = (Q(metadata__genre__icontains=word) |
-                Q(metadata__release_year__icontains=word) |
-                Q(metadata__studio__icontains=word) |
-                Q(metadata__release_year__icontains=word) |
-                Q(metadata__streaming_service__icontains=word) |
-                Q(metadata__actor__name__icontains=word) |
-                Q(title__icontains=word)
-            )
+                        Q(metadata__release_year__icontains=word) |
+                        Q(metadata__studio__icontains=word) |
+                        Q(metadata__release_year__icontains=word) |
+                        Q(metadata__streaming_service__icontains=word) |
+                        Q(metadata__actor__name__icontains=word) |
+                        Q(title__icontains=word)
+                        )
             partial_tv_results = tv_show_list.filter(db_query)
             partial_movie_results = movie_list.filter(db_query)
             tv_results &= partial_tv_results
@@ -275,8 +277,8 @@ def inbox(request):
     inbox_content = Inbox.objects.all()
     messages = Message.objects.all()
     context = {
-        'inbox' : inbox_content,
-        'messages_list' : messages,
+        'inbox': inbox_content,
+        'messages_list': messages,
     }
     return HttpResponse(template.render(context, request))
 
