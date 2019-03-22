@@ -22,9 +22,9 @@ class message_form(forms.Form):
     username = forms.CharField(label='Username', max_length=15)
     content = forms.CharField(label='Content', max_length=3000)
 
-#this method is reqiured to retrieve data from a template, although the data will always be True,
-#so there need not be an explicit definition of this form
-class mark_message_as_read(forms.Form):
+
+class mark_message_as_read_form(forms.Form):
+    read = forms.CharField(label='Read', max_length=1000)
     pass
 
 

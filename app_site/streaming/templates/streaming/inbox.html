@@ -12,16 +12,16 @@
                     <form action="{% url 'streaming:inbox' %}" method="POST" style="margin: 0;">
                         {% csrf_token %}
                         <label for="username">To: </label><br>
-                        <input id="username" placeholder="Username" type="text" name="username" required><br>
+                        <input id="username" autocomplete="true" placeholder="Username" type="text" name="username" required><br>
                         <h1>
                             {% if error_message != None %}
-                            {{ error_message }}
+                                {{ error_message }}
                             {% endif %}
                         </h1>
                         <label for="content">Message: </label><br>
                         <input id="content" type="text" name="content" required><br>
                         <br>
-                        <input type="submit" name="send"value="Send">
+                        <input type="submit" name="send" value="Send">
                     </form>
                 </div>
         </fieldset>
@@ -42,16 +42,21 @@
         {% if user.inbox == message.part_of %}
             <section style="width: 97%;">
                 {% if not message.read %}
-                    <p>This is an unread message!</p>
+                    <p style="color:red">This is an unread message!</p>
                 {% endif %}
                 <fieldset>
                     <legend>From: {{message.from_user}}</legend>
                     <p>Received: {{message.timestamp}}</p>
                     <p style="padding-left: 0px;color: #fffafa;font-size: 15px;">&emsp;{{message.content}}</p>
-                    <form action="{% url 'streaming:inbox' %}" method="POST" style="margin: 0;">
-                        {% csrf_token %}
-                        <input type="submit" name="read" value="Mark as read">
-                    </form>
+                    {% if not message.read %}
+                        <div class="form-style" style="margin: 0;padding-bottom: 20px;"></div>
+                            <form action="{% url 'streaming:inbox' %}" method="POST" style="margin: 0;">
+                                {% csrf_token %}
+                                <input id="read" type="hidden" name="read" value="{{message}}" required>
+                                <input type="submit" value="Mark as Read">
+                            </form>
+                        </div>
+                    {% endif %}
                 </fieldset>
             </section>
         {% endif %}

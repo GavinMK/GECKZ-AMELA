@@ -9,7 +9,7 @@ from django.template import loader
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
-from .forms import user_form, login_form, search_form, message_form
+from .forms import user_form, login_form, search_form, message_form, mark_message_as_read_form
 
 from django.core.paginator import Paginator
 
@@ -280,6 +280,7 @@ def inbox(request):
     usernameList = []
     for message in messages:
         usernameList.append(message.part_of.__str__()[:-6])
+        print(type(message))
 
     messages_and_names = list(zip(messages, usernameList))
 
@@ -291,30 +292,44 @@ def inbox(request):
     }
 
     if request.method == 'POST':
-        form = message_form(request.POST)
-        print(form.errors)
-        if form.is_valid():
-            data = form.cleaned_data
+        
+        if 'send' in request.POST: #user wants to send a message
+            print("send was clicked")
+            form = message_form(request.POST)
 
-            print(data)
+            if form.is_valid():
+                data = form.cleaned_data
 
-            user_query = SiteUser.objects.filter(username=data['username'])
-            if len(user_query) == 1:
+                print("data",data)
 
-                user = SiteUser.objects.get(username=data['username'])
-                user_inbox = user.inbox
+                user_query = SiteUser.objects.filter(username=data['username'])
+                if len(user_query) == 1:
 
-                if (user != SiteUser.objects.get(username=request.user.username)):
-                    new_message = Message(content=data['content'], from_user=SiteUser.objects.get(username=request.user.username), part_of=user_inbox)
-                    new_message.save()
-                    return HttpResponseRedirect(reverse('streaming:inbox'))
+                    user = SiteUser.objects.get(username=data['username'])
+                    user_inbox = user.inbox
+
+                    if (user != SiteUser.objects.get(username=request.user.username)):
+                        new_message = Message(content=data['content'], from_user=SiteUser.objects.get(username=request.user.username), part_of=user_inbox)
+                        new_message.save()
+                        return HttpResponseRedirect(reverse('streaming:inbox'))
+                    else:
+                        context['error_message'] = "You cannot send a message to yourself"
+
                 else:
-                    context['error_message'] = "You cannot send a message to yourself"
+                    context['error_message'] = "That user does not exist"
 
-            else:
-                context['error_message'] = "That user does not exist"
+        elif 'read' in request.POST: #user wants to mark the message as read
+            print("Mark as read was clicked")
+            form = mark_message_as_read_form(request.POST)
+            if form.is_valid():
+                data = form.cleaned_data
+                print("data",data) # {'read': 'Message object'}
+                print(type(data['read']))
+
+                #data['read'].read = True
         
     return render(request, 'streaming/inbox.html', context)
+
 
 @login_required(login_url='login/')
 # @subscription_required [uncomment me when users can subscribe/rent]
