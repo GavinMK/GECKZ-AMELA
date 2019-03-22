@@ -226,7 +226,7 @@ def display_media(request, title):
         'media': media,
         'actors': actors,
         'episodes': episode_list,
-        'comments': media.comment_section.comment_set.all()
+        'comments': media.comment_section.comment_set.all().order_by('-timestamp'),
     }
     return HttpResponse(template.render(context, request))
 
@@ -251,7 +251,7 @@ def display_episode(request, title, season_number, episode_number):
         'episode_number': episode_number,
         'episode': episode,
         'actors': actors,
-        'comments': episode.comment_section.comment_set.all()
+        'comments': episode.comment_section.comment_set.all().order_by('-timestamp'),
     }
     return HttpResponse(template.render(context, request))
 
@@ -265,7 +265,7 @@ def user_page(request, username=None):
     media_history = WatchEvent.objects.filter(part_of=user.watch_history)
     context = {
         'user': user,
-        'comments': user.comment_section.comment_set.all(),
+        'comments': user.comment_section.comment_set.all().order_by('-timestamp'),
         'history': media_history.order_by('-time_watched'),
     }
     return HttpResponse(template.render(context, request))
