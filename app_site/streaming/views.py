@@ -311,7 +311,10 @@ def watch_media(request, title, season_number=None, episode_number=None):
 @login_required(login_url='login/')
 def friends(request):
     template = loader.get_template('streaming/friendPage.html')
-    context = dict()
+    friends = request.user.friends.all()
+    context = {
+        'friends': friends
+    }
     return HttpResponse(template.render(context, request))
 
 
