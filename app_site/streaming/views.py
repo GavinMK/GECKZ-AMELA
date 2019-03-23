@@ -222,8 +222,14 @@ def user_page(request, username=None):
         username = request.user.username
     user = SiteUser.objects.get(username=username)
     media_history = WatchEvent.objects.filter(part_of=user.watch_history)
+    if request.method == 'POST':
+        if request.POST['follow_button'] == 'Follow':
+            request.user.friends.add(user)
+        elif request.POST['follow_button'] == 'Un-follow':
+            request.user.friends.remove(user)
     context = {
         'user': user,
+        'friends': request.user.friends.filter(username=user.username).exists(),
         'comments': user.comment_section.comment_set.all(),
         'history': media_history.order_by('-time_watched'),
     }
