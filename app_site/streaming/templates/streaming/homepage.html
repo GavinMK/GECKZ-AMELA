@@ -11,7 +11,7 @@
         <div class="media-style">
         {% for entry in shows %}
             <figure>
-                <a href="{% url 'streaming:watch_media' title=entry.title %}"><img src="{% static "streaming/images/"|add:entry.thumbnail_path %}">{{ entry.title }}</a>
+                <a href="{% url 'streaming:display_media' title=entry.title %}"><img src="{% static "streaming/images/"|add:entry.thumbnail_path %}">{{ entry.title }}</a>
             </figure>
         {% endfor %}
         </div>
@@ -27,7 +27,7 @@
         <div class="media-style">
         {% for entry in movies %}
             <figure>
-                <a href="{% url 'streaming:watch_media' title=entry.title %}"><img src="{% static "streaming/images/"|add:entry.thumbnail_path %}">{{ entry.title }}</a>
+                <a href="{% url 'streaming:display_media' title=entry.title %}"><img src="{% static "streaming/images/"|add:entry.thumbnail_path %}">{{ entry.title }}</a>
             </figure>
         {% endfor %}
         </div>
