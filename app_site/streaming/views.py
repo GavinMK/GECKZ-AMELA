@@ -11,7 +11,7 @@ from django.template import loader
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
-from .forms import user_form, login_form, search_form, message_form, mark_message_as_read_form
+from .forms import user_form, login_form, search_form, message_form, mark_message_as_read_form, billing_form, change_form
 
 from django.core.paginator import Paginator
 
