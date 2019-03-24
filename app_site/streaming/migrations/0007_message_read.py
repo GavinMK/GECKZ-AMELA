@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('streaming', '0005_auto_20190318_1929'),
+        ('streaming', '0006_siteuser_friends'),
     ]
 
     operations = [
