@@ -24,7 +24,7 @@
 			<ul>
 			{% for entry in users %}
 				<li>
-					<a id="friendsList" href="{% url 'streaming:user_page_friend' username=entry.username %}">{{ entry.username }}</a><br><br>
+					<a id="friendsList" href="{% url 'streaming:user_page' username=entry.username %}">{{ entry.username }}</a><br><br>
 				</li>
 			{% endfor %}
 			</ul>
