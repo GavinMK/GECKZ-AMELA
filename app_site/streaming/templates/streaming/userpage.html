@@ -10,7 +10,7 @@
             {% if not friends %}
                 <input type="submit" name="follow_button" value="Follow" style="font-size: 18px;">
             {% else %}
-                <input type="submit" name="follow_button" value="Un-follow" style="font-size: 18px;">
+                <input type="submit" name="follow_button" value="Unfollow" style="font-size: 18px;">
             {% endif %}
         <input type="submit" value="Message" style="font-size: 18px;margin-left: 30px;">
         </form>
@@ -19,8 +19,11 @@
 <br><br>
 {% endif %}
 
-<header style="text-align: left; padding-bottom: 0;">{{ user.first_name }} {{ user.last_name }}</header>
-<p style="padding-left: 50px;color: #fffafa;font-size: 20px;">@{{ user }}</p>
+<div class="profile-style" style="padding-bottom: 90px;">
+    <img src="">
+    <header>{{ user.first_name }} {{ user.last_name }}</header>
+    <p>@{{ user }}</p>
+</div>
 
 <hr>
 <p style="text-align: right;"><span>Member since</span> {{ user.date_joined }}</p>

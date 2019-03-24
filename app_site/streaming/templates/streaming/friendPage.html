@@ -13,9 +13,17 @@
 	</form>
 </div>
 
-    <p>People you're following:</p>
-    {% for entry in friends %}
-        <a href="{% url 'streaming:user_page' username=entry.username %}">{{ entry.username }}</a>
-    {% endfor %}
+    {% if friends %}
+    <h1 id="search">People you're following:</h1>
+		<div class="media-style" style="grid-auto-rows: 20vw;">
+            {% for entry in friends %}
+            <figure>
+                <a id="friendsList" href="{% url 'streaming:user_page' username=entry.username %}"><img src="" >{{ entry.username }}</a>
+            </figure>
+            {% endfor %}
+        </div>
+    {% else %}
+    <h1 id="search">You are not following anyone.</h1>
+    {% endif %}
 
 {% endblock %}

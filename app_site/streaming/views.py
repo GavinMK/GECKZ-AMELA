@@ -225,7 +225,7 @@ def user_page(request, username=None):
     if request.method == 'POST':
         if request.POST['follow_button'] == 'Follow':
             request.user.friends.add(user)
-        elif request.POST['follow_button'] == 'Un-follow':
+        elif request.POST['follow_button'] == 'Unfollow':
             request.user.friends.remove(user)
     context = {
         'user': user,
