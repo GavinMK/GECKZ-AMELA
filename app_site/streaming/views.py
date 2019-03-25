@@ -11,9 +11,10 @@ from django.template import loader
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
-from .forms import user_form, login_form, search_form, message_form, mark_message_as_read_form, billing_form, change_form
+from .forms import user_form, login_form, search_form, message_form, mark_message_as_read_form, billing_form, change_form, CommentForm
 
 from django.core.paginator import Paginator
+import re
 
 
 def validate_password(password_candidate):
@@ -109,6 +110,48 @@ def shows(request):
 
 
 @login_required(login_url='login/')
+def post_comment(request):
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        redirect = ''
+        if form.is_valid():
+            section = None
+            clean = form.cleaned_data
+            redirect = clean['url']
+            url = clean['url'].replace("%20", " ")
+            media_match = re.match(r'.*/media/(?P<media_title>[^/]*)/(?P<season>\d+)?/?(?P<episode>\d+)?', url)
+            if media_match:
+                title = media_match.group('media_title')
+                season = media_match.group('season')
+                episode = media_match.group('episode')
+                media = None
+                if TVShow.objects.filter(title=title).exists():
+                    media = TVShow.objects.get(title=title)
+                    if season:
+                        season = TVSeason.objects.get(part_of=media, season_number=int(season))
+                        section = TVEpisode.objects.get(part_of=season, episode_number=int(episode)).comment_section
+                if not media:
+                    media = Movie.objects.get(title=title)
+                if not section:
+                    section = media.comment_section
+            else:
+                if len(url) == 20:
+                    section = request.user.comment_section
+                else:
+                    username = url[url[11:].find('/')+12:]
+                    if username[-1] == '/': username = username[:-1]
+                    section = SiteUser.objects.get(username=username).comment_section
+
+            comment = Comment(posted_by=request.user, content=clean['content'], part_of=section)
+            comment.save()
+
+            return HttpResponseRedirect(redirect)
+    context['error_message'] = 'Comment too long. Please limit to 500 characters.'
+    return render(request, context)
+
+
+
+@login_required(login_url='login/')
 def search(request):
     template = loader.get_template('streaming/searchPage.html')
     tv_show_list = TVShow.objects.order_by('title')
@@ -186,7 +229,7 @@ def display_media(request, title):
         'media': media,
         'actors': actors,
         'episodes': episode_list,
-        'comments': media.comment_section.comment_set.all()
+        'comments': media.comment_section.comment_set.all().order_by('-timestamp'),
     }
     return HttpResponse(template.render(context, request))
 
@@ -211,7 +254,7 @@ def display_episode(request, title, season_number, episode_number):
         'episode_number': episode_number,
         'episode': episode,
         'actors': actors,
-        'comments': episode.comment_section.comment_set.all()
+        'comments': episode.comment_section.comment_set.all().order_by('-timestamp'),
     }
     return HttpResponse(template.render(context, request))
 
@@ -231,7 +274,7 @@ def user_page(request, username=None):
     context = {
         'user': user,
         'friends': request.user.friends.filter(username=user.username).exists(),
-        'comments': user.comment_section.comment_set.all(),
+        'comments': user.comment_section.comment_set.all().order_by('-timestamp'),
         'history': media_history.order_by('-time_watched'),
     }
     return HttpResponse(template.render(context, request))
@@ -390,7 +433,7 @@ def inbox(request):
                         message.save() #save the changes to the Message object
                         message.part_of.save() #save the changes to the Inbox object
                         return HttpResponseRedirect(reverse('streaming:inbox'))
-        
+
     return render(request, 'streaming/inbox.html', context)
 
 def billing(request):
