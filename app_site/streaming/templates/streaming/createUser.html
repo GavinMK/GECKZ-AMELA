@@ -5,7 +5,7 @@
 	<div class="form-style">
 
 	<form action="{% url 'streaming:createUser' %}" method="post">
-		{%  csrf_token %}
+		{% csrf_token %}
 		<br><br>
 		<header>Create Account</header><br><br>
 		<fieldset>

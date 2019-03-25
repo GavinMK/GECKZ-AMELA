@@ -1,4 +1,8 @@
 {% extends "navPage.html" %}
+
+{% block title %}{{ show.title }} S{{ episode.part_of.season_number }}E{{ episode.episode_number }}: {{ episode.title }} - AMELA{% endblock %}
+{% block description %}{{ episode.description|truncatechars:300 }}{% endblock %}
+
 {% load static %}
 {% block content %}
 
@@ -11,7 +15,7 @@
 			<legend>Rating:</legend><br>
 				<img id="photo" src="{% static "streaming/images/"|add:show.thumbnail_path %}"><br><br>
 			<div class="form-style" style="width: 200px;text-align: center;">
-                <form action="{% url 'streaming:watch_media' title=episode.title season_number=season_number episode_number=episode_number %}">
+                <form action="{% url 'streaming:watch_media' title=show.title season_number=season_number episode_number=episode_number %}">
                     <input type="submit" value="WATCH" style="font-size: 20px;">
                 </form>
             </div>
@@ -33,7 +37,7 @@
             <legend>Details</legend>
               <p>Season {{ episode.part_of.season_number }} Episode {{ episode.episode_number }}</p>
                   <p>Genre: <span>{{ episode.metadata.genre }}</span></p>
-                  <p>Description: <span>{{ episode.description }}</span></p>
+                  <p>Description: <span>{{ episode.description|linebreaksbr }}</span></p>
                   <p>Production Studio: <span>{{ episode.metadata.studio }}</span></p>
               <p>Streaming Service: <span>{{ episode.metadata.streaming_service }}</span></p>
                   <p>Runtime: <span>{{ episode.runtime }}</span></p>
@@ -47,19 +51,7 @@
 
 	<section>
 		<fieldset>
-			<legend>Comments</legend><br><br>
-				<div class="form-style" style="margin: 0;padding-bottom: 20px;">
-					<form action="" style="margin: 0;">
-						<textarea style="text-align: left; width: 165%; height: 20px;" placeholder="Leave a comment..."></textarea>
-						<input type="submit" value="Comment">
-					</form>
-				</div>
-				{% for comment in comments %}
-					<hr>
-					<p><span>Posted By: </span>{{ comment.posted_by }}</p>
-					<span>"{{ comment.content }}"</span><br>
-				{% endfor %}
-				<br>
+			{% include "comment.html" %}
 		</fieldset>
 	</section>
 

@@ -51,7 +51,7 @@ fieldset{
 legend{
 	color: #393e46;
 	background: #ffd700;
-	padding: 0px 8px 3px 8px;
+	padding: 0 8px 3px 8px;
 	font-weight: normal;
 	font-size: 22px;
 }
@@ -87,8 +87,8 @@ hr {
 }
 
 #photo{
-	height: 4in;
-	width: 3.5in;
+	height: 100%;
+	width: 100%;
 }
 
 #friendsList{
@@ -101,23 +101,25 @@ hr {
 	text-decoration: none;
 }
 
-#photo{
-	height: 4in;
-	width: 3.5in;
-}
-
 #search{
 	margin-left: 40px;
 	color: #fffafa;
 }
 
+#friendsSearch{
+	margin: 0;
+	width: 50%;
+	padding-left: 40px;
+	padding-bottom: 40px;
+}
+
 nav{
 	background: #111;
-	padding: 10px 20px;
+	padding: 15px 20px 0 20px;
 	color: #1a1a1a;
     font-size: 18px;
     font-family: Oswald;
-	height: 60px;
+	width: 97%;
 }
 
 nav ul {
@@ -151,13 +153,40 @@ nav a.active {
 
 .center {
 	text-align: center;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 50%;
+}
+
+.profile-style img{
+	float: left;
+	width: 200px;
+	height: 200px;
+}
+
+.profile-style header{
+	text-align: left;
+	padding-bottom: 0;
+	left: 20px;
+	top: 80px;
+	position: relative;
+}
+
+.profile-style p{
+	padding-left: 50px;
+	color: #fffafa;
+	font-size: 20px;
+	left: 20px;
+	top: 80px;
+	position: relative;
 }
 
 .media-style{
 	text-align: center;
 	display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(2, 25vw);
+    grid-auto-rows: 25vw;
     grid-gap: 15px;
 	font-size: 17px;
 }
@@ -176,7 +205,7 @@ nav a.active {
 
 .form-style{
 	font-family: Raleway;
-    width: 450px;
+    width: 60%;
 	margin: 0 auto;
 }
 
@@ -188,7 +217,6 @@ nav a.active {
 
 .form-style label{
 	text-align: center;
-	width: 100px;
 	color: #fffafa;
 	font-size: 18px;
 }
@@ -222,7 +250,7 @@ h2{
 	color: #393e46;
 	padding: 5px 8px 5px 8px;
 	background: #fffafa;
-	width:50%;
+	width:60%;
     font-size: 14px;
 }
 

@@ -171,6 +171,7 @@ class SiteUser(AbstractUser):
     subscriptions = models.ManyToManyField(TVShow, blank=True)
     rentals = models.ManyToManyField(Movie, blank=True)
     watch_history = models.OneToOneField(WatchHistory, null=True, on_delete=models.CASCADE)
+    friends = models.ManyToManyField('self', blank=True)
 
     def __str__(self):
         return self.username
@@ -200,6 +201,7 @@ class Message(models.Model):
     timestamp = models.DateTimeField(default=timezone.now)
     from_user = models.ForeignKey(SiteUser, on_delete=models.CASCADE)
     part_of = models.ForeignKey(Inbox, on_delete=models.CASCADE)
+    read = models.BooleanField(default=False)
 
     def __str__(self):
         return self.part_of.__str__() + ' message from ' + self.from_user.__str__() + ' at ' + self.timestamp.strftime('%x %X')

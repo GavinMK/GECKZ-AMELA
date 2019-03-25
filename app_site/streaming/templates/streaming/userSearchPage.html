@@ -1,8 +1,14 @@
 {% extends "navPage.html" %}
 
+{% block title %}{% if query %}{{ query }} - {% endif %}AMELA User Search{% endblock %}
+
 {% block content %}
 
-<div class="form-style" style="margin: 0;width: 700px;padding-left: 40px;padding-bottom: 40px;">
+<header style="text-align: left;">Friends</header>
+<hr>
+<br>
+
+<div class="form-style" id="friendsSearch">
 	<form action="{% url 'streaming:usersearch' %}" method="get">
 		<input class="searchfield" id="searchbox" name="q" type="text" placeholder="Search for Users" value="{{ query }}">
 		<input type="submit" value="Search">
@@ -14,15 +20,13 @@
 		<h1 id="search">
 			{{ count }} user{{ count|pluralize }} found:
 		</h1>
-		<div class="media-style">
-			<ul>
-			{% for entry in users %}
-				<li>
-					<a id="friendsList" href="{% url 'streaming:user_page_friend' username=entry.username %}">{{ entry.username }}</a><br><br>
-				</li>
-			{% endfor %}
-			</ul>
-		</div>
+		<div class="media-style" style="grid-auto-rows: 20vw;">
+            {% for entry in users %}
+            <figure>
+                <a id="friendsList" href="{% url 'streaming:user_page' username=entry.username %}"><img src="">{{ entry.username }}</a>
+            </figure>
+            {% endfor %}
+        </div>
 	{% else %}
 		<h1 id="search">
 			No users found with name '<span style="color: #ffd700;">{{ query }}</span>'.
