@@ -19,6 +19,16 @@ class search_form(forms.Form):
     request = forms.CharField(label='request', max_length=128)
 
 
+class message_form(forms.Form):
+    username = forms.CharField(label='Username', max_length=15)
+    content = forms.CharField(label='Content', max_length=3000)
+
+
+class mark_message_as_read_form(forms.Form):
+    read = forms.CharField(label='Read', max_length=1000)
+    pass
+
+
 class billing_form(forms.Form):
     name = forms.CharField(label='Name on Card', max_length=40)
     cc_num = forms.IntegerField(label='Card Number')

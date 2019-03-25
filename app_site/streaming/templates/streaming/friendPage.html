@@ -13,7 +13,17 @@
 	</form>
 </div>
 
-<p>This is the page that shows you what friends you have</p>
-<p>However, we have not added this feature yet, so you have no friends.</p>
+    {% if friends %}
+    <h1 id="search">People you're following:</h1>
+		<div class="media-style" style="grid-auto-rows: 20vw;">
+            {% for entry in friends %}
+            <figure>
+                <a id="friendsList" href="{% url 'streaming:user_page' username=entry.username %}"><img src="" >{{ entry.username }}</a>
+            </figure>
+            {% endfor %}
+        </div>
+    {% else %}
+    <h1 id="search">You are not following anyone.</h1>
+    {% endif %}
 
 {% endblock %}

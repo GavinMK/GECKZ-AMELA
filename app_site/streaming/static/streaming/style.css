@@ -159,11 +159,34 @@ nav a.active {
 	width: 50%;
 }
 
+.profile-style img{
+	float: left;
+	width: 200px;
+	height: 200px;
+}
+
+.profile-style header{
+	text-align: left;
+	padding-bottom: 0;
+	left: 20px;
+	top: 80px;
+	position: relative;
+}
+
+.profile-style p{
+	padding-left: 50px;
+	color: #fffafa;
+	font-size: 20px;
+	left: 20px;
+	top: 80px;
+	position: relative;
+}
+
 .media-style{
 	text-align: center;
 	display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(2, 25vw);
+    grid-auto-rows: 25vw;
     grid-gap: 15px;
 	font-size: 17px;
 }

@@ -1,40 +1,81 @@
 {% extends "navPage.html" %}
 
+{% load static %}
 {% block content %}
-    <header>Welcome to your inbox, {{user}}.</header>
+    <header>Inbox</header>
+    <hr>
 
-    <h1>Received messages:</h1>
+    <section style="width: 97%;float: right;padding-top: 20px;">
+        <fieldset>
+            <legend>Send a message</legend><br>
+                <div class="form-style" style="margin: 0;padding-bottom: 20px;">
+                    <form action="{% url 'streaming:inbox' %}" method="POST" style="margin: 0;">
+                        {% csrf_token %}
+                        <label for="username">To: </label><br>
+                        <input id="username" autocomplete="true" placeholder="Username" type="text" name="username" required><br>
+                        <h1>
+                            {% if error_message != None %}
+                                {{ error_message }}
+                            {% endif %}
+                        </h1>
+                        <label for="content">Message: </label><br>
+                        <input id="content" type="text" name="content" required><br>
+                        <br>
+                        <input type="submit" name="send" value="Send">
+                    </form>
+                </div>
+        </fieldset>
+    </section>
+
+    <p style="padding-left: 0px;color: #fffafa;font-size: 20px;">Received messages:</p>
     {% if user.inbox.num_unread_messages > 0 %}
         {% if user.inbox.num_unread_messages == 1 %}
-            <p>You have 1 unread message!</p>
+            <p>You have <strong>1</strong> unread message!</p>
         {% else %}
-            <p>You have {{user.inbox.num_unread_messages}} unread messages!</p>
+            <p>You have <strong>{{user.inbox.num_unread_messages}}</strong> unread messages!</p>
         {% endif %}
     {% else %}
         <p>You have no unread messages.</p>
     {% endif %}
-    <br>
 
-    {% for message in messages_list reversed %}
+    {% for message, name in messages_list reversed %}
         {% if user.inbox == message.part_of %}
-            <p>From: {{message.from_user}}</p>
-            <p>Received: {{message.timestamp}}</p>
-            <p>&emsp;{{message.content}}</p>
-            <br>
+            <section style="width: 97%;">
+                {% if not message.read %}
+                    <p style="color:red">This is an unread message!</p>
+                {% endif %}
+                <fieldset>
+                    <legend>From: {{message.from_user}}</legend>
+                    <p>Received: {{message.timestamp}}</p>
+                    <p style="padding-left: 0px;color: #fffafa;font-size: 15px;">&emsp;{{message.content}}</p>
+                    {% if not message.read %}
+                        <div class="form-style" style="margin: 0;padding-bottom: 20px;"></div>
+                            <form action="{% url 'streaming:inbox' %}" method="POST" style="margin: 0;">
+                                {% csrf_token %}
+                                <input id="read" type="hidden" name="read" value="{{message}}" required>
+                                <input type="submit" value="Mark as Read">
+                            </form>
+                        </div>
+                    {% endif %}
+                </fieldset>
+            </section>
         {% endif %}
     {% endfor %}
 
-    <h1>Sent messages:</h1>
-    {% for message in messages_list reversed %}
+    <p style="padding-left: 0px;color: #fffafa;font-size: 20px;">Sent messages:</p>
+    {% for message, name in messages_list reversed %}
         {% if user == message.from_user %}
-            <p>To: {{message.part_of}}</p>
-            <p>Sent: {{message.timestamp}}</p>
-            <p>&emsp;{{message.content}}</p>
-            <br>
+            <section style="width: 97%;">
+                <fieldset>
+                    <legend>To: {{name}}</legend>
+                    <p>Sent: {{message.timestamp}}</p>
+                    <p style="padding-left: 0px;color: #fffafa;font-size: 15px;">&emsp;{{message.content}}</p>
+                </fieldset>
+            </section>
         {% endif %}
     {% endfor %}
-
-    <p>Number of total messages: {{ user.inbox.num_messages }}</p>
+    
+    <p>Number of total messages: {{ user.inbox.num_messages }}</p>    
     <p>Number of read messages: {{ user.inbox.num_read_messages }}</p>
     <p>Number of unread messages: {{ user.inbox.num_unread_messages }}</p>
 

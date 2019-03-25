@@ -1,4 +1,5 @@
 {% extends "navPage.html" %}
+{% load static %}
 
 {% block content %}
 
@@ -6,12 +7,34 @@
 
 <fieldset>
     <legend>Active Subscriptions</legend><br>
-
+    {% if shows %}
+        <div class="media-style">
+        {% for entry in shows %}
+            <figure>
+                <a href="{% url 'streaming:display_media' title=entry.title %}"><img src="{% static "streaming/images/"|add:entry.thumbnail_path %}">{{ entry.title }}</a>
+            </figure>
+        {% endfor %}
+        </div>
+        {% else %}
+            <p style="color: #fffafa;padding-left: 40px;">No active subscriptions</p>
+    {% endif %}
+    <br>
 </fieldset>
 <br><br>
 <fieldset>
     <legend>Rented Movies</legend><br>
-
+    {% if movies %}
+        <div class="media-style">
+        {% for entry in movies %}
+            <figure>
+                <a href="{% url 'streaming:display_media' title=entry.title %}"><img src="{% static "streaming/images/"|add:entry.thumbnail_path %}">{{ entry.title }}</a>
+            </figure>
+        {% endfor %}
+        </div>
+    {% else %}
+        <p style="color: #fffafa;padding-left: 40px;">No movie rentals</p>
+    {% endif %}
+    <br>
 </fieldset>
 
 {% endblock %}

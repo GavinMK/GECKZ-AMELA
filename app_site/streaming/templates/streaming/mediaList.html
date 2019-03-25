@@ -6,7 +6,7 @@
 
 	{% for entry in media %}
 	<figure>
-		<a href="{% url 'streaming:display_media' title=entry.title %}"><img src="{% static "streaming/images/"|add:entry.thumbnail_path %}">{{ entry.title }}</a><br><br>
+		<a href="{% url 'streaming:display_media' title=entry.title %}"><img src="{% static "streaming/images/"|add:entry.thumbnail_path %}">{{ entry.title }}</a>
 	</figure>
 	{% endfor %}
 
