@@ -16,7 +16,7 @@ from django.core.paginator import Paginator
 def validate_password(password_candidate):
     valid = False
     if len(password_candidate) > 7:
-        if any(char.isdigit()for char in password_candidate):
+        if any(char.isdigit() for char in password_candidate):
             valid = any(char.isupper() for char in password_candidate)
     return valid
 
@@ -126,7 +126,6 @@ def search(request):
         else:
             context['filters'][filter] = 0
 
-
     query = request.GET.get('q')
     if query:
         words = query.split(" ")
@@ -199,9 +198,8 @@ def display_media(request, title):
     if not media:
         return HttpResponse("Invalid Media Request")
 
-
     ratings = Rating.objects.filter(part_of=media.rating_section)
-    num_ratings =  len(ratings)# media.rating_section.num_of_ratings
+    num_ratings = len(ratings)  # media.rating_section.num_of_ratings
 
     avg_rating = 0
 
@@ -210,7 +208,7 @@ def display_media(request, title):
     if num_ratings > 0:
         avg_rating /= num_ratings
 
-    avg_rating_perc = avg_rating * 100/5
+    avg_rating_perc = avg_rating * 100 / 5
 
     actors = Actor.objects.filter(part_of=media.metadata)
     context = {
@@ -313,8 +311,8 @@ def inbox(request):
     inbox_content = Inbox.objects.all()
     messages = Message.objects.all()
     context = {
-        'inbox' : inbox_content,
-        'messages_list' : messages,
+        'inbox': inbox_content,
+        'messages_list': messages,
     }
     return HttpResponse(template.render(context, request))
 
