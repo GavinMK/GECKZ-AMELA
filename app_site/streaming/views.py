@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from django.urls import reverse
 from django.shortcuts import render
 
-from .decorators import anonymous_only_redirect, subscription_required
+from .decorators import anonymous_only_redirect, subscription_required, relog_required
 
 from .models import *
 from django.db.models import Q
@@ -68,7 +68,8 @@ def login_page(request):
     form = login_form()
     context = {
         'form': form,
-        'error_message': None
+        'error_message': None,
+        'next': None
     }
     if request.method == 'POST':
         form = login_form(request.POST)
@@ -77,19 +78,27 @@ def login_page(request):
             user = authenticate(username=data['username'], password=data['password'])
             if user is not None:
                 login(request, user)
-                return HttpResponseRedirect(reverse('streaming:homepage'))
+                redirect = request.POST.get('redirect')
+                print(redirect)
+                print("G")
+                if redirect != 'None':
+                    return HttpResponseRedirect(redirect)
+                else:
+                    return HttpResponseRedirect(reverse('streaming:homepage'))
             else:
                 context['error_message'] = "Wrong username or password"
+    elif request.method == 'GET':
+        context['next'] = request.GET.get('next')
     return render(request, 'streaming/login.html', context)
 
 
-@login_required(login_url='login/')
+@login_required(login_url='streaming:login')
 def logout_requested(request):
     logout(request)
     return HttpResponseRedirect(reverse('streaming:login'))
 
 
-@login_required(login_url='login/')
+@login_required(login_url='streaming:login')
 def movies(request):
     template = loader.get_template('streaming/mediaList.html')
     movie_list = Movie.objects.all()
@@ -99,7 +108,7 @@ def movies(request):
     return HttpResponse(template.render(context, request))
 
 
-@login_required(login_url='login/')
+@login_required(login_url='streaming:login')
 def shows(request):
     template = loader.get_template('streaming/mediaList.html')
     show_list = TVShow.objects.all()
@@ -108,8 +117,7 @@ def shows(request):
     }
     return HttpResponse(template.render(context, request))
 
-
-@login_required(login_url='login/')
+@login_required(login_url='streaming:login')
 def post_comment(request):
     if request.method == 'POST':
         form = CommentForm(request.POST)
@@ -151,7 +159,7 @@ def post_comment(request):
 
 
 
-@login_required(login_url='login/')
+@login_required(login_url='streaming:login')
 def search(request):
     template = loader.get_template('streaming/searchPage.html')
     tv_show_list = TVShow.objects.order_by('title')
@@ -211,7 +219,7 @@ def search(request):
     return HttpResponse(template.render(context, request))
 
 
-@login_required(login_url='login/')
+@login_required(login_url='streaming:login')
 def user_search(request):
     template = loader.get_template('streaming/userSearchPage.html')
     user_list = SiteUser.objects.all()
@@ -229,7 +237,7 @@ def user_search(request):
     return HttpResponse(template.render(context, request))
 
 
-@login_required(login_url='login/')
+@login_required(login_url='streaming:login')
 def display_media(request, title):
     template = loader.get_template('streaming/mediaDisplay.html')
     episode_list = []
@@ -271,7 +279,7 @@ def display_media(request, title):
     return HttpResponse(template.render(context, request))
 
 
-@login_required(login_url='login/')
+@login_required(login_url='streaming:login')
 def display_episode(request, title, season_number, episode_number):
     template = loader.get_template('streaming/tvEpisode.html')
     show = TVShow.objects.get(title=title)
@@ -296,7 +304,7 @@ def display_episode(request, title, season_number, episode_number):
     return HttpResponse(template.render(context, request))
 
 
-@login_required(login_url='login/')
+@login_required(login_url='streaming:login')
 def user_page(request, username=None):
     template = loader.get_template('streaming/userpage.html')
     if not username:
@@ -316,7 +324,8 @@ def user_page(request, username=None):
     }
     return HttpResponse(template.render(context, request))
 
-@login_required(login_url='login/')
+
+@login_required(login_url='streaming:login')
 def rental_page(request, title):
     template = loader.get_template('streaming/rentPage.html')
     media = Movie.objects.get(title=title)
@@ -332,7 +341,7 @@ def rental_page(request, title):
     return HttpResponse(template.render(context, request))
 
 
-@login_required(login_url='login/')
+@login_required(login_url='streaming:login')
 def subscription_page(request, title, season_number, episode_number):
     template = loader.get_template('streaming/subPage.html')
     show = TVShow.objects.get(title=title)
@@ -359,7 +368,7 @@ def subscription_page(request, title, season_number, episode_number):
     return HttpResponse(template.render(context, request))
 
 
-@login_required(login_url='login/')
+@login_required(login_url='streaming:login')
 @subscription_required
 def watch_media(request, title, season_number=None, episode_number=None):
     template = loader.get_template('streaming/watchMedia.html')
@@ -389,7 +398,7 @@ def watch_media(request, title, season_number=None, episode_number=None):
     return HttpResponse(template.render(context, request))
 
 
-@login_required(login_url='login/')
+@login_required(login_url='streaming:login')
 def friends(request):
     template = loader.get_template('streaming/friendPage.html')
     friends = request.user.friends.all()
@@ -399,7 +408,7 @@ def friends(request):
     return HttpResponse(template.render(context, request))
 
 
-@login_required(login_url='login/')
+@login_required(login_url='streaming:login')
 def homepage(request):
     template = loader.get_template('streaming/homepage.html')
     show_list = request.user.subscriptions.all()
@@ -411,12 +420,13 @@ def homepage(request):
     return HttpResponse(template.render(context, request))
 
 
-@login_required(login_url='login/')
+@relog_required
+@login_required(login_url='streaming:login')
 def account_page(request):
     return render(request, 'streaming/accountPage.html')
 
 
-@login_required(login_url='login/')
+@login_required(login_url='streaming:login')
 def inbox(request):
     form = message_form()
     inbox_content = Inbox.objects.all()
@@ -473,11 +483,14 @@ def inbox(request):
 
     return render(request, 'streaming/inbox.html', context)
 
+
+@login_required(login_url='streaming:login')
 def billing(request):
     form = billing_form()
     return render(request, 'streaming/billing.html', {'form': form})
 
 
+@login_required(login_url='streaming:login')
 def change(request):
     form = change_form()
     return render(request, 'streaming/changeInfo.html', {'form': form})

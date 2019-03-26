@@ -6,10 +6,11 @@
     <hr>
 
     <section style="width: 97%;float: right;padding-top: 20px;">
+    <script src="{% static 'streaming/js/utility.js' %}" type="text/javascript"></script>
         <fieldset>
             <legend>Send a message</legend><br>
                 <div class="form-style" style="margin: 0;padding-bottom: 20px;">
-                    <form action="{% url 'streaming:inbox' %}" method="POST" style="margin: 0;">
+                    <form action="{% url 'streaming:inbox' %}" method="POST" style="margin: 0;" onsubmit="submitOnce('submit','sending')">
                         {% csrf_token %}
                         <label for="username">To: </label><br>
                         <input id="username" autocomplete="true" placeholder="Username" type="text" name="username" required><br>
@@ -21,7 +22,8 @@
                         <label for="content">Message: </label><br>
                         <input id="content" type="text" name="content" required><br>
                         <br>
-                        <input type="submit" name="send" value="Send">
+                        <input type="submit" name="send" value="Send" id="submit">
+                        <input disabled type="submit" name="sending" value="Sending..." id="sending" hidden>
                     </form>
                 </div>
         </fieldset>
@@ -79,4 +81,5 @@
     <p>Number of read messages: {{ user.inbox.num_read_messages }}</p>
     <p>Number of unread messages: {{ user.inbox.num_unread_messages }}</p>
 
+<script src="{% static 'streaming/js/utility.js' %}" type="text/javascript"></script>
 {% endblock %}
