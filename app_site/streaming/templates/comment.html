@@ -1,0 +1,15 @@
+<legend>Comments</legend><br><br>
+    <div class="form-style" style="padding-bottom: 20px;width: 100%;">
+        <form action="{% url 'streaming:post_comment' %}" method="post">
+            {% csrf_token %}
+            <input type="text" name="content" placeholder="Leave a comment" size="500" maxlength="500" style="width: 60%;" required>
+            <input type="hidden" name="url" value="{{ request.get_full_path }}">
+            <input type="submit" value="Comment">
+        </form>
+    </div>
+    {% for comment in comments %}
+        <hr>
+        <p><span>Posted By: </span><a href="{% url 'streaming:user_page' username=comment.posted_by %}">{{ comment.posted_by }}</a> <span> on {{ comment.timestamp }}</span> <br><br></p>
+        <span>"{{ comment.content }}"</span><br>
+    {% endfor %}
+    <br>

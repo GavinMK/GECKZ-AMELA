@@ -1,4 +1,5 @@
 from django import forms
+from streaming.models import Comment
 
 
 class user_form(forms.Form):
@@ -43,3 +44,8 @@ class change_form(forms.Form):
     first_name = forms.CharField(label='First Name', max_length=20)
     last_name = forms.CharField(label='Last Name', max_length=20)
     email = forms.CharField(label='Email', max_length=30)
+
+
+class CommentForm(forms.Form):
+    content = forms.CharField(label='Username', max_length=500)
+    url = forms.CharField(label='URL', max_length=100)
