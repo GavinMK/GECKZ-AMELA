@@ -44,6 +44,7 @@
     <br><br>
     <fieldset style="padding: 0 0 0 0">
         <legend style="margin-left: 35px;">Friends</legend><br>
+        {% if friendsList %}
         <div class="media-style" style="grid-auto-rows: 10vw;grid-template-columns: repeat(2, 50%);grid-gap: 3px;">
             {% for entry in friendsList %}
             <figure>
@@ -51,6 +52,9 @@
             </figure>
             {% endfor %}
         </div>
+        {% else %}
+        <h1 id="search" style="font-size: 16px;">You are not following anyone.</h1>
+        {% endif %}
         <br><br>
     </fieldset>
 </aside>
