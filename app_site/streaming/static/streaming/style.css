@@ -113,6 +113,11 @@ hr {
 	padding-bottom: 40px;
 }
 
+#bio, #fav_movies, #fav_shows{
+	width: 70%;
+	height: 100px;
+}
+
 nav{
 	background: #111;
 	padding: 15px 20px 0 20px;
@@ -309,4 +314,28 @@ h2{
 
 .form-style a:hover{
 	color: #ffd700;
+}
+
+.stars-outer {
+  display: inline-block;
+  position: relative;
+  font-family: Raleway;
+}
+ 
+.stars-outer::before {
+  content: "☆☆☆☆☆";
+}
+ 
+.stars-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 0;
+}
+ 
+.stars-inner::before {
+  content: "★★★★★";
+  /*color: #f8ce0b;*/
 }
