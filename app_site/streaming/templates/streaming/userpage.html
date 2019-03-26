@@ -16,7 +16,11 @@
         </form>
     </div>
 {% else %}
-<br><br>
+<div class="form-style" style="width:100%;text-align: right;">
+    <form action="{% url 'streaming:editProfile' %}">
+    <input type="submit" value="Edit Bio" style="font-size: 18px;margin-left: 30px;">
+    </form>
+</div>
 {% endif %}
 
 <div class="profile-style" style="padding-bottom: 90px;">
@@ -36,6 +40,18 @@
     <br><br>
     <fieldset>
         {% include "comment.html" %}
+    </fieldset>
+    <br><br>
+    <fieldset style="padding: 0 0 0 0">
+        <legend>Friends</legend><br>
+        <div class="media-style" style="grid-auto-rows: 10vw;grid-template-columns: repeat(2, 50%);grid-gap: 3px;">
+            {% for entry in friendsList %}
+            <figure>
+                <a href="{% url 'streaming:user_page' username=entry.username %}"><img src="" style="float: left;">{{ entry.username }}</a>
+            </figure>
+            {% endfor %}
+        </div>
+        <br><br>
     </fieldset>
 </aside>
 

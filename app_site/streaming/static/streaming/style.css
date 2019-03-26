@@ -113,6 +113,11 @@ hr {
 	padding-bottom: 40px;
 }
 
+#bio, #fav_movies, #fav_shows{
+	width: 70%;
+	height: 100px;
+}
+
 nav{
 	background: #111;
 	padding: 15px 20px 0 20px;
