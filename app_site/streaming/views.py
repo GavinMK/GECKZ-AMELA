@@ -11,7 +11,7 @@ from django.template import loader
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
-from .forms import user_form, login_form, search_form, message_form, mark_message_as_read_form, billing_form, change_form, CommentForm
+from .forms import user_form, login_form, search_form, message_form, mark_message_as_read_form, billing_form, change_form, CommentForm, profile_form
 
 from django.core.paginator import Paginator
 import re
@@ -270,6 +270,7 @@ def display_episode(request, title, season_number, episode_number):
 @login_required(login_url='streaming:login')
 def user_page(request, username=None):
     template = loader.get_template('streaming/userpage.html')
+    friendsList = request.user.friends.all()
     if not username:
         username = request.user.username
     user = SiteUser.objects.get(username=username)
@@ -282,6 +283,7 @@ def user_page(request, username=None):
     context = {
         'user': user,
         'friends': request.user.friends.filter(username=user.username).exists(),
+        'friendsList': friendsList,
         'comments': user.comment_section.comment_set.all().order_by('-timestamp'),
         'history': media_history.order_by('-time_watched'),
     }
@@ -457,3 +459,9 @@ def billing(request):
 def change(request):
     form = change_form()
     return render(request, 'streaming/changeInfo.html', {'form': form})
+
+
+@login_required(login_url='streaming:login')
+def editProfile(request):
+    form = profile_form()
+    return render(request, 'streaming/editProfile.html', {'form': form})

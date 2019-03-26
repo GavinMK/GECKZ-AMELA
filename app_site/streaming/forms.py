@@ -49,3 +49,9 @@ class change_form(forms.Form):
 class CommentForm(forms.Form):
     content = forms.CharField(label='Username', max_length=500)
     url = forms.CharField(label='URL', max_length=100)
+
+
+class profile_form(forms.Form):
+    bio = forms.CharField(label='bio')
+    fav_movies = forms.CharField(label='fav_movies')
+    fav_shows = forms.CharField(label='fav_shows')
