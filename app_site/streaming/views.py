@@ -218,9 +218,9 @@ def display_media(request, title):
         media = Movie.objects.get(title=title)
     if not media:
         media = TVShow.objects.get(title=title)
-        season_list = TVSeason.objects.filter(part_of=media)
+        season_list = TVSeason.objects.filter(part_of=media).order_by('season_number')
         for season in season_list:
-            episode_list += list(TVEpisode.objects.filter(part_of=season))
+            episode_list += list(TVEpisode.objects.filter(part_of=season).order_by('episode_number'))
     if not media:
         return HttpResponse("Invalid Media Request")
 
