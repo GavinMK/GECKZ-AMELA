@@ -202,6 +202,32 @@ nav a.active {
     object-fit: cover;
 }
 
+.rating{
+	width: 101.3%;
+	display: block;
+}
+
+.rating > input{
+	display: none;
+}
+
+.rating > label:before{
+	content: "★";
+	font-size: 40px;
+}
+
+.rating > label{
+	color: #fffafa;
+	float: right;
+}
+
+.rating > input:checked ~ label{
+	color: #ffd700;
+}
+
+.rating > input:hover ~ label{
+	color: #ffd700;
+}
 
 .form-style{
 	font-family: Raleway;
