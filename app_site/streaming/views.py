@@ -117,6 +117,7 @@ def shows(request):
     }
     return HttpResponse(template.render(context, request))
 
+
 @login_required(login_url='streaming:login')
 def post_comment(request):
     if request.method == 'POST':
@@ -157,6 +158,46 @@ def post_comment(request):
     context['error_message'] = 'Comment too long. Please limit to 500 characters.'
     return render(request, context)
 
+
+@login_required(login_url='streaming:login')
+def post_comment(request):
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        redirect = ''
+        if form.is_valid():
+            section = None
+            clean = form.cleaned_data
+            redirect = clean['url']
+            url = clean['url'].replace("%20", " ")
+            media_match = re.match(r'.*/media/(?P<media_title>[^/]*)/(?P<season>\d+)?/?(?P<episode>\d+)?', url)
+            if media_match:
+                title = media_match.group('media_title')
+                season = media_match.group('season')
+                episode = media_match.group('episode')
+                media = None
+                if TVShow.objects.filter(title=title).exists():
+                    media = TVShow.objects.get(title=title)
+                    if season:
+                        season = TVSeason.objects.get(part_of=media, season_number=int(season))
+                        section = TVEpisode.objects.get(part_of=season, episode_number=int(episode)).comment_section
+                if not media:
+                    media = Movie.objects.get(title=title)
+                if not section:
+                    section = media.comment_section
+            else:
+                if len(url) == 20:
+                    section = request.user.comment_section
+                else:
+                    username = url[url[11:].find('/')+12:]
+                    if username[-1] == '/': username = username[:-1]
+                    section = SiteUser.objects.get(username=username).comment_section
+
+            comment = Comment(posted_by=request.user, content=clean['content'], part_of=section)
+            comment.save()
+
+            return HttpResponseRedirect(redirect)
+    context['error_message'] = 'Comment too long. Please limit to 500 characters.'
+    return render(request, context)
 
 
 @login_required(login_url='streaming:login')
