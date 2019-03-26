@@ -34,7 +34,7 @@ class billing_form(forms.Form):
     cc_num = forms.IntegerField(label='Card Number')
     cvc_num = forms.IntegerField(label='CVC Number')
     exp_month = forms.IntegerField(label='Expiration Month')
-    exp_year = forms.IntegerField(label='Expiration Month')
+    exp_year = forms.IntegerField(label='Expiration Year')
 
 
 class change_form(forms.Form):

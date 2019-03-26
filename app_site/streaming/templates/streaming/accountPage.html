@@ -26,9 +26,10 @@
         <fieldset>
             <legend>Billing Information:</legend>
             <p>Next Payment Date: <span>{{ user.billing.next_payment_date }}</span></p>
-            <p>Name on Card: <span>{{ user.first_name }} {{ user.last_name }}</span></p>
-            <p>Credit Card Number: <span>{{ user.billing.cc_info }}</span></p>
-            <p>Expiration Date: <span>01/2021</span></p>
+            <p>Name on Card: <span>{{ user.billing.name }}</span></p>
+            <p>Credit Card Number: <span>{{ user.billing.cc_num }}</span></p>
+            <p>Expiration Date: <span>{{ user.billing.exp_month }}/{{ user.billing.exp_year }}</span></p>
+            <p>CVC Number: <span>{{ user.billing.cvc_num }}</span></p>
             <p></p>
             <div class="form-style" style="margin: 0;padding-bottom: 20px;">
                 <form action="{% url 'streaming:billing' %}">
