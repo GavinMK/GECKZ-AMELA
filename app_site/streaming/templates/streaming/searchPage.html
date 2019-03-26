@@ -9,6 +9,12 @@
 		<form action="{% url 'streaming:search' %}" method="get">
 			<input class="searchfield" id="searchbox" name="q" type="text" placeholder="Search for Movies and Shows" value="{{ query }}">
 			<input type="submit" value="Search">
+			<h2>
+				{% for filter, checked in filters.items %}
+					<input type="checkbox" name="{{ filter }}" {% if checked == 1 %}checked{% endif %} > {{ filter }}
+				{% endfor %}
+				
+			</h2>
 		</form>
 	</div>
 

@@ -13,6 +13,9 @@
 		<title>{% if user %}{% if user.inbox.num_unread_messages > 0 %}({{user.inbox.num_unread_messages}}) {% endif %}{% endif %}{% block title %}AMELA{% endblock %}</title>
 		<meta name="description" content="{% block description %}All your videos in one place, so you don't have to get up from your couch!{% endblock %}">
 		<meta name="keywords" content="{% block keywords %}Movies, Videos, Shows{% endblock %}">
+		
+		{% block head %}
+		{% endblock %}
 	</head>
 	<body>
 		{% block body %}
@@ -23,5 +26,4 @@
 	{% block scripts %}
         <script src="{% static 'streaming/js/utility.js' %}"></script>
 	{% endblock %}
-<script src="{% static 'streaming/js/utility.js' %}"></script>
 </html>

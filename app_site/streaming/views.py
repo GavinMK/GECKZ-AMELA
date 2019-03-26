@@ -164,9 +164,23 @@ def search(request):
     template = loader.get_template('streaming/searchPage.html')
     tv_show_list = TVShow.objects.order_by('title')
     movie_list = Movie.objects.order_by('title')
-    context = dict()
+    context = {
+        "filters": {
+            "Title": 1,
+            "Genre": 0,
+            "Release Year": 0,
+            "Studio": 0,
+            "Streaming Service": 0,
+            "Actors": 0,
+        },
+    }
+    for filter in context['filters']:
+        if request.GET.get(filter) == "on":
+            context['filters'][filter] = 1
+        else:
+            context['filters'][filter] = 0
+
     query = request.GET.get('q')
-    results = None
     if query:
         words = query.split(" ")
         tv_results = tv_show_list
@@ -174,14 +188,20 @@ def search(request):
         # We go through each word in the query, and check to make sure it matches at least some of the data
         # Each result has to match all of the words.
         for word in words:
-            db_query = (Q(metadata__genre__icontains=word) |
-                        Q(metadata__release_year__icontains=word) |
-                        Q(metadata__studio__icontains=word) |
-                        Q(metadata__release_year__icontains=word) |
-                        Q(metadata__streaming_service__icontains=word) |
-                        Q(metadata__actor__name__icontains=word) |
-                        Q(title__icontains=word)
-                        )
+            db_query = Q()
+            if context['filters']['Title']:
+                db_query |= Q(title__icontains=word)
+            if context['filters']['Genre']:
+                db_query |= Q(metadata__genre__icontains=word)
+            if context['filters']['Release Year']:
+                db_query |= Q(metadata__release_year__icontains=word)
+            if context['filters']['Studio']:
+                db_query |= Q(metadata__studio__icontains=word)
+            if context['filters']['Streaming Service']:
+                db_query |= Q(metadata__streaming_service__icontains=word)
+            if context['filters']['Actors']:
+                db_query |= Q(metadata__actor__name__icontains=word)
+
             partial_tv_results = tv_show_list.filter(db_query)
             partial_movie_results = movie_list.filter(db_query)
             tv_results &= partial_tv_results
@@ -232,12 +252,29 @@ def display_media(request, title):
     if not media:
         return HttpResponse("Invalid Media Request")
 
+    ratings = Rating.objects.filter(part_of=media.rating_section)
+    num_ratings = len(ratings)  # media.rating_section.num_of_ratings
+
+    avg_rating = 0
+
+    for rating in ratings:
+        avg_rating += rating.rating
+    if num_ratings > 0:
+        avg_rating /= num_ratings
+
+    avg_rating_perc = avg_rating * 100 / 5
+
     actors = Actor.objects.filter(part_of=media.metadata)
     context = {
         'media': media,
         'actors': actors,
         'episodes': episode_list,
         'comments': media.comment_section.comment_set.all().order_by('-timestamp'),
+        'avg_rating_perc': avg_rating_perc,
+        'avg_rating': avg_rating,
+        'num_ratings': num_ratings,
+
+
     }
     return HttpResponse(template.render(context, request))
 
@@ -362,7 +399,47 @@ def watch_media(request, title, season_number=None, episode_number=None):
     }
     return HttpResponse(template.render(context, request))
 
+@login_required(login_url='streaming:login')
+def post_rating(request, title, season_number=None, episode_number=None):
+    # We need to search the rating for this media and user combo, and if one exists, update it. Otherwise, create a rating
+    rating_section = None
+    if Movie.objects.filter(title=title).exists():
+        media = Movie.objects.get(title=title)
+        rating_section = media.rating_section
+    else:
+        show = TVShow.objects.get(title=title)
+        if not show:
+            return HttpResponse("Invalid show")
+        if season_number is not None and episode_number is not None:
+            season = TVSeason.objects.get(part_of=show, season_number=season_number)
+            if not season:
+                return HttpResponse("Invalid season number")
+            media = TVEpisode.objects.get(part_of=season, episode_number=episode_number)
+            if not media:
+                return HttpResponse("Invalid episode number")
+            rating_section = media.rating_section
+        else:
+            rating_section = show.rating_section
+    if not rating_section:
+        return HttpResponse("Invalid Media Request")
 
+    rate_number = int(request.POST.get('rating'))
+    if rate_number > 5 or rate_number < 1:
+        return HttpResponse("Invalid Rating '{0}'".format(rate_number))
+    rating = None
+    try:
+        rating = Rating.objects.get(part_of=rating_section, posted_by=request.user)
+        # The user is re-rating, so we should update that rating object
+    except Rating.DoesNotExist:
+        # The user is rating for the first time, so we should make a new rating object
+        rating = Rating()
+        rating.part_of = rating_section
+        rating.posted_by = request.user
+        rating_section.num_of_ratings = len(Rating.objects.filter(part_of=rating_section))
+        rating_section.save()
+    rating.rating = rate_number
+    rating.save()
+    return HttpResponse("Rating Updated!")
 @login_required(login_url='streaming:login')
 def friends(request):
     template = loader.get_template('streaming/friendPage.html')
