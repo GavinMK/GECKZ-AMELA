@@ -22,27 +22,7 @@
 		</fieldset>
 		<br><br>
 		<fieldset>
-			<legend style="text-align: center;">Leave a Rating</legend><br>
-			<div class="form-style" style="text-align: center;">
-                <form action="{% url 'streaming:post_rating' %}" method="post" onsubmit="submitOnce('submit', 'sending')">
-					{% csrf_token %}
-					<div class="rating">
-						 <input type="radio" name="rating" id="star5" value="5">
-						 <label for="star5"></label>
-						 <input type="radio" name="rating" id="star4" value="4">
-						 <label for="star4"></label>
-						 <input type="radio" name="rating" id="star3" value="3">
-						 <label for="star3"></label>
-						 <input type="radio" name="rating" id="star2" value="2">
-						 <label for="star2"></label>
-						 <input type="radio" name="rating" id="star1" value="1">
-						 <label for="star1"></label>
-					</div>
-                    <input type="hidden" name="url" value="{{ request.get_full_path }}">
-                    <input disabled type="submit" name="sending" value="Rating..." id="sending" hidden>
-					<input type="submit" value="Rate" id="submit" style="margin-top: 20px;margin-bottom: 10px;">
-                </form>
-            </div>
+		{% include "ratings.html" %}
 		</fieldset>
 	</aside>
 
