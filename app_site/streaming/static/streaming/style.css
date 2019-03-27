@@ -208,8 +208,9 @@ nav a.active {
 }
 
 .rating{
-	width: 101.3%;
+	margin-right: 10%;
 	display: block;
+	float:right;
 }
 
 .rating > input{
@@ -218,7 +219,7 @@ nav a.active {
 
 .rating > label:before{
 	content: "★";
-	font-size: 40px;
+	font-size: 30px;
 }
 
 .rating > label{
