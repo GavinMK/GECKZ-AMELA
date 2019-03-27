@@ -1,5 +1,19 @@
-from .models import Movie, TVShow, TVSeason, TVEpisode, Preferences, CommentSection, Inbox, Billing, WatchHistory, SiteUser
+from .models import Movie, TVShow, TVSeason, TVEpisode, Rating, Preferences, CommentSection, Inbox, Billing, WatchHistory, SiteUser
 from django.db.models import Q
+
+
+def get_rating(ratings):
+    num_ratings = len(ratings)
+
+    avg_rating = 0
+
+    for rating in ratings:
+        avg_rating += rating.rating
+    if num_ratings > 0:
+        avg_rating /= num_ratings
+
+    return avg_rating * 100 / 5, avg_rating
+
 
 def get_media(title):
     media = None

@@ -190,16 +190,10 @@ def display_media(request, title):
             episode_list += list(TVEpisode.objects.filter(part_of=season))
 
     ratings = Rating.objects.filter(part_of=media.rating_section)
-    num_ratings = len(ratings)  # media.rating_section.num_of_ratings
-
-    avg_rating = 0
-
-    for rating in ratings:
-        avg_rating += rating.rating
-    if num_ratings > 0:
-        avg_rating /= num_ratings
-
-    avg_rating_perc = avg_rating * 100 / 5
+    num_ratings = len(ratings)
+    calc = get_rating(ratings)
+    avg_rating_perc = calc[0]
+    avg_rating = calc[1]
 
     actors = Actor.objects.filter(part_of=media.metadata)
     context = {
@@ -223,6 +217,13 @@ def display_episode(request, title, season_number, episode_number):
     episode = get_episode(show, season_number, episode_number)
 
     actors = Actor.objects.filter(part_of=episode.metadata)
+
+    ratings = Rating.objects.filter(part_of=episode.rating_section)
+    num_ratings = len(ratings)
+    calc = get_rating(ratings)
+    avg_rating_perc = calc[0]
+    avg_rating = calc[1]
+
     context = {
         'show': show,
         'season_number': season_number,
@@ -230,6 +231,9 @@ def display_episode(request, title, season_number, episode_number):
         'episode': episode,
         'actors': actors,
         'comments': episode.comment_section.comment_set.all().order_by('-timestamp'),
+        'avg_rating_perc': avg_rating_perc,
+        'avg_rating': avg_rating,
+        'num_ratings': num_ratings,
     }
     return HttpResponse(template.render(context, request))
 
