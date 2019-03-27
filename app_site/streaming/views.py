@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.shortcuts import render
 
 from .decorators import anonymous_only_redirect, subscription_required, relog_required
-
+from .util import *
 from .models import *
 from django.db.models import Q
 from django.template import loader
@@ -15,33 +15,6 @@ from .forms import user_form, login_form, search_form, message_form, mark_messag
 
 from django.core.paginator import Paginator
 import re
-
-
-def validate_password(password_candidate):
-    valid = False
-    if len(password_candidate) > 7:
-        if any(char.isdigit() for char in password_candidate):
-            valid = any(char.isupper() for char in password_candidate)
-    return valid
-
-
-def generate_user(data):
-    # May need to figure out how to do it with the foreign keys
-    preferences = Preferences()
-    preferences.save()
-    comment_section = CommentSection()
-    comment_section.save()
-    inbox = Inbox()
-    inbox.save()
-    billing = Billing()
-    billing.save()
-    history = WatchHistory()
-    history.save()
-    return SiteUser.objects.create_user(data['username'], email=data['email'], password=data['password'],
-                                        first_name=data['first_name'], last_name=data['last_name'],
-                                        preferences=preferences, comment_section=comment_section,
-                                        inbox=inbox, billing=billing, watch_history=history)
-
 
 @anonymous_only_redirect
 def create_user_page(request):
@@ -79,8 +52,6 @@ def login_page(request):
             if user is not None:
                 login(request, user)
                 redirect = request.POST.get('redirect')
-                print(redirect)
-                print("G")
                 if redirect != 'None':
                     return HttpResponseRedirect(redirect)
                 else:
@@ -120,28 +91,25 @@ def shows(request):
 
 @login_required(login_url='streaming:login')
 def post_comment(request):
+    context = {
+        'error_message': None
+    }
     if request.method == 'POST':
         form = CommentForm(request.POST)
-        redirect = ''
         if form.is_valid():
-            section = None
             clean = form.cleaned_data
             redirect = clean['url']
             url = clean['url'].replace("%20", " ")
             media_match = re.match(r'.*/media/(?P<media_title>[^/]*)/(?P<season>\d+)?/?(?P<episode>\d+)?', url)
             if media_match:
                 title = media_match.group('media_title')
-                season = media_match.group('season')
-                episode = media_match.group('episode')
-                media = None
-                if TVShow.objects.filter(title=title).exists():
-                    media = TVShow.objects.get(title=title)
-                    if season:
-                        season = TVSeason.objects.get(part_of=media, season_number=int(season))
-                        section = TVEpisode.objects.get(part_of=season, episode_number=int(episode)).comment_section
-                if not media:
-                    media = Movie.objects.get(title=title)
-                if not section:
+                season_number = media_match.group('season')
+                episode_number = media_match.group('episode')
+                media = get_media(title)
+                if type(media) is TVShow and episode_number is not None:
+                    episode = get_episode(media, int(season_number), int(episode_number))
+                    section = episode.comment_section
+                else:
                     section = media.comment_section
             else:
                 if len(url) == 20:
@@ -156,55 +124,11 @@ def post_comment(request):
 
             return HttpResponseRedirect(redirect)
     context['error_message'] = 'Comment too long. Please limit to 500 characters.'
-    return render(request, context)
-
-
-@login_required(login_url='streaming:login')
-def post_comment(request):
-    if request.method == 'POST':
-        form = CommentForm(request.POST)
-        redirect = ''
-        if form.is_valid():
-            section = None
-            clean = form.cleaned_data
-            redirect = clean['url']
-            url = clean['url'].replace("%20", " ")
-            media_match = re.match(r'.*/media/(?P<media_title>[^/]*)/(?P<season>\d+)?/?(?P<episode>\d+)?', url)
-            if media_match:
-                title = media_match.group('media_title')
-                season = media_match.group('season')
-                episode = media_match.group('episode')
-                media = None
-                if TVShow.objects.filter(title=title).exists():
-                    media = TVShow.objects.get(title=title)
-                    if season:
-                        season = TVSeason.objects.get(part_of=media, season_number=int(season))
-                        section = TVEpisode.objects.get(part_of=season, episode_number=int(episode)).comment_section
-                if not media:
-                    media = Movie.objects.get(title=title)
-                if not section:
-                    section = media.comment_section
-            else:
-                if len(url) == 20:
-                    section = request.user.comment_section
-                else:
-                    username = url[url[11:].find('/')+12:]
-                    if username[-1] == '/': username = username[:-1]
-                    section = SiteUser.objects.get(username=username).comment_section
-
-            comment = Comment(posted_by=request.user, content=clean['content'], part_of=section)
-            comment.save()
-
-            return HttpResponseRedirect(redirect)
-    context['error_message'] = 'Comment too long. Please limit to 500 characters.'
-    return render(request, context)
-
+    return HttpResponseRedirect(reverse('streaming:homepage'))
 
 @login_required(login_url='streaming:login')
 def search(request):
     template = loader.get_template('streaming/searchPage.html')
-    tv_show_list = TVShow.objects.order_by('title')
-    movie_list = Movie.objects.order_by('title')
     context = {
         "filters": {
             "Title": 1,
@@ -215,6 +139,8 @@ def search(request):
             "Actors": 0,
         },
     }
+    tv_show_list = TVShow.objects.order_by('title')
+    movie_list = Movie.objects.order_by('title')
     for filter in context['filters']:
         if request.GET.get(filter) == "on":
             context['filters'][filter] = 1
@@ -223,31 +149,7 @@ def search(request):
 
     query = request.GET.get('q')
     if query:
-        words = query.split(" ")
-        tv_results = tv_show_list
-        movie_results = movie_list
-        # We go through each word in the query, and check to make sure it matches at least some of the data
-        # Each result has to match all of the words.
-        for word in words:
-            db_query = Q()
-            if context['filters']['Title']:
-                db_query |= Q(title__icontains=word)
-            if context['filters']['Genre']:
-                db_query |= Q(metadata__genre__icontains=word)
-            if context['filters']['Release Year']:
-                db_query |= Q(metadata__release_year__icontains=word)
-            if context['filters']['Studio']:
-                db_query |= Q(metadata__studio__icontains=word)
-            if context['filters']['Streaming Service']:
-                db_query |= Q(metadata__streaming_service__icontains=word)
-            if context['filters']['Actors']:
-                db_query |= Q(metadata__actor__name__icontains=word)
-
-            partial_tv_results = tv_show_list.filter(db_query)
-            partial_movie_results = movie_list.filter(db_query)
-            tv_results &= partial_tv_results
-            movie_results &= partial_movie_results
-        results = tuple(set(tv_results) | set(movie_results))
+        results = filter_db_query(context, query, tv_show_list, movie_list)
         context['query'] = query
     else:
         results = tuple(set(tv_show_list) | set(movie_list))
@@ -277,21 +179,15 @@ def user_search(request):
     context['count'] = len(context['users'])
     return HttpResponse(template.render(context, request))
 
-
 @login_required(login_url='streaming:login')
 def display_media(request, title):
     template = loader.get_template('streaming/mediaDisplay.html')
     episode_list = []
-    media = []
-    if Movie.objects.filter(title=title).exists():
-        media = Movie.objects.get(title=title)
-    if not media:
-        media = TVShow.objects.get(title=title)
+    media = get_media(title)
+    if type(media) is TVShow:
         season_list = TVSeason.objects.filter(part_of=media)
         for season in season_list:
             episode_list += list(TVEpisode.objects.filter(part_of=season))
-    if not media:
-        return HttpResponse("Invalid Media Request")
 
     ratings = Rating.objects.filter(part_of=media.rating_section)
     num_ratings = len(ratings)  # media.rating_section.num_of_ratings
@@ -323,15 +219,8 @@ def display_media(request, title):
 @login_required(login_url='streaming:login')
 def display_episode(request, title, season_number, episode_number):
     template = loader.get_template('streaming/tvEpisode.html')
-    show = TVShow.objects.get(title=title)
-    if not show:
-        return HttpResponse("Invalid show")
-    season = TVSeason.objects.get(part_of=show, season_number=season_number)
-    if not season:
-        return HttpResponse("Invalid season number")
-    episode = TVEpisode.objects.get(part_of=season, episode_number=episode_number)
-    if not episode:
-        return HttpResponse("Invalid episode number")
+    show = get_media(title)
+    episode = get_episode(show, season_number, episode_number)
 
     actors = Actor.objects.filter(part_of=episode.metadata)
     context = {
@@ -440,47 +329,41 @@ def watch_media(request, title, season_number=None, episode_number=None):
     }
     return HttpResponse(template.render(context, request))
 
-@login_required(login_url='streaming:login')
-def post_rating(request, title, season_number=None, episode_number=None):
-    # We need to search the rating for this media and user combo, and if one exists, update it. Otherwise, create a rating
-    rating_section = None
-    if Movie.objects.filter(title=title).exists():
-        media = Movie.objects.get(title=title)
-        rating_section = media.rating_section
-    else:
-        show = TVShow.objects.get(title=title)
-        if not show:
-            return HttpResponse("Invalid show")
-        if season_number is not None and episode_number is not None:
-            season = TVSeason.objects.get(part_of=show, season_number=season_number)
-            if not season:
-                return HttpResponse("Invalid season number")
-            media = TVEpisode.objects.get(part_of=season, episode_number=episode_number)
-            if not media:
-                return HttpResponse("Invalid episode number")
-            rating_section = media.rating_section
-        else:
-            rating_section = show.rating_section
-    if not rating_section:
-        return HttpResponse("Invalid Media Request")
 
-    rate_number = int(request.POST.get('rating'))
-    if rate_number > 5 or rate_number < 1:
-        return HttpResponse("Invalid Rating '{0}'".format(rate_number))
-    rating = None
-    try:
-        rating = Rating.objects.get(part_of=rating_section, posted_by=request.user)
-        # The user is re-rating, so we should update that rating object
-    except Rating.DoesNotExist:
-        # The user is rating for the first time, so we should make a new rating object
-        rating = Rating()
-        rating.part_of = rating_section
-        rating.posted_by = request.user
-        rating_section.num_of_ratings = len(Rating.objects.filter(part_of=rating_section))
-        rating_section.save()
-    rating.rating = rate_number
-    rating.save()
-    return HttpResponse("Rating Updated!")
+@login_required(login_url='streaming:login')
+def post_rating(request):
+    if request.method == 'POST':
+        redirect = request.POST['url']
+        url = redirect.replace("%20", " ")
+        media_match = re.match(r'.*/media/(?P<media_title>[^/]*)/(?P<season>\d+)?/?(?P<episode>\d+)?', url)
+        title = media_match.group('media_title')
+        season_number = media_match.group('season')
+        episode_number = media_match.group('episode')
+        media = get_media(title)
+        if type(media) is TVShow and episode_number is not None:
+            episode = get_episode(media, int(season_number), int(episode_number))
+            section = episode.rating_section
+        else:
+            section = media.rating_section
+
+        rate_number = int(request.POST.get('rating'))
+        if rate_number > 5 or rate_number < 1:
+            return HttpResponse("Invalid Rating '{0}'".format(rate_number))
+        if Rating.objects.filter(part_of=section, posted_by=request.user):
+            rating = Rating.objects.get(part_of=section, posted_by=request.user)
+        else:
+            rating = Rating()
+            rating.part_of = section
+            rating.posted_by = request.user
+            section.num_of_ratings = len(Rating.objects.filter(part_of=section))
+            section.save()
+        rating.rating = rate_number
+        rating.save()
+
+        return HttpResponseRedirect(redirect)
+    return HttpResponseRedirect(reverse('streaming:homepage'))
+
+
 @login_required(login_url='streaming:login')
 def friends(request):
     template = loader.get_template('streaming/friendPage.html')

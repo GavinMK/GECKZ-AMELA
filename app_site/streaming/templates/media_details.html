@@ -1,0 +1,12 @@
+<legend>Details</legend>
+<p>Genre: <span>{{ media.metadata.genre }}</span></p>
+<p>Description: <span>{{ media.description|linebreaksbr }}</span></p>
+<p>Production Studio: <span>{{ media.metadata.studio }}</span></p>
+<p>Streaming Service: <span>{{ media.metadata.streaming_service }}</span></p>
+{% if not episodes %}
+    <p>Runtime: <span>{{ media.runtime }}</span></p>
+{% endif %}
+<p>Actors:</p>
+{% for actor in actors %}
+    <span>{{ actor.name }}</span><br><br>
+{% endfor %}
