@@ -1,6 +1,6 @@
 			<legend style="text-align: center;">Leave a Rating</legend><br>
 <div class="form-style" style="text-align: center;">
-    <form action="{% url 'streaming:post_rating' %}" method="post" onsubmit="submitOnce('submit', 'sending')">
+    <form action="{% url 'streaming:post_rating' %}" method="post" onsubmit="submitOnce('rating_submit', 'rating_sending')">
         {% csrf_token %}
         <div class="rating">
              <input type="radio" name="rating" id="star5" value="5">
@@ -15,7 +15,7 @@
              <label for="star1"></label>
         </div>
         <input type="hidden" name="url" value="{{ request.get_full_path }}">
-        <input disabled type="submit" name="sending" value="Rating..." id="sending" hidden>
-        <input type="submit" value="Rate" id="submit" style="margin-top: 20px;margin-bottom: 10px;">
+        <input disabled type="submit" name="sending" value="Rating..." id="rating_sending" hidden>
+        <input type="submit" value="Rate" id="rating_submit" style="margin-top: 20px;margin-bottom: 10px;">
     </form>
 </div>

@@ -1,11 +1,11 @@
 <legend>Comments</legend><br><br>
     <div class="form-style" style="padding-bottom: 20px;width: 100%;">
-        <form action="{% url 'streaming:post_comment' %}" method="post" onsubmit="submitOnce('submit', 'sending')">
+        <form action="{% url 'streaming:post_comment' %}" method="post" onsubmit="submitOnce('comment_submit', 'comment_sending')">
             {% csrf_token %}
             <input type="text" name="content" placeholder="Leave a comment" size="500" maxlength="500" style="width: 60%;" required>
             <input type="hidden" name="url" value="{{ request.get_full_path }}">
-            <input type="submit" value="Comment" id="submit">
-            <input disabled type="submit" name="sending" value="Posting..." id="sending" hidden>
+            <input type="submit" value="Comment" id="comment_submit">
+            <input disabled type="submit" name="sending" value="Posting..." id="comment_sending" hidden>
         </form>
     </div>
     {% for comment in comments %}
