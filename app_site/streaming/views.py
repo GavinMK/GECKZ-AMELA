@@ -94,7 +94,7 @@ def movies(request):
     template = loader.get_template('streaming/mediaList.html')
     movie_list = Movie.objects.all()
     context = {
-        'media': movie_list,
+        'media': movie_list.order_by('title'),
     }
     return HttpResponse(template.render(context, request))
 
@@ -104,7 +104,7 @@ def shows(request):
     template = loader.get_template('streaming/mediaList.html')
     show_list = TVShow.objects.all()
     context = {
-        'media': show_list,
+        'media': show_list.order_by('title'),
     }
     return HttpResponse(template.render(context, request))
 
