@@ -74,7 +74,7 @@ def movies(request):
     template = loader.get_template('streaming/mediaList.html')
     movie_list = Movie.objects.all()
     context = {
-        'media': movie_list,
+        'media': movie_list.order_by('title'),
     }
     return HttpResponse(template.render(context, request))
 
@@ -84,7 +84,7 @@ def shows(request):
     template = loader.get_template('streaming/mediaList.html')
     show_list = TVShow.objects.all()
     context = {
-        'media': show_list,
+        'media': show_list.order_by('title'),
     }
     return HttpResponse(template.render(context, request))
 
@@ -185,9 +185,9 @@ def display_media(request, title):
     episode_list = []
     media = get_media(title)
     if type(media) is TVShow:
-        season_list = TVSeason.objects.filter(part_of=media)
+        season_list = TVSeason.objects.filter(part_of=media).order_by('season_number')
         for season in season_list:
-            episode_list += list(TVEpisode.objects.filter(part_of=season))
+            episode_list += list(TVEpisode.objects.filter(part_of=season).order_by('episode_number'))
 
     ratings = Rating.objects.filter(part_of=media.rating_section)
     num_ratings = len(ratings)
