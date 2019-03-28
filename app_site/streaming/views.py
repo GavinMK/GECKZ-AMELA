@@ -99,32 +99,14 @@ def post_comment(request):
         if form.is_valid():
             clean = form.cleaned_data
             redirect = clean['url']
-            url = clean['url'].replace("%20", " ")
-            media_match = re.match(r'.*/media/(?P<media_title>[^/]*)/(?P<season>\d+)?/?(?P<episode>\d+)?', url)
-            if media_match:
-                title = media_match.group('media_title')
-                season_number = media_match.group('season')
-                episode_number = media_match.group('episode')
-                media = get_media(title)
-                if type(media) is TVShow and episode_number is not None:
-                    episode = get_episode(media, int(season_number), int(episode_number))
-                    section = episode.comment_section
-                else:
-                    section = media.comment_section
-            else:
-                if len(url) == 20:
-                    section = request.user.comment_section
-                else:
-                    username = url[url[11:].find('/')+12:]
-                    if username[-1] == '/': username = username[:-1]
-                    section = SiteUser.objects.get(username=username).comment_section
-
+            section = get_comment_section(redirect)
             comment = Comment(posted_by=request.user, content=clean['content'], part_of=section)
             comment.save()
 
             return HttpResponseRedirect(redirect)
     context['error_message'] = 'Comment too long. Please limit to 500 characters.'
     return HttpResponseRedirect(reverse('streaming:homepage'))
+
 
 @login_required(login_url='streaming:login')
 def search(request):

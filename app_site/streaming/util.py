@@ -1,5 +1,6 @@
 from .models import Movie, TVShow, TVSeason, TVEpisode, Rating, Preferences, CommentSection, Inbox, Billing, WatchHistory, SiteUser
 from django.db.models import Q
+import re
 
 
 def get_rating(ratings):
@@ -22,6 +23,29 @@ def get_media(title):
     elif TVShow.objects.filter(title=title).exists():
         media = TVShow.objects.get(title=title)
     return media
+
+
+def get_comment_section(url_path):
+    url = url_path.replace("%20", " ")
+    media_match = re.match(r'.*/media/(?P<media_title>[^/]*)/(?P<season>\d+)?/?(?P<episode>\d+)?', url)
+    if media_match:
+        title = media_match.group('media_title')
+        season_number = media_match.group('season')
+        episode_number = media_match.group('episode')
+        media = get_media(title)
+        if type(media) is TVShow and episode_number is not None:
+            episode = get_episode(media, int(season_number), int(episode_number))
+            return episode.comment_section
+        else:
+            return media.comment_section
+    else:
+        username_grabber = re.match(r'.*/userpage/(.*)', url)
+        if username_grabber:
+            user = SiteUser.objects.get(username=username_grabber.group(1))
+            return user.comment_section
+        return request.user.comment_section
+    return None
+
 
 
 def get_season(show, season_number):
@@ -89,4 +113,3 @@ def filter_db_query(context, query, tv_show_list, movie_list):
         tv_results &= partial_tv_results
         movie_results &= partial_movie_results
     return tuple(set(tv_results) | set(movie_results))
-
