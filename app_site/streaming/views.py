@@ -381,19 +381,15 @@ def account_page(request):
 @login_required(login_url='streaming:login')
 def inbox(request):
     form = message_form()
-    inbox_content = Inbox.objects.all()
-    messages = Message.objects.all()
-    usernameList = []
-    for message in messages:
-        usernameList.append(message.part_of.__str__()[:-6])
-
-    messages_and_names = list(zip(messages, usernameList))
+    from_user = request.user
+    messages_from = from_user.inbox.message_set.all() #get all of the current user's messages
+    messages_to = Message.objects.filter(from_user=from_user)  #get all messages the current user has sent to other inbox's
 
     context = {
         'form' : form,
+        'messages_from' : messages_from,
+        'messages_to' : messages_to,
         'error_message' : None,
-        'inbox' : inbox_content,
-        'messages_list' : messages_and_names,
     }
 
     if request.method == 'POST':
@@ -401,30 +397,25 @@ def inbox(request):
             form = message_form(request.POST)
             if form.is_valid():
                 data = form.cleaned_data
-                user_query = SiteUser.objects.filter(username=data['username'])
-                if len(user_query) == 1:
-
-                    user = SiteUser.objects.get(username=data['username'])
-                    user_inbox = user.inbox
-
-                    if (user != SiteUser.objects.get(username=request.user.username)):
-                        new_message = Message(content=data['content'], from_user=SiteUser.objects.get(username=request.user.username), part_of=user_inbox)
+                if len(SiteUser.objects.filter(username=data['username'])) == 1: #valid username
+                    to_user = SiteUser.objects.get(username=data['username'])
+                    if (to_user.username != from_user.username):
+                        new_message = Message(content=data['content'], from_user=SiteUser.objects.get(username=request.user.username), part_of=to_user.inbox)
                         new_message.save()
-                        user_inbox.num_messages += 1
-                        user_inbox.num_unread_messages += 1
-                        user_inbox.save()
+                        to_user.inbox.num_messages += 1
+                        to_user.inbox.num_unread_messages += 1
+                        to_user.inbox.save()
                         return HttpResponseRedirect(reverse('streaming:inbox'))
                     else:
                         context['error_message'] = "You cannot send a message to yourself"
-
-                else:
+                else: #invalid username
                     context['error_message'] = "That user does not exist"
 
         elif 'read' in request.POST: #user wants to mark the message as read
             form = mark_message_as_read_form(request.POST)
             if form.is_valid():
                 data = form.cleaned_data
-                for message in messages:
+                for message in messages_from:
                     if (message.__str__() == data['read']):
                         message.read = True
                         message.part_of.num_read_messages += 1
