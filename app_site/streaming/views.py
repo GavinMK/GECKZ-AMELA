@@ -383,7 +383,6 @@ def homepage(request):
     return HttpResponse(template.render(context, request))
 
 
-@relog_required
 @login_required(login_url='streaming:login')
 def account_page(request):
     return render(request, 'streaming/accountPage.html')
@@ -453,6 +452,7 @@ def billing(request):
     return render(request, 'streaming/billing.html', {'form': form})
 
 
+@relog_required
 @login_required(login_url='streaming:login')
 def change(request):
     form = change_form()
