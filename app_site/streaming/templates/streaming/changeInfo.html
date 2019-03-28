@@ -14,7 +14,7 @@
 			<label for="username">Username: </label><br>
 			<input id="username" type="text" name="username" value="{{ user }}" required><br><br>
             <label for="password">Password: </label><br>
-			<input id="password" type="password" name="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{7,}"
+			<input id="password" type="password" name="old_password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{7,}"
 		   title="Enter current password to submit changes." required><br><br>
 			<label for="new_password">New Password: </label><br>
 			<input id="new_password" type="password" name="new_password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{7,}"

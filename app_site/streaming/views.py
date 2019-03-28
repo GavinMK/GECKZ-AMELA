@@ -455,5 +455,42 @@ def billing(request):
 @relog_required
 @login_required(login_url='streaming:login')
 def change(request):
-    form = change_form()
-    return render(request, 'streaming/changeInfo.html', {'form': form})
+
+    context = {
+        'form' : form,
+        'error_message' : None,
+    }
+
+    if request.method == 'POST':
+        form = change_form(request.POST)
+        print(form.errors)
+        if form.is_valid():
+            data = form.cleaned_data
+            print(data)
+
+            return render(request, 'streaming/accountPage.html')
+
+    return render(request, 'streaming/changeInfo.html', context)
+
+# form = billing_form()
+#     context = {
+#         'form' : form,
+#         'error_message' : None,
+#     }
+#     if request.method == 'POST':
+#         form = billing_form(request.POST)
+#         if form.is_valid():
+#             data = form.cleaned_data
+#             billings = Billing.objects.all()
+#             for billing in billings:
+#                 if (str(billing) == str(SiteUser.objects.get(username=request.user.username))):
+#                     billing.name = data['name']
+#                     billing.cc_num = data['cc_num']
+#                     billing.cvc_num = data['cvc_num']
+#                     billing.exp_month = data['exp_month']
+#                     billing.exp_year = data['exp_year']
+#                     billing.save()
+
+#             return render(request, 'streaming/accountPage.html')
+
+#     return render(request, 'streaming/billing.html', context)
