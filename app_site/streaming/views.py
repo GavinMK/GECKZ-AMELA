@@ -241,10 +241,10 @@ def display_episode(request, title, season_number, episode_number):
 @login_required(login_url='streaming:login')
 def user_page(request, username=None):
     template = loader.get_template('streaming/userpage.html')
-    friendsList = request.user.friends.all()
     if not username:
         username = request.user.username
     user = SiteUser.objects.get(username=username)
+    friendsList = user.friends.all()
     media_history = WatchEvent.objects.filter(part_of=user.watch_history)
     if request.method == 'POST':
         if request.POST['follow_button'] == 'Follow':

@@ -217,13 +217,17 @@ nav a.active {
 	display: none;
 }
 
+.rating > input ~ label{
+	color: #1a1a1a;
+	text-shadow: 0 0 1px #fffafa;
+}
+
 .rating > label:before{
 	content: "★";
 	font-size: 30px;
 }
 
 .rating > label{
-	color: #fffafa;
 	float: right;
 }
 
@@ -231,8 +235,10 @@ nav a.active {
 	color: #ffd700;
 }
 
+
 .rating > input:hover ~ label{
 	color: #ffd700;
+	text-shadow: 0 0 30px #fffafa;
 }
 
 .form-style{
@@ -301,7 +307,10 @@ h2{
 	transition-duration: 0.4s;
 }
 
-.form-style  input[type=submit]:hover{
+.form-style  input[type=submit]:hover,
+#rating_sending,
+#comment_sending,
+#inbox_sending{
 	background-color: #1a1a1a;
 	color: #fffafa;
 	border: 1px solid #fffafa;
