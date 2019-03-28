@@ -11,7 +11,7 @@ from django.template import loader
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
-from .forms import user_form, login_form, search_form, message_form, mark_message_as_read_form, billing_form, change_form, CommentForm
+from .forms import user_form, login_form, search_form, message_form, mark_message_as_read_form, billing_form, change_info, CommentForm
 
 from django.core.paginator import Paginator
 import re
@@ -452,9 +452,9 @@ def billing(request):
     return render(request, 'streaming/billing.html', {'form': form})
 
 
-@relog_required
 @login_required(login_url='streaming:login')
 def change(request):
+    form = change_info(request.POST)
 
     context = {
         'form' : form,
@@ -462,35 +462,25 @@ def change(request):
     }
 
     if request.method == 'POST':
-        form = change_form(request.POST)
-        print(form.errors)
         if form.is_valid():
             data = form.cleaned_data
-            print(data)
+            passWord = authenticate(username=request.user.username, password=data['old_password'])
 
-            return render(request, 'streaming/accountPage.html')
+            if passWord is None: #the user entered the wrong password
+                context['error_message'] = "Incorrect password. Please retype your current password to change your user information"
+                render(request, 'streaming/changeInfo.html', context)
+            else:
+                user = request.user
+                user.username = data['username']
+                user.first_name = data['first_name']
+                user.last_name = data['last_name']
+                user.email = data['email']
+
+                #if (data['new_password'] != ''): #the user typed a new password to save
+                #    SiteUser.objects.get(username=user.username).set_password(data['new_password'])
+
+                user.save()
+
+                return render(request, 'streaming/accountPage.html')
 
     return render(request, 'streaming/changeInfo.html', context)
-
-# form = billing_form()
-#     context = {
-#         'form' : form,
-#         'error_message' : None,
-#     }
-#     if request.method == 'POST':
-#         form = billing_form(request.POST)
-#         if form.is_valid():
-#             data = form.cleaned_data
-#             billings = Billing.objects.all()
-#             for billing in billings:
-#                 if (str(billing) == str(SiteUser.objects.get(username=request.user.username))):
-#                     billing.name = data['name']
-#                     billing.cc_num = data['cc_num']
-#                     billing.cvc_num = data['cvc_num']
-#                     billing.exp_month = data['exp_month']
-#                     billing.exp_year = data['exp_year']
-#                     billing.save()
-
-#             return render(request, 'streaming/accountPage.html')
-
-#     return render(request, 'streaming/billing.html', context)
