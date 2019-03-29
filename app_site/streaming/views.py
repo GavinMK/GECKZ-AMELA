@@ -244,7 +244,6 @@ def user_page(request, username=None):
     if not username:
         username = request.user.username
     user = SiteUser.objects.get(username=username)
-    friendsList = user.friends.all()
     media_history = WatchEvent.objects.filter(part_of=user.watch_history)
     if request.method == 'POST':
         if request.POST['follow_button'] == 'Follow':
@@ -254,7 +253,8 @@ def user_page(request, username=None):
     context = {
         'user': user,
         'friends': request.user.friends.filter(username=user.username).exists(),
-        'friendsList': friendsList,
+        'friendsList': user.friends.all(),
+        'rating':  Rating.objects.filter(posted_by=user).last(),
         'comments': user.comment_section.comment_set.all().order_by('-timestamp'),
         'history': media_history.order_by('-time_watched'),
     }

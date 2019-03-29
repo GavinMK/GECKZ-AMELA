@@ -35,7 +35,12 @@
 <aside style="float: right;">
     <fieldset>
         <legend>Latest Rating</legend><br>
-            <p>latest rating given...</p>
+        {% if rating %}
+        <div class="stars-outer" style="color: #ffd700;font-size: 35px;margin-left: 22%;"><div class="stars-inner" style="width: calc({{ rating.rating }}%*20); color: #ffd700;"></div></div>
+        <p style="text-align: center;color: #fffafa;">{{ rating.part_of }}</p>
+        {% else %}
+        <h1 style="font-size: 16px;text-align: center;color: #fffafa;">No ratings yet.</h1>
+        {% endif %}
     </fieldset>
     <br><br>
     <fieldset>
