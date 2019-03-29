@@ -5,6 +5,7 @@ from django.shortcuts import render
 
 from .decorators import anonymous_only_redirect, subscription_required, relog_required
 from .util import *
+from .constants import *
 from .models import *
 from django.db.models import Q
 from django.template import loader
@@ -246,7 +247,7 @@ def user_page(request, username=None):
 @login_required(login_url='streaming:login')
 def rental_page(request, title):
     template = loader.get_template('streaming/rentPage.html')
-    media = Movie.objects.get(title=title)
+    media = get_media(title)
     if not media:
         return HttpResponse("Invalid media")
     if request.method == 'POST':
@@ -262,26 +263,23 @@ def rental_page(request, title):
 @login_required(login_url='streaming:login')
 def subscription_page(request, title, season_number, episode_number):
     template = loader.get_template('streaming/subPage.html')
-    show = TVShow.objects.get(title=title)
-    if not show:
-        return HttpResponse("Invalid show")
-    season = TVSeason.objects.get(part_of=show, season_number=season_number)
-    if not season:
-        return HttpResponse("Invalid season number")
-    media = TVEpisode.objects.get(part_of=season, episode_number=episode_number)
-    if not media:
-        return HttpResponse("Invalid episode number")
+    show = get_media(title)
+    if show is None:
+        return HttpResponse("BAD MEDIA")
+    exceed_subs = len(request.user.subscriptions.all()) >= MAX_SUBS
+    print(len(request.user.subscriptions.all()))
     if request.method == 'POST':
         request.user.subscriptions.add(show)
         return HttpResponseRedirect(reverse('streaming:watch_media', kwargs={'title': title,
                                                                              'season_number':season_number,
                                                                              'episode_number':episode_number}))
+
     context = {
         'user': request.user,
-        'show':show,
+        'show': show,
         'season_number': season_number,
         'episode_number': episode_number,
-        'media': media
+        'exceed': exceed_subs
     }
     return HttpResponse(template.render(context, request))
 
