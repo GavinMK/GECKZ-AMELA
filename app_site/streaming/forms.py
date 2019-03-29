@@ -26,7 +26,6 @@ class message_form(forms.Form):
 
 class mark_message_as_read_form(forms.Form):
     read = forms.CharField(label='Read', max_length=1000)
-    pass
 
 
 class billing_form(forms.Form):

@@ -13,7 +13,7 @@
                     <form action="{% url 'streaming:inbox' %}" method="POST" style="margin: 0;" onsubmit="submitOnce('inbox_submit','inbox_sending')">
                         {% csrf_token %}
                         <label for="username">To: </label><br>
-                        <input id="username" autocomplete="true" placeholder="Username" type="text" name="username" required><br>
+                        <input id="username" autocomplete="true" placeholder="Username" value="{{sendTo}}" type="text" name="username" required><br>
                         <h1>
                             {% if error_message != None %}
                                 {{ error_message }}
