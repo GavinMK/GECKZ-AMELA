@@ -229,11 +229,14 @@ def user_page(request, username=None):
     user = SiteUser.objects.get(username=username)
     friendsList = user.friends.all()
     media_history = WatchEvent.objects.filter(part_of=user.watch_history)
-    if request.method == 'POST':
-        if request.POST['follow_button'] == 'Follow':
-            request.user.friends.add(user)
-        elif request.POST['follow_button'] == 'Unfollow':
-            request.user.friends.remove(user)
+    if request.method == 'POST': #user wants to follow/unfollow
+        if 'follow_button' in request.POST:
+            if request.POST['follow_button'] == 'Follow':
+                request.user.friends.add(user)
+            elif request.POST['follow_button'] == 'Unfollow':
+                request.user.friends.remove(user)
+        elif 'message' in request.POST: #user wants to message
+            return inbox(request, user)
     context = {
         'user': user,
         'friends': request.user.friends.filter(username=user.username).exists(),
@@ -377,17 +380,21 @@ def account_page(request):
 
 
 @login_required(login_url='streaming:login')
-def inbox(request):
+def inbox(request, sendTo=None):
     form = message_form()
     from_user = request.user
     messages_from = from_user.inbox.message_set.all() #get all of the current user's messages
     messages_to = Message.objects.filter(from_user=from_user)  #get all messages the current user has sent to other inbox's
+
+    if sendTo is None:
+        sendTo = ''
 
     context = {
         'form' : form,
         'messages_from' : messages_from,
         'messages_to' : messages_to,
         'error_message' : None,
+        'sendTo' : sendTo,
     }
 
     if request.method == 'POST':
