@@ -38,7 +38,12 @@ class Actor(models.Model):
 
 
 class Billing(models.Model):
-    cc_info = models.BigIntegerField(default=0)
+    name = models.CharField(default='', max_length=50)
+    cc_num = models.BigIntegerField(default=0)
+    cvc_num = models.IntegerField(default=0)
+    exp_month = models.IntegerField(default=0)
+    exp_year = models.IntegerField(default=0)
+
     next_payment_date = models.DateField(default=timezone.now)
     num_sub_slots = models.IntegerField(default=10)
     num_rentals = models.IntegerField(default=0)
@@ -46,7 +51,7 @@ class Billing(models.Model):
 
     def __str__(self):
         query = SiteUser.objects.filter(billing=self)
-        return "Unassigned" if len(query) == 0 else query[0]
+        return "Unassigned" if len(query) == 0 else str(query[0])
 
 
 class CommentSection(models.Model):
