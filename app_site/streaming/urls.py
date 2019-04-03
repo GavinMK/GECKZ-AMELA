@@ -1,4 +1,5 @@
 from django.urls import path, include
+from django.conf.urls import url
 
 from . import views
 
@@ -27,5 +28,5 @@ urlpatterns = [
     path('media/<str:title>/<int:season_number>/<int:episode_number>/subscribe', views.subscription_page, name='subscribe'),
     path('media/<str:title>/rent', views.rental_page, name='rental'),
     path('rate/', views.post_rating, name='post_rating'), # We should only need this until the javascript is working (I think)
-    path('editProfile/', views.editProfile, name="editProfile")
+    path('editProfile/', views.editProfile, name="editProfile"),
 ]
