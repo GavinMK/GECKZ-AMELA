@@ -486,9 +486,6 @@ def change(request):
                 user.last_name = data['last_name']
                 user.email = data['email']
 
-                #if (data['new_password'] != ''): #the user typed a new password to save
-                #    SiteUser.objects.get(username=user.username).set_password(data['new_password'])
-
                 user.save()
 
                 return render(request, 'streaming/accountPage.html')
