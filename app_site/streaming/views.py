@@ -384,18 +384,42 @@ def inbox(request, sendTo=None):
     form = message_form()
     from_user = request.user
     messages_from = from_user.inbox.message_set.all() #get all of the current user's messages
-    messages_to = Message.objects.filter(from_user=from_user)  #get all messages the current user has sent to other inbox's
 
-    if sendTo is None:
-        sendTo = ''
+    if request.method == 'POST':
+        if 'read' in request.POST: #user wants to mark the message as read
+            form = mark_message_as_read_form(request.POST)
+            if form.is_valid():
+                data = form.cleaned_data
+                for message in messages_from:
+                    if (message.__str__() == data['read']):
+                        message.read = True
+                        message.part_of.num_read_messages += 1
+                        message.part_of.num_unread_messages -= 1
+                        message.save() #save the changes to the Message object
+                        message.part_of.save() #save the changes to the Inbox object
+                        return HttpResponseRedirect(reverse('streaming:inbox'))
+
+    context = {
+        'form': form,
+        'messages_from': messages_from,
+    }
+
+    return render(request, 'streaming/inbox.html', context)
+
+
+@login_required(login_url='streaming:login')
+def messageInbox(request, sendTo=None):
+    form = message_form()
+    from_user = request.user
 
     context = {
         'form' : form,
-        'messages_from' : messages_from,
-        'messages_to' : messages_to,
         'error_message' : None,
-        'sendTo' : sendTo,
+        'sendTo': sendTo,
     }
+
+    if sendTo is None:
+        sendTo = ''
 
     if request.method == 'POST':
         if 'send' in request.POST: #user wants to send a message
@@ -416,20 +440,31 @@ def inbox(request, sendTo=None):
                 else: #invalid username
                     context['error_message'] = "That user does not exist"
 
-        elif 'read' in request.POST: #user wants to mark the message as read
-            form = mark_message_as_read_form(request.POST)
-            if form.is_valid():
-                data = form.cleaned_data
-                for message in messages_from:
-                    if (message.__str__() == data['read']):
-                        message.read = True
-                        message.part_of.num_read_messages += 1
-                        message.part_of.num_unread_messages -= 1
-                        message.save() #save the changes to the Message object
-                        message.part_of.save() #save the changes to the Inbox object
-                        return HttpResponseRedirect(reverse('streaming:inbox'))
+    return render(request, 'streaming/messageInbox.html', context)
 
-    return render(request, 'streaming/inbox.html', context)
+
+@login_required(login_url='streaming:login')
+def sentInbox(request, sendTo=None):
+    from_user = request.user
+    messages_to = Message.objects.filter(from_user=from_user)  #get all messages the current user has sent to other inbox's
+
+    context = {
+        'messages_to' : messages_to
+    }
+
+    return render(request, 'streaming/sentInbox.html', context)
+
+
+@login_required(login_url='streaming:login')
+def readInbox(request, sendTo=None):
+    from_user = request.user
+    messages_from = from_user.inbox.message_set.all() #get all of the current user's messages
+
+    context = {
+        'messages_from' : messages_from
+    }
+
+    return render(request, 'streaming/readInbox.html', context)
 
 
 @login_required(login_url='streaming:login')

@@ -2,80 +2,40 @@
 
 {% load static %}
 {% block content %}
-    <header>Inbox</header>
+    <header style="text-align: left;">Inbox</header>
     <hr>
 
-    <section style="width: 97%;float: right;padding-top: 20px;">
-    <script src="{% static 'streaming/js/utility.js' %}" type="text/javascript"></script>
-        <fieldset>
-            <legend>Send a message</legend><br>
-                <div class="form-style" style="margin: 0;padding-bottom: 20px;">
-                    <form action="{% url 'streaming:inbox' %}" method="POST" style="margin: 0;" onsubmit="submitOnce('inbox_submit','inbox_sending')">
-                        {% csrf_token %}
-                        <label for="username">To: </label><br>
-                        <input id="username" autocomplete="true" placeholder="Username" value="{{sendTo}}" type="text" name="username" required><br>
-                        <h1>
-                            {% if error_message != None %}
-                                {{ error_message }}
-                            {% endif %}
-                        </h1>
-                        <label for="content">Message: </label><br>
-                        <input id="content" autocomplete="false" type="text" name="content" required><br>
-                        <br>
-                        <input type="submit" name="send" value="Send" id="inbox_submit">
-                        <input disabled type="submit" name="sending" value="Sending..." id="inbox_sending" hidden>
-                    </form>
-                </div>
-        </fieldset>
-    </section>
+	<aside style="width: 20%;">
+        {% include 'inboxNav.html' %}
+	</aside>
 
-    <p style="padding-left: 0px;color: #fffafa;font-size: 20px;">Received messages:</p>
-    {% if user.inbox.num_unread_messages > 0 %}
-        {% if user.inbox.num_unread_messages == 1 %}
-            <p>You have <strong>1</strong> unread message!</p>
+
+    <section style="width: 73%;">
+
+        {% if user.inbox.num_unread_messages > 0 %}
+            <p style="color: red;">You have {{ user.inbox.num_unread_messages }} unread message{{ user.inbox.num_unread_messages|pluralize }}!</p>
         {% else %}
-            <p>You have <strong>{{user.inbox.num_unread_messages}}</strong> unread messages!</p>
+            <p>You have no unread messages.</p>
         {% endif %}
-    {% else %}
-        <p>You have no unread messages.</p>
-    {% endif %}
 
-    {% for message in messages_from reversed %}
-        <section style="width: 97%;">
+        {% for message in messages_from reversed %}
             {% if not message.read %}
-                <p style="color:red">This is an unread message!</p>
+                <fieldset>
+                    <legend>From: {{message.from_user}}</legend>
+                    <p>Received: {{message.timestamp}}</p>
+                    <p style="padding-left: 0px;color: #fffafa;font-size: 15px;">&emsp;{{message.content}}</p>
+                        <div class="form-style" style="margin: 0;padding-bottom: 20px;">
+                            <form action="{% url 'streaming:inbox' %}" method="POST" style="margin: 0;">
+                                {% csrf_token %}
+                                <input id="read" type="hidden" name="read" value="{{message}}" required>
+                                <input type="submit" value="Mark as Read">
+                            </form>
+                        </div>
+                </fieldset>
             {% endif %}
-            <fieldset>
-                <legend>From: {{message.from_user}}</legend>
-                <p>Received: {{message.timestamp}}</p>
-                <p style="padding-left: 0px;color: #fffafa;font-size: 15px;">&emsp;{{message.content}}</p>
-                {% if not message.read %}
-                    <div class="form-style" style="margin: 0;padding-bottom: 20px;"></div>
-                        <form action="{% url 'streaming:inbox' %}" method="POST" style="margin: 0;">
-                            {% csrf_token %}
-                            <input id="read" type="hidden" name="read" value="{{message}}" required>
-                            <input type="submit" value="Mark as Read">
-                        </form>
-                    </div>
-                {% endif %}
-            </fieldset>
-        </section>
-    {% endfor %}
-
-    <p style="padding-left: 0px;color: #fffafa;font-size: 20px;">Sent messages:</p>
-    {% for message in messages_to reversed %}
-        <section style="width: 97%;">
-            <fieldset>
-                <legend>To: {{message.part_of.siteuser}}</legend>
-                <p>Sent: {{message.timestamp}}</p>
-                <p style="padding-left: 0px;color: #fffafa;font-size: 15px;">&emsp;{{message.content}}</p>
-            </fieldset>
-        </section>
-    {% endfor %}
-    
-    <p>Number of total messages: {{ user.inbox.num_messages }}</p>    
-    <p>Number of read messages: {{ user.inbox.num_read_messages }}</p>
-    <p>Number of unread messages: {{ user.inbox.num_unread_messages }}</p>
+        <br>
+        {% endfor %}
+    </section>
 
 <script src="{% static 'streaming/js/utility.js' %}" type="text/javascript"></script>
 {% endblock %}
