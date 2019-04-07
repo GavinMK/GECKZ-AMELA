@@ -412,14 +412,14 @@ def messageInbox(request, sendTo=None):
     form = message_form()
     from_user = request.user
 
+    if sendTo is None:
+        sendTo = ''
+
     context = {
         'form' : form,
         'error_message' : None,
         'sendTo': sendTo,
     }
-
-    if sendTo is None:
-        sendTo = ''
 
     if request.method == 'POST':
         if 'send' in request.POST: #user wants to send a message
