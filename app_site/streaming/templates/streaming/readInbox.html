@@ -1,0 +1,27 @@
+{% extends "navPage.html" %}
+
+{% load static %}
+{% block content %}
+    <header style="text-align: left;">Inbox</header>
+    <hr>
+
+	<aside style="width: 20%;">
+        {% include 'inboxNav.html' %}
+	</aside>
+
+
+    <section style="width: 73%;">
+        {% for message in messages_from reversed %}
+            {% if message.read %}
+                <fieldset>
+                    <legend>From: {{message.from_user}}</legend>
+                    <p>Received: {{message.timestamp}}</p>
+                    <p style="padding-left: 0px;color: #fffafa;font-size: 15px;">&emsp;{{message.content}}</p>
+                </fieldset>
+            {% endif %}
+        <br>
+        {% endfor %}
+    </section>
+
+<script src="{% static 'streaming/js/utility.js' %}" type="text/javascript"></script>
+{% endblock %}

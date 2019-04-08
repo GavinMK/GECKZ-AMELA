@@ -118,6 +118,10 @@ hr {
 	height: 100px;
 }
 
+#inboxCount{
+	text-align: center;
+}
+
 nav{
 	background: #111;
 	padding: 15px 20px 0 20px;
@@ -162,6 +166,33 @@ nav a.active {
 	margin-left: auto;
 	margin-right: auto;
 	width: 50%;
+}
+
+.inbox-style ul{
+	border: 1px solid #fffafa;
+	margin: 0;
+	padding: 0;
+}
+
+.inbox-style li {
+	text-align: center;
+	border-bottom: 1px solid #fffafa;
+	padding-bottom: 0;
+}
+
+.inbox-style li a{
+	display: block;
+	color: #fffafa;
+	padding: 20px 0;
+}
+
+.inbox-style li a:hover{
+	color: #ffd700;
+	background-color: #111;
+}
+
+.inbox-style li:last-child{
+	border-bottom: none;
 }
 
 .profile-style img{
