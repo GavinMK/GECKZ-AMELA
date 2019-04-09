@@ -6,7 +6,8 @@
 		<li><a href="{% url 'streaming:homepage' %}">Home</a></li>
 		<li><a href="{% url 'streaming:accountPage' %}">Account</a></li>
 		<li><a href="{% url 'streaming:user_page' %}">Profile</a></li>
-		<li><a href="{% url 'streaming:inbox' %}">Inbox</a></li>
+		<li><a href="{% url 'streaming:inbox' %}">Inbox
+			<span style="color: red;"> {% if request.user.inbox.num_unread_messages > 0 %}({{request.user.inbox.num_unread_messages}}) {% endif %}</span></a></li>
 		<li><a href="{% url 'streaming:friends' %}">Friends</a></li>
 		<li><a href="{% url 'streaming:movies' %}">Movies</a></li>
 		<li><a href="{% url 'streaming:shows' %}">TV Shows</a></li>
