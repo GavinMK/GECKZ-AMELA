@@ -228,19 +228,19 @@ def user_page(request, username=None):
     if not username:
         username = request.user.username
     user = SiteUser.objects.get(username=username)
-    friendsList = user.friends.all()
+    friendsList = user.friends.follows.all()
     media_history = WatchEvent.objects.filter(part_of=user.watch_history)
     if request.method == 'POST': #user wants to follow/unfollow
         if 'follow_button' in request.POST:
             if request.POST['follow_button'] == 'Follow':
-                request.user.friends.add(user)
+                request.user.friends.follow.add(user)
             elif request.POST['follow_button'] == 'Unfollow':
-                request.user.friends.remove(user)
+                request.user.friends.follow.remove(user)
         elif 'message' in request.POST: #user wants to message
             return inbox(request, user)
     context = {
         'user': user,
-        'friends': request.user.friends.filter(username=user.username).exists(),
+        'friends': request.user.friends.follow.filter(username=user.username).exists(),
         'friendsList': friendsList,
         'comments': user.comment_section.comment_set.all().order_by('-timestamp'),
         'history': media_history.order_by('-time_watched'),
