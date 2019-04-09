@@ -503,3 +503,8 @@ def change(request):
 def editProfile(request):
     form = profile_form()
     return render(request, 'streaming/editProfile.html', {'form': form})
+
+
+@login_required(login_url='streaming:login')
+def about(request):
+    return render(request, 'streaming/about.html')
