@@ -498,16 +498,14 @@ def billing(request):
         form = billing_form(request.POST)
         if form.is_valid():
             data = form.cleaned_data
-            billings = Billing.objects.all()
-            for billing in billings:
-                if (str(billing) == str(SiteUser.objects.get(username=request.user.username))):
-                    billing.name = data['name']
-                    billing.cc_num = data['cc_num']
-                    billing.cvc_num = data['cvc_num']
-                    billing.exp_month = data['exp_month']
-                    billing.exp_year = data['exp_year']
-                    billing.next_payment_date = datetime.now() + timedelta(30)
-                    billing.save()
+
+            request.user.billing.name = data['name']
+            request.user.billing.cc_num = data['cc_num']
+            request.user.billing.cvc_num = data['cvc_num']
+            request.user.billing.exp_month = data['exp_month']
+            request.user.billing.exp_year = data['exp_year']
+            request.user.billing.next_payment_date = datetime.now() + timedelta(30)
+            request.user.billing.save()
 
             return render(request, 'streaming/accountPage.html')
 
@@ -517,6 +515,16 @@ def billing(request):
 @login_required(login_url='streaming:login')
 def inactiveAccount(request):
     return render(request, 'streaming/inactiveAccount.html')
+
+
+@login_required(login_url='streaming:login')
+@active_user
+def cancel_plan(request):
+    time = request.user.billing.next_payment_date
+    request.user.billing.delete()
+    request.user.billing = Billing(next_payment_date=time)
+    request.user.billing.save()
+    return render(request, 'streaming/accountPage.html')
 
 
 @login_required(login_url='streaming:login')
