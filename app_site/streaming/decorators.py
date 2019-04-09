@@ -35,3 +35,10 @@ def subscription_required(function):
                 return HttpResponseRedirect(reverse('streaming:rental', kwargs={'title':kwargs['title']}))
     return wrap
 
+
+def active_user(function):
+    def wrap(request, *args, **kwargs):
+        if request.user.billing.next_payment_date > datetime.now().date():
+            return function(request, *args, **kwargs)
+        return HttpResponseRedirect(reverse('streaming:inactiveAccount'))
+    return wrap
