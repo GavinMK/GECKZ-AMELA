@@ -11,8 +11,9 @@ from django.db.models import Q
 from django.template import loader
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, logout
-from .forms import user_form, login_form, search_form, message_form, mark_message_as_read_form, billing_form, change_form, CommentForm, profile_form
+
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from .forms import user_form, login_form, search_form, message_form, mark_message_as_read_form, billing_form, change_info, CommentForm, profile_form
 
 from django.core.paginator import Paginator
 import re
@@ -373,7 +374,6 @@ def homepage(request):
     return HttpResponse(template.render(context, request))
 
 
-@relog_required
 @login_required(login_url='streaming:login')
 def account_page(request):
     return render(request, 'streaming/accountPage.html')
@@ -492,14 +492,37 @@ def billing(request):
 
     return render(request, 'streaming/billing.html', context)
 
-
-@login_required(login_url='streaming:login')
-def change(request):
-    form = change_form()
-    return render(request, 'streaming/changeInfo.html', {'form': form})
-
-
 @login_required(login_url='streaming:login')
 def editProfile(request):
     form = profile_form()
     return render(request, 'streaming/editProfile.html', {'form': form})
+
+@login_required(login_url='streaming:login')
+def change(request):
+    form = change_info(request.POST)
+
+    context = {
+        'form' : form,
+        'error_message' : None,
+    }
+
+    if request.method == 'POST':
+        if form.is_valid():
+            data = form.cleaned_data
+            passWord = authenticate(username=request.user.username, password=data['old_password'])
+
+            if passWord is None: #the user entered the wrong password
+                context['error_message'] = "Incorrect password. Please retype your current password to change your user information"
+                render(request, 'streaming/changeInfo.html', context)
+            else:
+                user = request.user
+                user.username = data['username']
+                user.first_name = data['first_name']
+                user.last_name = data['last_name']
+                user.email = data['email']
+
+                user.save()
+
+                return render(request, 'streaming/accountPage.html')
+
+    return render(request, 'streaming/changeInfo.html', context)
