@@ -33,4 +33,6 @@ urlpatterns = [
     path('rate/', views.post_rating, name='post_rating'), # We should only need this until the javascript is working (I think)
     path('editProfile/', views.editProfile, name="editProfile"),
     path('about/', views.about, name="about")
+    path('inactiveAccount/', views.inactiveAccount, name='inactiveAccount'),
+    path('cancelPlan/', views.cancel_plan, name='cancel_plan'),
 ]

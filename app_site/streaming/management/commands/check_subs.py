@@ -6,7 +6,5 @@ from datetime import *
 class Command(BaseCommand):
     def handle(self, *args, **options):
         for billing in Billing.objects.all():
-            if billing.next_payment_date > datetime.now().date():
+            if billing.next_payment_date <= datetime.now().date():
                 billing.charge()
-
-
