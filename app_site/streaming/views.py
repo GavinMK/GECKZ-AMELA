@@ -233,14 +233,14 @@ def user_page(request, username=None):
     if request.method == 'POST': #user wants to follow/unfollow
         if 'follow_button' in request.POST:
             if request.POST['follow_button'] == 'Follow':
-                request.user.friends.follow.add(user)
+                request.user.friends.follows.add(user)
             elif request.POST['follow_button'] == 'Unfollow':
-                request.user.friends.follow.remove(user)
+                request.user.friends.follows.remove(user)
         elif 'message' in request.POST: #user wants to message
             return inbox(request, user)
     context = {
         'user': user,
-        'friends': request.user.friends.follow.filter(username=user.username).exists(),
+        'friends': request.user.friends.follows.filter(username=user.username).exists(),
         'friendsList': friendsList,
         'comments': user.comment_section.comment_set.all().order_by('-timestamp'),
         'history': media_history.order_by('-time_watched'),
@@ -355,7 +355,7 @@ def post_rating(request):
 @login_required(login_url='streaming:login')
 def friends(request):
     template = loader.get_template('streaming/friendPage.html')
-    friends = request.user.friends.all()
+    friends = request.user.friends.follows.all()
     context = {
         'friends': friends
     }

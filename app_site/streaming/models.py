@@ -185,6 +185,7 @@ class SiteUser(AbstractUser):
 class Friend(models.Model):
     follows = models.ManyToManyField(SiteUser, blank=True)
 
+
 class Comment(models.Model):
     content = models.CharField(max_length=500)
     timestamp = models.DateTimeField(default=timezone.now)
