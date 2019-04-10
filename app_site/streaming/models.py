@@ -63,6 +63,13 @@ class Billing(models.Model):
         else:
             print(str(self) + " has no valid payment info, no charge occurred")
 
+    def cancel(self):
+        self.cc_num = 0
+        self.cvc_num = 0
+        self.exp_month = 0
+        self.exp_year = 0
+        self.name = ""
+        self.save()
 
 
 class CommentSection(models.Model):
