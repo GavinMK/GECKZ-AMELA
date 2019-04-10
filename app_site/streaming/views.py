@@ -504,8 +504,9 @@ def billing(request):
             request.user.billing.cvc_num = data['cvc_num']
             request.user.billing.exp_month = data['exp_month']
             request.user.billing.exp_year = data['exp_year']
-            request.user.billing.next_payment_date = datetime.now() + timedelta(30)
             request.user.billing.save()
+            if request.user.billing.next_payment_date <= datetime.now().date():
+                request.user.billing.charge()
 
             return render(request, 'streaming/accountPage.html')
 

@@ -8,6 +8,7 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
+from datetime import datetime, timedelta
 
 
 class Preferences(models.Model):
@@ -54,7 +55,14 @@ class Billing(models.Model):
         return "Unassigned" if len(query) == 0 else str(query[0])
 
     def charge(self):
-        print("Charged" + str(self))
+        print("Attempting to charge " + str(self))
+        if self.cc_num != 0:
+            self.next_payment_date = datetime.now().date() + timedelta(30)
+            self.save()
+            print(str(self) + " has been charged, next payment date is " + self.next_payment_date.strftime('%c'))
+        else:
+            print(str(self) + " has no valid payment info, no charge occurred")
+
 
 
 class CommentSection(models.Model):
