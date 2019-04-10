@@ -176,10 +176,14 @@ class SiteUser(AbstractUser):
     subscriptions = models.ManyToManyField(TVShow, blank=True)
     rentals = models.ManyToManyField(Movie, blank=True)
     watch_history = models.OneToOneField(WatchHistory, null=True, on_delete=models.CASCADE)
-    friends = models.ManyToManyField('self', blank=True)
+    friends = models.OneToOneField('friend', null=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.username
+
+
+class Friend(models.Model):
+    follows = models.ManyToManyField(SiteUser, blank=True)
 
 
 class Comment(models.Model):
