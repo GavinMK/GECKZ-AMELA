@@ -1,5 +1,7 @@
 body{
 	background-color: #1a1a1a;
+	position: relative;
+	height: 100%;
 }
 
 a {
@@ -75,8 +77,13 @@ h1{
 
 article{
     /*background-color: #111;*/
+	width: 93%;
+	min-height: 100vh;
+	overflow: hidden;
+	display: block;
 	margin:40px;
-	padding:10px;
+	padding:10px 10px 100px 10px;
+	position: relative;
     font-family: Raleway;
 }
 
@@ -120,6 +127,22 @@ hr {
 
 #inboxCount{
 	text-align: center;
+}
+
+#company{
+	font-family: Oswald;
+	color: #ffd700;
+	font-size: 25px;
+	padding-left: 30px;
+}
+
+#about{
+	padding-left: 30px;
+	color: #fffafa;
+}
+
+#about:hover{
+	color: #ffd700;
 }
 
 nav{
@@ -379,4 +402,14 @@ h2{
 .stars-inner::before {
   content: "★★★★★";
   /*color: #f8ce0b;*/
+}
+
+.footer {
+	background: #111;
+	width: 100%;
+	height: 110px;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	font-family: Raleway;
 }
