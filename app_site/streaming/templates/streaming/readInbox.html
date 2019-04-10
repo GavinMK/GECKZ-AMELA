@@ -11,6 +11,12 @@
 
 
     <section style="width: 73%;">
+		{% if user.inbox.num_read_messages > 0 %}
+            <p style="color: red;">You have {{ user.inbox.num_read_messages }} read message{{ user.inbox.num_read_messages|pluralize }}!</p>
+        {% else %}
+            <p>You have no read messages.</p>
+        {% endif %}
+		
         {% for message in messages_from reversed %}
             {% if message.read %}
                 <fieldset>
