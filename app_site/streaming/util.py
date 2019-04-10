@@ -1,4 +1,4 @@
-from .models import Movie, TVShow, TVSeason, TVEpisode, Rating, Preferences, CommentSection, Inbox, Billing, WatchHistory, SiteUser
+from .models import *
 from django.db.models import Q
 import re
 
@@ -82,10 +82,12 @@ def generate_user(data):
     billing.save()
     history = WatchHistory()
     history.save()
+    friends = Friend()
+    friends.save()
     return SiteUser.objects.create_user(data['username'], email=data['email'], password=data['password'],
                                         first_name=data['first_name'], last_name=data['last_name'],
                                         preferences=preferences, comment_section=comment_section,
-                                        inbox=inbox, billing=billing, watch_history=history)
+                                        inbox=inbox, billing=billing, watch_history=history, friends=friends)
 
 
 def filter_db_query(context, query, tv_show_list, movie_list):

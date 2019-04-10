@@ -30,12 +30,12 @@ ALLOWED_HOSTS = ['app-env.vubramjtee.us-west-2.elasticbeanstalk.com', '127.0.0.1
 
 INSTALLED_APPS = [
     'streaming.apps.StreamingConfig',
-    'django.contrib.admin',
-    'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.admin',
+    'django.contrib.auth',
 ]
 
 MIDDLEWARE = [
@@ -134,3 +134,10 @@ AUTH_USER_MODEL = 'streaming.SiteUser'
 
 LOGIN_URL = '/streaming/login'
 LOGIN_REDIRECT_URL = '/streaming'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'AmelaDevelopmentTeam@gmail.com'
+EMAIL_HOST_PASSWORD = 'Kn4>u-.>+F+3E}U*'

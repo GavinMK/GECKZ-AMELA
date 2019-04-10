@@ -36,10 +36,10 @@ class billing_form(forms.Form):
     exp_year = forms.IntegerField(label='Expiration Year')
 
 
-class change_form(forms.Form):
+class change_info(forms.Form):
     username = forms.CharField(label='Username', max_length=20)
     old_password = forms.CharField(label='Password', max_length=20)
-    new_password = forms.CharField(label='Password', max_length=20)
+    new_password = forms.CharField(label='Password', max_length=20, required=False)
     first_name = forms.CharField(label='First Name', max_length=20)
     last_name = forms.CharField(label='Last Name', max_length=20)
     email = forms.CharField(label='Email', max_length=30)

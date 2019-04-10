@@ -16,7 +16,12 @@
             <p style="padding-bottom: 20px;"></p>
             <div class="form-style" style="margin: 0;padding-bottom: 20px;">
                 <form action="{% url 'streaming:change' %}">
-                    <input type="submit" value="Change User Information/Password">
+                    <input type="submit" value="Change User Information">
+                </form>
+            </div>
+            <div class="form-style" style="margin: 0;padding-bottom: 20px;">
+                <form action="{% url 'password_reset' %}">
+                    <input type="submit" value="Change Password">
                 </form>
             </div>
         </fieldset>
@@ -48,10 +53,7 @@
         <fieldset>
             <legend>Transaction Information:</legend>
                 <p>To do: </p>
-                <p>Edit account info</p>
-                <p>Change Password</p>
                 <p>Email Preferences</p>
-                <p>Billing Information</p>
                 <p>Hiding CC Info</p>
                 <p>Billing History? or only current transaction info?</p>
         </fieldset>
