@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from django.urls import reverse
 from django.shortcuts import render
 
-from .decorators import anonymous_only_redirect, subscription_required, relog_required
+from .decorators import *
 from .util import *
 from .constants import *
 from .models import *
@@ -17,6 +17,7 @@ from .forms import user_form, login_form, search_form, message_form, mark_messag
 
 from django.core.paginator import Paginator
 import re
+from datetime import datetime, timedelta
 
 @anonymous_only_redirect
 def create_user_page(request):
@@ -72,6 +73,7 @@ def logout_requested(request):
 
 
 @login_required(login_url='streaming:login')
+@active_user
 def movies(request):
     template = loader.get_template('streaming/mediaList.html')
     movie_list = Movie.objects.all()
@@ -82,6 +84,7 @@ def movies(request):
 
 
 @login_required(login_url='streaming:login')
+@active_user
 def shows(request):
     template = loader.get_template('streaming/mediaList.html')
     show_list = TVShow.objects.all()
@@ -92,6 +95,7 @@ def shows(request):
 
 
 @login_required(login_url='streaming:login')
+@active_user
 def post_comment(request):
     context = {
         'error_message': None
@@ -111,6 +115,7 @@ def post_comment(request):
 
 
 @login_required(login_url='streaming:login')
+@active_user
 def search(request):
     template = loader.get_template('streaming/searchPage.html')
     context = {
@@ -147,6 +152,7 @@ def search(request):
 
 
 @login_required(login_url='streaming:login')
+@active_user
 def user_search(request):
     template = loader.get_template('streaming/userSearchPage.html')
     user_list = SiteUser.objects.all()
@@ -163,7 +169,9 @@ def user_search(request):
     context['count'] = len(context['users'])
     return HttpResponse(template.render(context, request))
 
+
 @login_required(login_url='streaming:login')
+@active_user
 def display_media(request, title):
     template = loader.get_template('streaming/mediaDisplay.html')
     episode_list = []
@@ -195,6 +203,7 @@ def display_media(request, title):
 
 
 @login_required(login_url='streaming:login')
+@active_user
 def display_episode(request, title, season_number, episode_number):
     template = loader.get_template('streaming/tvEpisode.html')
     show = get_media(title)
@@ -223,12 +232,13 @@ def display_episode(request, title, season_number, episode_number):
 
 
 @login_required(login_url='streaming:login')
+@active_user
 def user_page(request, username=None):
     template = loader.get_template('streaming/userpage.html')
     if not username:
         username = request.user.username
     user = SiteUser.objects.get(username=username)
-    media_history = WatchEvent.objects.filter(part_of=user.watch_history)
+    media_history = user.watch_history.watchevent_set.all()
     if request.method == 'POST': #user wants to follow/unfollow
         if 'follow_button' in request.POST:
             if request.POST['follow_button'] == 'Follow':
@@ -249,6 +259,7 @@ def user_page(request, username=None):
 
 
 @login_required(login_url='streaming:login')
+@active_user
 def rental_page(request, title):
     template = loader.get_template('streaming/rentPage.html')
     media = get_media(title)
@@ -265,6 +276,7 @@ def rental_page(request, title):
 
 
 @login_required(login_url='streaming:login')
+@active_user
 def subscription_page(request, title, season_number, episode_number):
     template = loader.get_template('streaming/subPage.html')
     show = get_media(title)
@@ -289,6 +301,7 @@ def subscription_page(request, title, season_number, episode_number):
 
 
 @login_required(login_url='streaming:login')
+@active_user
 @subscription_required
 def watch_media(request, title, season_number=None, episode_number=None):
     template = loader.get_template('streaming/watchMedia.html')
@@ -319,6 +332,7 @@ def watch_media(request, title, season_number=None, episode_number=None):
 
 
 @login_required(login_url='streaming:login')
+@active_user
 def post_rating(request):
     if request.method == 'POST':
         redirect = request.POST['url']
@@ -353,6 +367,7 @@ def post_rating(request):
 
 
 @login_required(login_url='streaming:login')
+@active_user
 def friends(request):
     template = loader.get_template('streaming/friendPage.html')
     friends = request.user.friends.follows.all()
@@ -363,6 +378,7 @@ def friends(request):
 
 
 @login_required(login_url='streaming:login')
+@active_user
 def homepage(request):
     template = loader.get_template('streaming/homepage.html')
     show_list = request.user.subscriptions.all()
@@ -380,6 +396,7 @@ def account_page(request):
 
 
 @login_required(login_url='streaming:login')
+@active_user
 def inbox(request, sendTo=None):
     form = message_form()
     from_user = request.user
@@ -408,6 +425,7 @@ def inbox(request, sendTo=None):
 
 
 @login_required(login_url='streaming:login')
+@active_user
 def messageInbox(request, sendTo=None):
     form = message_form()
     from_user = request.user
@@ -444,6 +462,7 @@ def messageInbox(request, sendTo=None):
 
 
 @login_required(login_url='streaming:login')
+@active_user
 def sentInbox(request, sendTo=None):
     from_user = request.user
     messages_to = Message.objects.filter(from_user=from_user)  #get all messages the current user has sent to other inbox's
@@ -456,6 +475,7 @@ def sentInbox(request, sendTo=None):
 
 
 @login_required(login_url='streaming:login')
+@active_user
 def readInbox(request, sendTo=None):
     from_user = request.user
     messages_from = from_user.inbox.message_set.all() #get all of the current user's messages
@@ -478,15 +498,15 @@ def billing(request):
         form = billing_form(request.POST)
         if form.is_valid():
             data = form.cleaned_data
-            billings = Billing.objects.all()
-            for billing in billings:
-                if (str(billing) == str(SiteUser.objects.get(username=request.user.username))):
-                    billing.name = data['name']
-                    billing.cc_num = data['cc_num']
-                    billing.cvc_num = data['cvc_num']
-                    billing.exp_month = data['exp_month']
-                    billing.exp_year = data['exp_year']
-                    billing.save()
+
+            request.user.billing.name = data['name']
+            request.user.billing.cc_num = data['cc_num']
+            request.user.billing.cvc_num = data['cvc_num']
+            request.user.billing.exp_month = data['exp_month']
+            request.user.billing.exp_year = data['exp_year']
+            request.user.billing.save()
+            if request.user.billing.next_payment_date <= datetime.now().date():
+                request.user.billing.charge()
 
             return render(request, 'streaming/accountPage.html')
 
@@ -496,6 +516,21 @@ def billing(request):
 def editProfile(request):
     form = profile_form()
     return render(request, 'streaming/editProfile.html', {'form': form})
+
+@login_required(login_url='streaming:login')
+def inactiveAccount(request):
+    return render(request, 'streaming/inactiveAccount.html')
+
+
+@login_required(login_url='streaming:login')
+@active_user
+def cancel_plan(request):
+    time = request.user.billing.next_payment_date
+    request.user.billing.delete()
+    request.user.billing = Billing(next_payment_date=time)
+    request.user.billing.save()
+    return render(request, 'streaming/accountPage.html')
+
 
 @login_required(login_url='streaming:login')
 def change(request):

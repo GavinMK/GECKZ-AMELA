@@ -32,4 +32,6 @@ urlpatterns = [
     path('media/<str:title>/rent', views.rental_page, name='rental'),
     path('rate/', views.post_rating, name='post_rating'), # We should only need this until the javascript is working (I think)
     path('editProfile/', views.editProfile, name="editProfile"),
+    path('inactiveAccount/', views.inactiveAccount, name='inactiveAccount'),
+    path('cancelPlan/', views.cancel_plan, name='cancel_plan'),
 ]
