@@ -433,10 +433,14 @@ def messageInbox(request, sendTo=None):
     if sendTo is None:
         sendTo = ''
 
+    # Used for autocomplete of friend names
+    friends = request.user.friends.follows.all()
+
     context = {
         'form' : form,
         'error_message' : None,
         'sendTo': sendTo,
+        'friends': friends,
     }
 
     if request.method == 'POST':
@@ -479,10 +483,8 @@ def sentInbox(request, sendTo=None):
 def readInbox(request, sendTo=None):
     from_user = request.user
     messages_from = from_user.inbox.message_set.all() #get all of the current user's messages
-    friends = request.user.friends.follows.all()
     context = {
         'messages_from': messages_from,
-        'friends': friends,
     }
 
     return render(request, 'streaming/readInbox.html', context)
