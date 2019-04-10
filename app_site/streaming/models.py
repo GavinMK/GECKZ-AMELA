@@ -53,6 +53,9 @@ class Billing(models.Model):
         query = SiteUser.objects.filter(billing=self)
         return "Unassigned" if len(query) == 0 else str(query[0])
 
+    def charge(self):
+        print("Charged" + str(self))
+
 
 class CommentSection(models.Model):
     num_comments = models.IntegerField(default=0)
