@@ -12,7 +12,7 @@
 			<legend>Billing Information:</legend><br>
 			<label for="name">Name on Card: </label><br>
 			<input id="name" type="text" name="name"
-					value="{{ user.first_name }} {{user.last_name}}" placeholder="John Doe" pattern="[a-zA-Z]+[ ][a-zA-Z]+" title="Please enter a valid first and last name." required><br><br>
+					value="{{ user.billing.name }}" placeholder="John Doe" pattern="[a-zA-Z]+[ ][a-zA-Z]+" title="Please enter a valid first and last name." required><br><br>
             <label for="cc_num">Card Number: </label><br>
 			<input id="cc_num" type="text" name="cc_num" minLength="13" maxlength="19" pattern="[0-9]{13,19}" title="Enter 13-19 digits without spaces or dashes."
 					value="{{ user.billing.cc_num }}" placeholder="1111222233334444" required><br><br>
