@@ -18,6 +18,7 @@ from .forms import user_form, login_form, search_form, message_form, mark_messag
 from django.core.paginator import Paginator
 import re
 from datetime import datetime, timedelta
+import time
 
 @anonymous_only_redirect
 def create_user_page(request):
@@ -105,7 +106,7 @@ def post_comment(request):
         if form.is_valid():
             clean = form.cleaned_data
             redirect = clean['url']
-            section = get_comment_section(redirect)
+            section = get_comment_section(request, redirect)
             comment = Comment(posted_by=request.user, content=clean['content'], part_of=section)
             comment.save()
 
@@ -252,8 +253,8 @@ def user_page(request, username=None):
         'friends': request.user.friends.follows.filter(username=user.username).exists(),
         'friendsList': user.friends.follows.all(),
         'rating':  Rating.objects.filter(posted_by=user).last(),
-        'comments': user.comment_section.comment_set.all().order_by('-timestamp'),
-        'history': media_history.order_by('-time_watched'),
+        'comments': user.comment_section.comment_set.all().order_by('-timestamp')[:5],
+        'history': media_history.order_by('-time_watched')[:5],
     }
     return HttpResponse(template.render(context, request))
 
