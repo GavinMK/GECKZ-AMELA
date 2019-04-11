@@ -246,7 +246,7 @@ def user_page(request, username=None):
             elif request.POST['follow_button'] == 'Unfollow':
                 request.user.friends.follows.remove(user)
         elif 'message' in request.POST: #user wants to message
-            return inbox(request, user)
+            return messageInbox(request, user)
     context = {
         'user': user,
         'friends': request.user.friends.follows.filter(username=user.username).exists(),
