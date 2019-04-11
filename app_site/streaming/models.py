@@ -195,6 +195,7 @@ class SiteUser(AbstractUser):
     rentals = models.ManyToManyField(Movie, blank=True)
     watch_history = models.OneToOneField(WatchHistory, null=True, on_delete=models.CASCADE)
     friends = models.OneToOneField('friend', null=True, on_delete=models.CASCADE)
+    profile_picture = models.FileField(upload_to='profile_pictures/',  default='/profile_pictures/export.png')
 
     def __str__(self):
         return self.username
