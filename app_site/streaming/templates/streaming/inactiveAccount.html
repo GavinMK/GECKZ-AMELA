@@ -2,11 +2,13 @@
 
 {% block content %}
 
-<p>Please pay for the service before using it!</p>
-<div class="form-style" style="margin: 0;padding-bottom: 20px;">
-    <form action="{% url 'streaming:billing' %}">
-        <input type="submit" value="Update Billing Information">
-    </form>
+<div class="center">
+    <p>Please pay for the service before using it!</p>
+    <div class="form-style" style="width: 100%;">
+        <form action="{% url 'streaming:billing' %}">
+            <input type="submit" value="Update Billing Information">
+        </form>
+    </div>
 </div>
 
 {% endblock %}
