@@ -1,6 +1,8 @@
 from .models import *
 from django.db.models import Q
 import re
+from django.core.paginator import Paginator
+
 
 
 def get_rating(ratings):
@@ -46,6 +48,11 @@ def get_comment_section(request, url_path):
         return request.user.comment_section
     return None
 
+
+def paginate_comments(request, comment_section):
+    comment_paginator = Paginator(comment_section.comment_set.all().order_by('-timestamp'), 5)
+    comment_page = request.GET.get('page')
+    return comment_paginator.get_page(comment_page)
 
 
 def get_season(show, season_number):
