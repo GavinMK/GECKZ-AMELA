@@ -84,8 +84,25 @@
           {% if entry.movie %}
               <p><span>{{ entry.time_watched }} - </span><a href="{% url 'streaming:display_media' title=entry.movie.title %}" style="text-decoration: underline;">{{ entry.movie.title }}</a></p>
           {% endif %}
-
       {% endfor %}
+
+      <br>
+
+      {% if history.has_previous %}
+          <a href="?page=1">&laquo; first</a>
+          <span>&#8226;</span>
+          <a href="?page={{ history.previous_page_number }}">previous</a>
+      {% endif %}
+
+      <span>
+          Page {{ history.number }} of {{ history.paginator.num_pages }}
+      </span>
+
+      {% if history.has_next %}
+          <a href="?page={{ history.next_page_number }}">next</a>
+          <span>&#8226;</span>
+          <a href="?page={{ history.paginator.num_pages }}">last &raquo;</a>
+      {% endif %}
 
     </fieldset>
   </section>

@@ -248,13 +248,16 @@ def user_page(request, username=None):
                 request.user.friends.follows.remove(user)
         elif 'message' in request.POST: #user wants to message
             return messageInbox(request, user)
+    paginator = Paginator(media_history.order_by('-time_watched'), 5)
+    page = request.GET.get('page')
+    history = paginator.get_page(page)
     context = {
         'user': user,
         'friends': request.user.friends.follows.filter(username=user.username).exists(),
         'friendsList': user.friends.follows.all(),
         'rating':  Rating.objects.filter(posted_by=user).last(),
         'comments': user.comment_section.comment_set.all().order_by('-timestamp')[:5],
-        'history': media_history.order_by('-time_watched')[:5],
+        'history': history,
     }
     return HttpResponse(template.render(context, request))
 
