@@ -46,8 +46,6 @@ class Billing(models.Model):
     exp_year = models.IntegerField(default=0)
     unsub_list = models.ManyToManyField('tvshow', blank=True)
     next_payment_date = models.DateField(default=timezone.now)
-    num_rentals = models.IntegerField(default=0)
-    transaction_info = models.CharField(max_length=50)
 
     def __str__(self):
         query = SiteUser.objects.filter(billing=self)
@@ -69,11 +67,8 @@ class Billing(models.Model):
 class Transaction(models.Model):
     amount = models.FloatField(default=0)
     charged_to = models.ForeignKey('siteuser', on_delete=models.CASCADE)
-
-    def __init(self, a, u):
-        self.amount = a
-        self.charged_to = u
-        self.save()
+    part_of = models.ForeignKey(Billing, on_delete=models.CASCADE)
+    statement = models.CharField(default='charge', max_length=50)
 
 
 class CommentSection(models.Model):
