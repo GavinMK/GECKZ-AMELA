@@ -1,13 +1,16 @@
 function togglePassword() {
     let password = document.getElementById("password");
-    let new_password = document.getElementById("new_password");
+    let new_password1 = document.getElementById("new_password1");
+    let new_password2 = document.getElementById("new_password2");
     if (password.type === "password") {
         password.type = "text";
-        new_password.type = "text";
+        new_password1.type = "text";
+        new_password2.type = "text";
     }
     else {
         password.type = "password";
-        new_password.type = "password";
+        new_password1.type = "password";
+        new_password2.type = "password";
     }
 }
 
