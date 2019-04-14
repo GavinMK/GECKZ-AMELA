@@ -18,6 +18,7 @@ from .forms import user_form, login_form, search_form, message_form, mark_messag
 from django.core.paginator import Paginator
 import re
 from datetime import datetime, timedelta
+from django.core.files.storage import FileSystemStorage
 
 @anonymous_only_redirect
 def create_user_page(request):
@@ -563,3 +564,12 @@ def change(request):
 @login_required(login_url='streaming:login')
 def about(request):
     return render(request, 'streaming/about.html')
+
+
+def profile_upload(request):
+    if request.method == 'POST' and request.FILES['profile_picture']:
+        profile_picture = request.FILES['profile_picture']
+        request.user.profile_picture.save(profile_picture.name, profile_picture)
+        return HttpResponseRedirect(reverse('streaming:user_page'))
+    return render(request, 'streaming/profilePicture.html')
+
