@@ -499,17 +499,20 @@ def billing(request):
         form = billing_form(request.POST)
         if form.is_valid():
             data = form.cleaned_data
+            now = datetime.now()
+            if (data['exp_year'] < now.year) or (data['exp_year'] == now.year and data['exp_month'] < now.month):
+                context['error_message'] = "This credit card is expired! Please enter a valid credit card."
+            else:
+                request.user.billing.name = data['name']
+                request.user.billing.cc_num = data['cc_num']
+                request.user.billing.cvc_num = data['cvc_num']
+                request.user.billing.exp_month = data['exp_month']
+                request.user.billing.exp_year = data['exp_year']
+                request.user.billing.save()
+                if request.user.billing.next_payment_date <= datetime.now().date():
+                    request.user.billing.charge()
 
-            request.user.billing.name = data['name']
-            request.user.billing.cc_num = data['cc_num']
-            request.user.billing.cvc_num = data['cvc_num']
-            request.user.billing.exp_month = data['exp_month']
-            request.user.billing.exp_year = data['exp_year']
-            request.user.billing.save()
-            if request.user.billing.next_payment_date <= datetime.now().date():
-                request.user.billing.charge()
-
-            return render(request, 'streaming/accountPage.html')
+                return render(request, 'streaming/accountPage.html')
 
     return render(request, 'streaming/billing.html', context)
 
