@@ -303,6 +303,24 @@ def subscription_page(request, title, season_number, episode_number):
 
 @login_required(login_url='streaming:login')
 @active_user
+def unsubscription_page(request, title):
+    template = loader.get_template('streaming/subPage.html')
+    show = get_media(title)
+    if show is None:
+        return HttpResponse("BAD MEDIA")
+    if request.method == 'POST':
+        request.user.billing.unsub_list.add(show)
+        return HttpResponseRedirect(reverse('streaming:display_media', kwargs={'title': title}))
+
+    context = {
+        'user': request.user,
+        'show': show,
+    }
+    return HttpResponse(template.render(context, request))
+
+
+@login_required(login_url='streaming:login')
+@active_user
 @subscription_required
 def watch_media(request, title, season_number=None, episode_number=None):
     template = loader.get_template('streaming/watchMedia.html')

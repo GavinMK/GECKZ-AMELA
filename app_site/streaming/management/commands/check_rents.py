@@ -6,6 +6,5 @@ from streaming.util import *
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        for user in SiteUser.objects.all():
-            if user.billing.next_payment_date <= datetime.now().date():
-                package_charge(user)
+            for user in SiteUser.objects.all():
+                rental_charge(user)

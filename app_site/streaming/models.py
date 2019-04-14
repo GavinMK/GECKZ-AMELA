@@ -44,9 +44,8 @@ class Billing(models.Model):
     cvc_num = models.IntegerField(default=0)
     exp_month = models.IntegerField(default=0)
     exp_year = models.IntegerField(default=0)
-
+    unsub_list = models.ManyToManyField('tvshow', blank=True)
     next_payment_date = models.DateField(default=timezone.now)
-    num_sub_slots = models.IntegerField(default=10)
     num_rentals = models.IntegerField(default=0)
     transaction_info = models.CharField(max_length=50)
 
@@ -54,14 +53,9 @@ class Billing(models.Model):
         query = SiteUser.objects.filter(billing=self)
         return "Unassigned" if len(query) == 0 else str(query[0])
 
-    def charge(self):
-        print("Attempting to charge " + str(self))
-        if self.cc_num != 0:
-            self.next_payment_date = datetime.now().date() + timedelta(30)
-            self.save()
-            print(str(self) + " has been charged, next payment date is " + self.next_payment_date.strftime('%c'))
-        else:
-            print(str(self) + " has no valid payment info, no charge occurred")
+    def change_date(self):
+        self.next_payment_date = datetime.now().date() + timedelta(30)
+        self.save()
 
     def cancel(self):
         self.cc_num = 0
@@ -69,6 +63,16 @@ class Billing(models.Model):
         self.exp_month = 0
         self.exp_year = 0
         self.name = ""
+        self.save()
+
+
+class Transaction(models.Model):
+    amount = models.FloatField(default=0)
+    charged_to = models.ForeignKey('siteuser', on_delete=models.CASCADE)
+
+    def __init(self, a, u):
+        self.amount = a
+        self.charged_to = u
         self.save()
 
 

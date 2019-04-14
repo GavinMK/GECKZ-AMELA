@@ -1,6 +1,41 @@
 from .models import *
+from .constants import *
 from django.db.models import Q
 import re
+
+
+def package_charge(user):
+    print("Attempting to charge " + str(user))
+    billing = user.billing
+    amount = BASE_COST
+    if billing.cc_num != 0:
+        amount = amount + ((ADDITIONAL_SUB_COST * len(user.subscriptions.all())) - BASE_COST)
+        billing.next_payment_date = datetime.now().date() + timedelta(30)
+        for show in billing.unsub_list:
+            user.subscriptions.remove(show)
+            billing.unsub_list.remove(show)
+        transaction = Transaction(amount, user)
+        billing.save()
+        print(str(user) + " has been charged " + str(transaction.amount) + ", next payment date is " + billing.next_payment_date.strftime('%c'))
+    else:
+        print(str(user) + " has no valid payment info, no charge occurred")
+
+
+def rental_charge(user):
+    print("Attempting to charge " + str(user))
+    billing = user.billing
+    if billing.cc_num != 0:
+        amount = user.rentals * RENTAL_COST
+        user.rentals.clear()
+        if amount != 0.0:
+            transaction = Transaction(amount, user)
+            billing.save()
+            print(str(user) + " has been charged " + str(
+                transaction.amount) + ", next payment date is " + billing.next_payment_date.strftime('%c'))
+        else:
+            print(str(user) + " has no movies")
+    else:
+        print(str(user) + " has no valid payment info, no charge occurred")
 
 
 def get_rating(ratings):
