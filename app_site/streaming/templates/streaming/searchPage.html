@@ -7,11 +7,18 @@
 
 	<div class="form-style" style="margin: 0;width: 700px;padding-left: 40px;padding-bottom: 40px;">
 		<form action="{% url 'streaming:search' %}" method="get">
-			<input class="searchfield" id="searchbox" name="q" type="text" placeholder="Search for Movies and Shows" value="{{ query }}">
+			<input class="searchfield" id="searchbox" name="Title" type="text" placeholder="Search for Movies and Shows" value="{{ query }}">
 			<input type="submit" value="Search">
 			<h2>
-				{% for filter, checked in filters.items %}
-					<input type="checkbox" name="{{ filter }}" {% if checked == 1 %}checked{% endif %} > {{ filter }}
+				{% for filter in filters %}
+					{% if filter.name != "Title" %}
+						{{ filter.name }}: <input id="{{ filter.name }}" list="{{ filter.name }}-list" autocomplete=off placeholder="{{ filter.name }}" value="{{ filter.value}}" type="text" name="{{ filter.name }}">
+							<datalist id="{{ filter.name }}-list">
+							{% for option in filter.defaults %}
+								<option>{{ option }}</option>
+							{% endfor %}
+							</datalist>
+					{% endif %}
 				{% endfor %}
 				
 			</h2>

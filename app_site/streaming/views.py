@@ -113,36 +113,68 @@ def post_comment(request):
     context['error_message'] = 'Comment too long. Please limit to 500 characters.'
     return HttpResponseRedirect(reverse('streaming:homepage'))
 
+class SearchFilter:
+
+    def __init__(self, name, request, defaults):
+        self.name = name
+        self.value = request.GET.get(name)
+        if self.value is None:
+            self.value = ""
+        self.defaults = list(sorted(defaults))
+
+    def __str__(self):
+        return "{0}: {1} {2}".format(self.name, self.value, self.defaults)
+
 
 @login_required(login_url='streaming:login')
 @active_user
 def search(request):
     template = loader.get_template('streaming/searchPage.html')
+    all_media = list(Movie.objects.all()) + list(TVShow.objects.all())
+
+    genres = set()
+    for m in all_media:
+        g_text = m.metadata.genre
+        if g_text:
+            gs = g_text.split(", ")
+            for g in gs:
+                genres.add(g)
+    genres = sorted(genres)
+    studios = set()
+    for m in all_media:
+        s_text = m.metadata.studio
+        if s_text:
+            ss = s_text.split(", ")
+            for s in ss:
+                studios.add(s)
+    studios = sorted(studios)
+    stream = set()
+    for m in all_media:
+        s_text = m.metadata.streaming_service
+        if s_text:
+            ss = s_text.split(", ")
+            for s in ss:
+                stream.add(s)
+    stream = sorted(stream)
+
     context = {
-        "filters": {
-            "Title": 1,
-            "Genre": 0,
-            "Release Year": 0,
-            "Studio": 0,
-            "Streaming Service": 0,
-            "Actors": 0,
-        },
+        "filters": (
+            #["name", "Request value", ("Values","in","the","dropdowns")]
+            SearchFilter("Title", request, ()),
+            SearchFilter("Genre", request, genres),
+            SearchFilter("Release Year", request, ()),
+            SearchFilter("Studio", request, studios),
+            SearchFilter("Streaming Service", request, stream),
+            SearchFilter("Actors", request, (str(a) for a in Actor.objects.all()))
+        ),
     }
     tv_show_list = TVShow.objects.order_by('title')
     movie_list = Movie.objects.order_by('title')
-    for filter in context['filters']:
-        if request.GET.get(filter) == "on":
-            context['filters'][filter] = 1
-        else:
-            context['filters'][filter] = 0
 
-    query = request.GET.get('q')
-    if query:
-        results = filter_db_query(context, query, tv_show_list, movie_list)
-        context['query'] = query
-    else:
-        results = tuple(set(tv_show_list) | set(movie_list))
-        context['query'] = ""
+    query = request.GET.get('Title')
+    results = filter_db_query(context, tv_show_list, movie_list)
+    context['query'] = query
+
     paginator = Paginator(results, 8)
     page = request.GET.get('p', 1)
     media = paginator.get_page(page)
