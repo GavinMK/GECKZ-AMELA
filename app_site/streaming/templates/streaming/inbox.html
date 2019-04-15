@@ -13,7 +13,7 @@
     <section style="width: 73%;">
 
         {% if user.inbox.num_unread_messages > 0 %}
-            <p style="color: red;">You have {{ user.inbox.num_unread_messages }} unread message{{ user.inbox.num_unread_messages|pluralize }}!</p>
+            <p class="alert">You have {{ user.inbox.num_unread_messages }} unread message{{ user.inbox.num_unread_messages|pluralize }}!</p>
         {% else %}
             <p>You have no unread messages.</p>
         {% endif %}

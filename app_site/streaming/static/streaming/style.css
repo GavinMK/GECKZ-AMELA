@@ -183,12 +183,18 @@ nav a.active {
   color: white;
 }
 
+/* This class centers stuff, but also does a lot of other random, unrelated things.*/
 .center {
 	text-align: center;
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
 	width: 50%;
+}
+
+/* This class changes things to the alert color */
+.alert {
+	color: #ff2222;
 }
 
 .inbox-style ul{
