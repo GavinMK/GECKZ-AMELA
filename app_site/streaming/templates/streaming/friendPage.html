@@ -18,7 +18,7 @@
 		<div class="media-style" style="grid-auto-rows: 20vw;">
             {% for entry in friends %}
             <figure>
-                <a id="friendsList" href="{% url 'streaming:user_page' username=entry.username %}"><img src="" >{{ entry.username }}</a>
+                <a id="friendsList" href="{% url 'streaming:user_page' username=entry.username %}"><img style="border-radius: 50%;" src="/{{ entry.profile_picture.url }}" >{{ entry.username }}</a>
             </figure>
             {% endfor %}
         </div>

@@ -18,7 +18,7 @@ from .forms import user_form, login_form, search_form, message_form, mark_messag
 from django.core.paginator import Paginator
 import re
 from datetime import datetime, timedelta
-import time
+from django.core.files.storage import FileSystemStorage
 
 @anonymous_only_redirect
 def create_user_page(request):
@@ -502,17 +502,20 @@ def billing(request):
         form = billing_form(request.POST)
         if form.is_valid():
             data = form.cleaned_data
+            now = datetime.now()
+            if (data['exp_year'] < now.year) or (data['exp_year'] == now.year and data['exp_month'] < now.month):
+                context['error_message'] = "This credit card is expired! Please enter a valid credit card."
+            else:
+                request.user.billing.name = data['name']
+                request.user.billing.cc_num = data['cc_num']
+                request.user.billing.cvc_num = data['cvc_num']
+                request.user.billing.exp_month = data['exp_month']
+                request.user.billing.exp_year = data['exp_year']
+                request.user.billing.save()
+                if request.user.billing.next_payment_date <= datetime.now().date():
+                    request.user.billing.charge()
 
-            request.user.billing.name = data['name']
-            request.user.billing.cc_num = data['cc_num']
-            request.user.billing.cvc_num = data['cvc_num']
-            request.user.billing.exp_month = data['exp_month']
-            request.user.billing.exp_year = data['exp_year']
-            request.user.billing.save()
-            if request.user.billing.next_payment_date <= datetime.now().date():
-                request.user.billing.charge()
-
-            return render(request, 'streaming/accountPage.html')
+                return render(request, 'streaming/accountPage.html')
 
     return render(request, 'streaming/billing.html', context)
 
@@ -567,3 +570,12 @@ def change(request):
 @login_required(login_url='streaming:login')
 def about(request):
     return render(request, 'streaming/about.html')
+
+
+def profile_upload(request):
+    if request.method == 'POST' and request.FILES['profile_picture']:
+        profile_picture = request.FILES['profile_picture']
+        request.user.profile_picture.save(profile_picture.name, profile_picture)
+        return HttpResponseRedirect(reverse('streaming:user_page'))
+    return render(request, 'streaming/profilePicture.html')
+

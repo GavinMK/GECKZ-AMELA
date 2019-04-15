@@ -1,0 +1,14 @@
+{% extends "simplePage.html" %}
+
+{% block content %}
+
+<div class="form-style" style="padding-top: 80px;">
+<fieldset>
+        <legend>Upload a Photo</legend>
+                <br>
+                {% include "upload_file.html" %}
+</fieldset>
+<br><h2><a href="{% url 'streaming:user_page' %}">Back to Profile</a></h2>
+</div>
+
+{% endblock %}
