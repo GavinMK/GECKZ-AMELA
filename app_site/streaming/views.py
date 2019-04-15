@@ -246,7 +246,7 @@ def user_page(request, username=None):
             elif request.POST['follow_button'] == 'Unfollow':
                 request.user.friends.follows.remove(user)
         elif 'message' in request.POST: #user wants to message
-            return inbox(request, user)
+            return messageInbox(request, user)
     context = {
         'user': user,
         'friends': request.user.friends.follows.filter(username=user.username).exists(),
@@ -528,10 +528,7 @@ def inactiveAccount(request):
 @login_required(login_url='streaming:login')
 @active_user
 def cancel_plan(request):
-    time = request.user.billing.next_payment_date
-    request.user.billing.delete()
-    request.user.billing = Billing(next_payment_date=time)
-    request.user.billing.save()
+    request.user.billing.cancel()
     return render(request, 'streaming/accountPage.html')
 
 
@@ -565,7 +562,7 @@ def change(request):
 
     return render(request, 'streaming/changeInfo.html', context)
 
-  
+
 @login_required(login_url='streaming:login')
 def about(request):
     return render(request, 'streaming/about.html')
