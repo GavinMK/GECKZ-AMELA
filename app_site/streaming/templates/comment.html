@@ -13,4 +13,21 @@
         <p><span>Posted By: </span><a href="{% url 'streaming:user_page' username=comment.posted_by %}">{{ comment.posted_by }}</a> <span> on {{ comment.timestamp }}</span> <br><br></p>
         <span>"{{ comment.content }}"</span><br>
     {% endfor %}
-    <br>
+
+    <br><br>
+
+    {% if comments.has_previous %}
+        <a href="?page=1">&laquo; first</a>
+        <span>&#8226;</span>
+        <a href="?page={{ comments.previous_page_number }}">previous</a>
+    {% endif %}
+
+    <span>
+        Page {{ comments.number }} of {{ comments.paginator.num_pages }}
+    </span>
+
+    {% if comments.has_next %}
+        <a href="?page={{ comments.next_page_number }}">next</a>
+        <span>&#8226;</span>
+        <a href="?page={{ comments.paginator.num_pages }}">last &raquo;</a>
+    {% endif %}
