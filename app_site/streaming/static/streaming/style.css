@@ -125,10 +125,6 @@ hr {
 	height: 100px;
 }
 
-#inboxCount{
-	text-align: center;
-}
-
 #company{
 	font-family: Oswald;
 	color: #ffd700;
@@ -197,6 +193,7 @@ nav a.active {
 	color: #ff2222;
 }
 
+
 .inbox-style ul{
 	border: 1px solid #fffafa;
 	margin: 0;
@@ -204,26 +201,27 @@ nav a.active {
 }
 
 .inbox-style li {
-	text-align: center;
-	border-bottom: 1px solid #fffafa;
+	/*text-align: center;*/ 
+	/* border-bottom: 1px solid #fffafa; */
 	padding-bottom: 0;
 }
 
-.inbox-style li a{
+.inbox-style li a,
+.inbox-style li p{
 	display: block;
 	color: #fffafa;
-	padding: 20px 0;
+	padding: 10px;
 }
 
 .inbox-style li a:hover{
 	color: #ffd700;
 	background-color: #111;
 }
-
+/*
 .inbox-style li:last-child{
 	border-bottom: none;
 }
-
+*/
 .profile-style img{
 	float: left;
 	width: 200px;
