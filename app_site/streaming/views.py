@@ -395,8 +395,17 @@ def homepage(request):
 
 
 @login_required(login_url='streaming:login')
+@active_user
 def account_page(request):
-    return render(request, 'streaming/accountPage.html')
+    billing_cc_num = request.user.billing.cc_num
+    cc_num_hidden = billing_cc_num%10000 #returns last 4 digits of the cc_num
+    cc_num_hidden = "************" + str(cc_num_hidden)
+
+    context = {
+        'cc_num_hidden' : cc_num_hidden
+    }
+
+    return render(request, 'streaming/accountPage.html', context)
 
 
 @login_required(login_url='streaming:login')
@@ -490,7 +499,7 @@ def readInbox(request, sendTo=None):
 
     return render(request, 'streaming/readInbox.html', context)
 
-
+@relog_required
 @login_required(login_url='streaming:login')
 def billing(request):
     form = billing_form()
