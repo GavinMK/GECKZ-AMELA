@@ -190,6 +190,7 @@ def display_media(request, title):
 
     actors = Actor.objects.filter(part_of=media.metadata)
     context = {
+        'subscribed': request.user.subscriptions.all().filter(title=media.title),
         'media': media,
         'actors': actors,
         'episodes': episode_list,
