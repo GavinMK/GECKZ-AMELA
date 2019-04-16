@@ -528,7 +528,7 @@ def billing(request):
                 request.user.billing.exp_year = data['exp_year']
                 request.user.billing.save()
                 if request.user.billing.next_payment_date <= datetime.now().date():
-                    request.user.billing.package_charge()
+                    package_charge(request.user)
 
                 return render(request, 'streaming/accountPage.html')
 
