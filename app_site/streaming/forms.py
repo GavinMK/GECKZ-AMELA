@@ -52,5 +52,5 @@ class CommentForm(forms.Form):
 
 class profile_form(forms.Form):
     bio = forms.CharField(label='bio')
-    fav_movies = forms.CharField(label='fav_movies')
-    fav_shows = forms.CharField(label='fav_shows')
+    #fav_movies = forms.CharField(label='fav_movies')
+    #fav_shows = forms.CharField(label='fav_shows')
