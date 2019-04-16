@@ -1,6 +1,8 @@
 from .models import *
 from django.db.models import Q
 import re
+from django.core.paginator import Paginator
+
 
 
 def get_rating(ratings):
@@ -25,7 +27,7 @@ def get_media(title):
     return media
 
 
-def get_comment_section(url_path):
+def get_comment_section(request, url_path):
     url = url_path.replace("%20", " ")
     media_match = re.match(r'.*/media/(?P<media_title>[^/]*)/(?P<season>\d+)?/?(?P<episode>\d+)?', url)
     if media_match:
@@ -40,12 +42,17 @@ def get_comment_section(url_path):
             return media.comment_section
     else:
         username_grabber = re.match(r'.*/userpage/(.*)', url)
-        if username_grabber:
+        if username_grabber and username_grabber.group(1):
             user = SiteUser.objects.get(username=username_grabber.group(1))
             return user.comment_section
         return request.user.comment_section
     return None
 
+
+def paginate_comments(request, comment_section):
+    comment_paginator = Paginator(comment_section.comment_set.all().order_by('-timestamp'), 5)
+    comment_page = request.GET.get('page')
+    return comment_paginator.get_page(comment_page)
 
 
 def get_season(show, season_number):

@@ -11,6 +11,7 @@
 
 
     <section style="width: 73%;">
+
 		{% if user.inbox.num_read_messages > 0 %}
             <p>You have {{ user.inbox.num_read_messages }} read message{{ user.inbox.num_read_messages|pluralize }}!</p>
         {% else %}

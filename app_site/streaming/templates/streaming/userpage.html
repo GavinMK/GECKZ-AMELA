@@ -18,13 +18,19 @@
 {% else %}
 <div class="form-style" style="width:100%;text-align: right;">
     <form action="{% url 'streaming:editProfile' %}">
-    <input type="submit" value="Edit Bio" style="font-size: 18px;margin-left: 30px;">
+    <input type="submit" value="Edit Bio" style="font-size: 18px;margin-bottom: 20px;">
+    </form>
+
+    <form action="{% url 'streaming:upload_picture' %}">
+    <input type="submit" value="Change Profile Picture" style="font-size: 18px;">
     </form>
 </div>
 {% endif %}
 
 <div class="profile-style" style="padding-bottom: 90px;">
-    <img src="">
+    {% if user.profile_picture %}
+        <img style="border-radius: 50%;" src="/{{ user.profile_picture.url }}">
+    {% endif %}
     <header>{{ user.first_name }} {{ user.last_name }}</header>
     <p>@{{ user }}</p>
 </div>
@@ -53,7 +59,11 @@
         <div class="media-style" style="grid-auto-rows: 10vw;grid-template-columns: repeat(2, 50%);grid-gap: 3px;">
             {% for entry in friendsList %}
             <figure>
-                <a href="{% url 'streaming:user_page' username=entry.username %}"><img src="" style="float: left;">{{ entry.username }}</a>
+                <a href="{% url 'streaming:user_page' username=entry.username %}">
+                    {% if entry.profile_picture %}
+                        <img style="border-radius: 50%;" src="/{{ entry.profile_picture.url }}" style="float: left;">{{ entry.username }}
+                    {% endif %}
+                </a>
             </figure>
             {% endfor %}
         </div>
@@ -84,8 +94,25 @@
           {% if entry.movie %}
               <p><span>{{ entry.time_watched }} - </span><a href="{% url 'streaming:display_media' title=entry.movie.title %}" style="text-decoration: underline;">{{ entry.movie.title }}</a></p>
           {% endif %}
-
       {% endfor %}
+
+      <br>
+
+      {% if history.has_previous %}
+          <a href="?page=1">&laquo; first</a>
+          <span>&#8226;</span>
+          <a href="?page={{ history.previous_page_number }}">previous</a>
+      {% endif %}
+
+      <span>
+          Page {{ history.number }} of {{ history.paginator.num_pages }}
+      </span>
+
+      {% if history.has_next %}
+          <a href="?page={{ history.next_page_number }}">next</a>
+          <span>&#8226;</span>
+          <a href="?page={{ history.paginator.num_pages }}">last &raquo;</a>
+      {% endif %}
 
     </fieldset>
   </section>
