@@ -304,7 +304,7 @@ def subscription_page(request, title, season_number, episode_number):
 @login_required(login_url='streaming:login')
 @active_user
 def unsubscription_page(request, title):
-    template = loader.get_template('streaming/subPage.html')
+    template = loader.get_template('streaming/unsubPage.html')
     show = get_media(title)
     if show is None:
         return HttpResponse("BAD MEDIA")
@@ -528,7 +528,7 @@ def billing(request):
                 request.user.billing.exp_year = data['exp_year']
                 request.user.billing.save()
                 if request.user.billing.next_payment_date <= datetime.now().date():
-                    request.user.billing.charge()
+                    request.user.billing.package_charge()
 
                 return render(request, 'streaming/accountPage.html')
 
