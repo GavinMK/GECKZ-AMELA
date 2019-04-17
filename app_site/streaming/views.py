@@ -190,6 +190,7 @@ def display_media(request, title):
 
     actors = Actor.objects.filter(part_of=media.metadata)
     context = {
+        'subscribed': request.user.subscriptions.all().filter(title=media.title),
         'media': media,
         'actors': actors,
         'episodes': episode_list,
@@ -300,6 +301,24 @@ def subscription_page(request, title, season_number, episode_number):
         'season_number': season_number,
         'episode_number': episode_number,
         'exceed': exceed_subs
+    }
+    return HttpResponse(template.render(context, request))
+
+
+@login_required(login_url='streaming:login')
+@active_user
+def unsubscription_page(request, title):
+    template = loader.get_template('streaming/unsubPage.html')
+    show = get_media(title)
+    if show is None:
+        return HttpResponse("BAD MEDIA")
+    if request.method == 'POST':
+        request.user.billing.unsub_list.add(show)
+        return HttpResponseRedirect(reverse('streaming:display_media', kwargs={'title': title}))
+
+    context = {
+        'user': request.user,
+        'show': show,
     }
     return HttpResponse(template.render(context, request))
 
@@ -513,7 +532,7 @@ def billing(request):
                 request.user.billing.exp_year = data['exp_year']
                 request.user.billing.save()
                 if request.user.billing.next_payment_date <= datetime.now().date():
-                    request.user.billing.charge()
+                    package_charge(request.user)
 
                 return render(request, 'streaming/accountPage.html')
 

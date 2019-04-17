@@ -1,0 +1,17 @@
+{% extends "navPage.html" %}
+{% load static %}
+
+{% block content %}
+	<header>{{ show.title }} <span>({{ show.metadata.release_year }})</span></header><br>
+    <img id="photo" class="center" style="width: 20%;" src="{% static "streaming/images/"|add:show.thumbnail_path %}"><br><br>
+    <p style="text-align: center;color: #fffafa;">YOU ARE CURRENTLY SUBSCRIBED TO THIS SHOW.</p>
+    <p style="text-align: center;color: #fffafa;">IF YOU ARE DONE WATCHING, THEN CLICK THE BUTTON BELOW.</p>
+    <p style="text-align: center;color: #fffafa;">THE SHOW WILL BE REMOVED FROM YOUR SUBSCRIPTIONS AFTER THE NEXT BILLING CYCLE.</p>
+    <div class="form-style" style="width: 200px;text-align: center;">
+        <form action="{% url 'streaming:unsubscribe' title=show.title%}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="UNSUBSCRIBE" style="font-size: 20px;">
+        </form>
+    </div>
+
+{% endblock %}
