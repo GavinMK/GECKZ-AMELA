@@ -422,8 +422,8 @@ def account_page(request):
     cc_num_hidden = "************" + str(cc_num_hidden)
 
     context = {
-        'cc_num_hidden' : cc_num_hidden
-        'transactions': request.user.billing.transaction_set.all()
+        'cc_num_hidden' : cc_num_hidden,
+        'transactions': request.user.billing.transaction_set.all(),
     }
     return render(request, 'streaming/accountPage.html', context)
 

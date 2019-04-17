@@ -55,7 +55,7 @@
                 {% for entry in transactions %}
             <p>
                 <span>{{ entry.time }} - </span>
-                {{ entry.statement }}: <span>{{ entry.amount }}</span>
+                {{ entry.statement }}: <span>${{ entry.amount }}</span>
             </p>
       {% endfor %}
         </fieldset>
