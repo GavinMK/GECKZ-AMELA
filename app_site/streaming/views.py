@@ -541,10 +541,19 @@ def billing(request):
 
     return render(request, 'streaming/billing.html', context)
 
+
 @login_required(login_url='streaming:login')
 def editProfile(request):
-    form = profile_form()
+    form = profile_form(request.POST)
+    if form.is_valid():
+        data = form.cleaned_data
+        request.user.bio = data['bio']
+        request.user.save()
+
+        return HttpResponseRedirect(reverse('streaming:user_page'))
+
     return render(request, 'streaming/editProfile.html', {'form': form})
+
 
 @login_required(login_url='streaming:login')
 def inactiveAccount(request):
@@ -600,4 +609,3 @@ def profile_upload(request):
         request.user.profile_picture.save(profile_picture.name, profile_picture)
         return HttpResponseRedirect(reverse('streaming:user_page'))
     return render(request, 'streaming/profilePicture.html')
-
