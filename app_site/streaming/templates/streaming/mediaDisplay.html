@@ -12,7 +12,15 @@
 		<fieldset style="border: 0">
 			<legend>Rating:<div class="stars-outer"><div class="stars-inner" style="width: {{ avg_rating_perc }}%;"></div></div> ({{ num_ratings }} rating{{ num_ratings|pluralize }})</legend><br>
 				<img id="photo" src="{% static "streaming/images/"|add:media.thumbnail_path %}"><br><br>
-			{% if not episodes %}
+			{% if episodes %}
+				{% if subscribed and not unsub_queued %}
+				<div class="form-style" style="width: 100%;text-align: center;">
+					<form action="{% url 'streaming:unsubscribe' title=media.title %}">
+						<input type="submit" value="UNSUBSCRIBE" style="font-size: 20px;">
+					</form>
+				</div>
+				{% endif %}
+			{% else %}
 			<div class="form-style" style="width: 100%;text-align: center;">
                 <form action="{% url 'streaming:watch_media' title=media.title%}">
                     <input type="submit" value="WATCH" style="font-size: 20px;">

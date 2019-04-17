@@ -1,4 +1,5 @@
 {% extends "navPage.html" %}
+{% load static %}
 
 {% block title %}{{ user }} - AMELA{% endblock %}
 {% block content %}
@@ -21,7 +22,7 @@
     <input type="submit" value="Edit Bio" style="font-size: 18px;margin-bottom: 20px;">
     </form>
 
-    <form action="{% url 'streaming:upload_picture' %}">
+    <form action="{% url 'streaming:pick_photo' %}">
     <input type="submit" value="Change Profile Picture" style="font-size: 18px;">
     </form>
 </div>
@@ -29,7 +30,7 @@
 
 <div class="profile-style" style="padding-bottom: 90px;">
     {% if user.profile_picture %}
-        <img style="border-radius: 50%;" src="/{{ user.profile_picture.url }}">
+        <img style="border-radius: 50%;" src="{% static "streaming/"|add:user.profile_picture %}">
     {% endif %}
     <header>{{ user.first_name }} {{ user.last_name }}</header>
     <p>@{{ user }}</p>
@@ -61,7 +62,7 @@
             <figure>
                 <a href="{% url 'streaming:user_page' username=entry.username %}">
                     {% if entry.profile_picture %}
-                        <img style="border-radius: 50%;" src="/{{ entry.profile_picture.url }}" style="float: left;">{{ entry.username }}
+                        <img style="border-radius: 50%;" src="{% static entry.profile_picture %}" style="float: left;">{{ entry.username }}
                     {% endif %}
                 </a>
             </figure>
@@ -77,9 +78,9 @@
 <section>
     <fieldset>
         <legend>Bio:</legend>
-        <p>Info here...</p>
-        <p>Favorite Movies</p>
-        <p>Favorite TV Shows</p>
+        <br>
+        <span>{{ user.bio }}</span>
+        <br><br>
     </fieldset>
 </section>
 

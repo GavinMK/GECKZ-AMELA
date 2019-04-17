@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.urls import reverse
+from os import listdir
 from django.shortcuts import render
 
 from .decorators import *
@@ -220,8 +221,12 @@ def display_media(request, title):
     avg_rating_perc = calc[0]
     avg_rating = calc[1]
 
+    unsub_queued = title in [str(show) for show in request.user.billing.unsub_list.all()]
+
     actors = Actor.objects.filter(part_of=media.metadata)
     context = {
+        'subscribed': request.user.subscriptions.all().filter(title=media.title),
+        'unsub_queued': unsub_queued,
         'media': media,
         'actors': actors,
         'episodes': episode_list,
@@ -338,6 +343,24 @@ def subscription_page(request, title, season_number, episode_number):
 
 @login_required(login_url='streaming:login')
 @active_user
+def unsubscription_page(request, title):
+    template = loader.get_template('streaming/unsubPage.html')
+    show = get_media(title)
+    if show is None:
+        return HttpResponse("BAD MEDIA")
+    if request.method == 'POST':
+        request.user.billing.unsub_list.add(show)
+        return HttpResponseRedirect(reverse('streaming:display_media', kwargs={'title': title}))
+
+    context = {
+        'user': request.user,
+        'show': show,
+    }
+    return HttpResponse(template.render(context, request))
+
+
+@login_required(login_url='streaming:login')
+@active_user
 @subscription_required
 def watch_media(request, title, season_number=None, episode_number=None):
     template = loader.get_template('streaming/watchMedia.html')
@@ -427,8 +450,18 @@ def homepage(request):
 
 
 @login_required(login_url='streaming:login')
+@active_user
 def account_page(request):
-    return render(request, 'streaming/accountPage.html')
+
+    billing_cc_num = request.user.billing.cc_num
+    cc_num_hidden = billing_cc_num%10000 #returns last 4 digits of the cc_num
+    cc_num_hidden = "************" + str(cc_num_hidden)
+
+    context = {
+        'cc_num_hidden' : cc_num_hidden,
+        'transactions': request.user.billing.transaction_set.all(),
+    }
+    return render(request, 'streaming/accountPage.html', context)
 
 
 @login_required(login_url='streaming:login')
@@ -525,7 +558,7 @@ def readInbox(request, sendTo=None):
 
     return render(request, 'streaming/readInbox.html', context)
 
-
+@relog_required
 @login_required(login_url='streaming:login')
 def billing(request):
     form = billing_form()
@@ -548,16 +581,25 @@ def billing(request):
                 request.user.billing.exp_year = data['exp_year']
                 request.user.billing.save()
                 if request.user.billing.next_payment_date <= datetime.now().date():
-                    request.user.billing.charge()
+                    package_charge(request.user)
 
                 return render(request, 'streaming/accountPage.html')
 
     return render(request, 'streaming/billing.html', context)
 
+
 @login_required(login_url='streaming:login')
 def editProfile(request):
-    form = profile_form()
+    form = profile_form(request.POST)
+    if form.is_valid():
+        data = form.cleaned_data
+        request.user.bio = data['bio']
+        request.user.save()
+
+        return HttpResponseRedirect(reverse('streaming:user_page'))
+
     return render(request, 'streaming/editProfile.html', {'form': form})
+
 
 @login_required(login_url='streaming:login')
 def inactiveAccount(request):
@@ -614,3 +656,15 @@ def profile_upload(request):
         return HttpResponseRedirect(reverse('streaming:user_page'))
     return render(request, 'streaming/profilePicture.html')
 
+@login_required(login_url='streaming:login')
+def pick_photo(request):
+    template = loader.get_template('streaming/profilePhoto.html')
+    if request.method == 'POST':
+        request.user.profile_picture = '/profile_pictures/' + request.POST.get('image_choice')
+        request.user.save()
+        return HttpResponseRedirect(reverse('streaming:user_page'))
+    photos = listdir('streaming/media/profile_pictures/')
+    context = {
+        'photos': photos,
+    }
+    return HttpResponse(template.render(context, request))

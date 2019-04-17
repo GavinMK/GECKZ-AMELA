@@ -1,4 +1,5 @@
 {% extends "navPage.html" %}
+{% load static %}
 
 {% block content %}
 
@@ -19,9 +20,7 @@
             {% for entry in friends %}
             <figure>
                 <a id="friendsList" href="{% url 'streaming:user_page' username=entry.username %}">
-                    {% if entry.profile_picture %}
-                        <img style="border-radius: 50%;" src="/{{ entry.profile_picture.url }}" >{{ entry.username }}
-                    {% endif %}
+                    <img style="border-radius: 50%;" src="{% static "streaming/"|add:entry.profile_picture %}" >{{ entry.username }}
                 </a>
             </figure>
             {% endfor %}

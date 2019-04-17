@@ -32,9 +32,9 @@
             <legend>Billing Information:</legend>
             <p>Next Payment Date: <span>{{ user.billing.next_payment_date }}</span></p>
             <p>Name on Card: <span>{{ user.billing.name }}</span></p>
-            <p>Credit Card Number: <span>{{ user.billing.cc_num }}</span></p>
-            <p>Expiration Date: <span>{{ user.billing.exp_month }}/{{ user.billing.exp_year }}</span></p>
-            <p>CVC Number: <span>{{ user.billing.cvc_num }}</span></p>
+            <p>Credit Card Number: <span>{{ cc_num_hidden }}</span></p>
+            <p>Expiration Date: <span>**/****</span></p>
+            <p>CVC Number: <span>***</span></p>
             <p></p>
             <div class="form-style" style="margin: 0;padding-bottom: 20px;">
                 <form action="{% url 'streaming:billing' %}">
@@ -52,10 +52,12 @@
     <section style="width: 97%;float: left;padding-top: 20px;">
         <fieldset>
             <legend>Transaction Information:</legend>
-                <p>To do: </p>
-                <p>Email Preferences</p>
-                <p>Hiding CC Info</p>
-                <p>Billing History? or only current transaction info?</p>
+                {% for entry in transactions %}
+            <p>
+                <span>{{ entry.time }} - </span>
+                {{ entry.statement }}: <span>${{ entry.amount }}</span>
+            </p>
+      {% endfor %}
         </fieldset>
     </section>
 
