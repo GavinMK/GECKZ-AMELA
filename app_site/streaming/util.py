@@ -79,7 +79,7 @@ def get_comment_section(request, url_path):
         else:
             return media.comment_section
     else:
-        username_grabber = re.match(r'.*/userpage/(.*)', url)
+        username_grabber = re.match(r'.*/userpage/([^?]*)', url)
         if username_grabber and username_grabber.group(1):
             user = SiteUser.objects.get(username=username_grabber.group(1))
             return user.comment_section
@@ -89,7 +89,7 @@ def get_comment_section(request, url_path):
 
 def paginate_comments(request, comment_section):
     comment_paginator = Paginator(comment_section.comment_set.all().order_by('-timestamp'), 5)
-    comment_page = request.GET.get('page')
+    comment_page = request.GET.get('comment_page')
     return comment_paginator.get_page(comment_page)
 
 
