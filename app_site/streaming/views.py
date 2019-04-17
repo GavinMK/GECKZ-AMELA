@@ -627,7 +627,7 @@ def pick_photo(request):
     if request.method == 'POST':
         request.user.profile_picture = '/profile_pictures/' + request.POST.get('image_choice')
         request.user.save()
-        return HttpResponseRedirect(reverse('streaming:accountPage'))
+        return HttpResponseRedirect(reverse('streaming:user_page'))
     photos = listdir('streaming/media/profile_pictures/')
     context = {
         'photos': photos,
