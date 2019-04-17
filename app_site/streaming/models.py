@@ -69,6 +69,7 @@ class Transaction(models.Model):
     charged_to = models.ForeignKey('siteuser', on_delete=models.CASCADE)
     part_of = models.ForeignKey(Billing, on_delete=models.CASCADE)
     statement = models.CharField(default='charge', max_length=50)
+    time = models.DateField(default=timezone.now)
 
 
 class CommentSection(models.Model):

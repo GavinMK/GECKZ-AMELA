@@ -52,10 +52,12 @@
     <section style="width: 97%;float: left;padding-top: 20px;">
         <fieldset>
             <legend>Transaction Information:</legend>
-                <p>To do: </p>
-                <p>Email Preferences</p>
-                <p>Hiding CC Info</p>
-                <p>Billing History? or only current transaction info?</p>
+                {% for entry in transactions %}
+            <p>
+                <span>{{ entry.time }} - </span>
+                {{ entry.statement }}: <span>{{ entry.amount }}</span>
+            </p>
+      {% endfor %}
         </fieldset>
     </section>
 
