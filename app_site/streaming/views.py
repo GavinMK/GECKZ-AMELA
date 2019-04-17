@@ -619,3 +619,12 @@ def profile_upload(request):
         request.user.profile_picture.save(profile_picture.name, profile_picture)
         return HttpResponseRedirect(reverse('streaming:user_page'))
     return render(request, 'streaming/profilePicture.html')
+
+@login_required(login_url='streaming:login')
+def pick_photo(request):
+    template = loader.get_template('streaming/profilePhoto.html')
+    photos = request.user.subscriptions.all()
+    context = {
+        'photos': photos,
+    }
+    return HttpResponse(template.render(context, request))

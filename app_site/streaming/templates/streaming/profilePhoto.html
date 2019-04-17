@@ -1,0 +1,17 @@
+{% extends "navPage.html" %}
+{% load static %}
+
+{% block content %}
+
+<fieldset>
+    <legend>Choose a Photo:</legend><br>
+        <div class="media-style">
+        {% for entry in photos %}
+            <figure>
+                <input type="image" style="width: 200px;height: 200px;border-radius: 50%;" src="{% static "streaming/images/"|add:entry.thumbnail_path %}"/>
+            </figure>
+        {% endfor %}
+        </div>
+</fieldset>
+
+{% endblock %}
