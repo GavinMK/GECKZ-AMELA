@@ -8,7 +8,11 @@
         <div class="media-style">
         {% for entry in photos %}
             <figure>
-                <input type="image" style="width: 200px;height: 200px;border-radius: 50%;" src="{% static "streaming/images/"|add:entry.thumbnail_path %}"/>
+            <form action="{% url 'streaming:pick_photo'%}" method="post">
+                {% csrf_token %}
+                <img name="image_choice" style="width: 200px;height: 200px;border-radius: 50%;" src="/streaming/media/profile_pictures/{{ entry }}"/>
+                <input type="submit" name="image_choice" value="{{ entry }}">
+                  </form>
             </figure>
         {% endfor %}
         </div>
