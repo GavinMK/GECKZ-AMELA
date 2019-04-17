@@ -178,11 +178,6 @@ nav a:hover {
     color: #1a1a1a;
 }
 
-nav a.active {
-  background-color: #4CAF50;
-  color: white;
-}
-
 .center {
 	text-align: center;
 	display: block;
