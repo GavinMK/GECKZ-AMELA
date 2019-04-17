@@ -188,9 +188,12 @@ def display_media(request, title):
     avg_rating_perc = calc[0]
     avg_rating = calc[1]
 
+    unsub_queued = title in [str(show) for show in request.user.billing.unsub_list.all()]
+
     actors = Actor.objects.filter(part_of=media.metadata)
     context = {
         'subscribed': request.user.subscriptions.all().filter(title=media.title),
+        'unsub_queued': unsub_queued,
         'media': media,
         'actors': actors,
         'episodes': episode_list,
