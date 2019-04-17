@@ -1,4 +1,5 @@
 {% extends "navPage.html" %}
+{% load static %}
 
 {% block title %}{{ user }} - AMELA{% endblock %}
 {% block content %}
@@ -29,7 +30,7 @@
 
 <div class="profile-style" style="padding-bottom: 90px;">
     {% if user.profile_picture %}
-        <img style="border-radius: 50%;" src="/{{ user.profile_picture.url }}">
+        <img style="border-radius: 50%;" src="{% static "streaming/"|add:entry.profile_picture %}">
     {% endif %}
     <header>{{ user.first_name }} {{ user.last_name }}</header>
     <p>@{{ user }}</p>
@@ -61,7 +62,7 @@
             <figure>
                 <a href="{% url 'streaming:user_page' username=entry.username %}">
                     {% if entry.profile_picture %}
-                        <img style="border-radius: 50%;" src="/{{ entry.profile_picture.url }}" style="float: left;">{{ entry.username }}
+                        <img style="border-radius: 50%;" src="{% static entry.profile_picture %}" style="float: left;">{{ entry.username }}
                     {% endif %}
                 </a>
             </figure>
