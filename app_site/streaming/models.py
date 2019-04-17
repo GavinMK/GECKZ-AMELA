@@ -44,24 +44,16 @@ class Billing(models.Model):
     cvc_num = models.IntegerField(default=0)
     exp_month = models.IntegerField(default=0)
     exp_year = models.IntegerField(default=0)
-
+    unsub_list = models.ManyToManyField('tvshow', blank=True)
     next_payment_date = models.DateField(default=timezone.now)
-    num_sub_slots = models.IntegerField(default=10)
-    num_rentals = models.IntegerField(default=0)
-    transaction_info = models.CharField(max_length=50)
 
     def __str__(self):
         query = SiteUser.objects.filter(billing=self)
         return "Unassigned" if len(query) == 0 else str(query[0])
 
-    def charge(self):
-        print("Attempting to charge " + str(self))
-        if self.cc_num != 0:
-            self.next_payment_date = datetime.now().date() + timedelta(30)
-            self.save()
-            print(str(self) + " has been charged, next payment date is " + self.next_payment_date.strftime('%c'))
-        else:
-            print(str(self) + " has no valid payment info, no charge occurred")
+    def change_date(self):
+        self.next_payment_date = datetime.now().date() + timedelta(30)
+        self.save()
 
     def cancel(self):
         self.cc_num = 0
@@ -70,6 +62,14 @@ class Billing(models.Model):
         self.exp_year = 0
         self.name = ""
         self.save()
+
+
+class Transaction(models.Model):
+    amount = models.FloatField(default=0)
+    charged_to = models.ForeignKey('siteuser', on_delete=models.CASCADE)
+    part_of = models.ForeignKey(Billing, on_delete=models.CASCADE)
+    statement = models.CharField(default='charge', max_length=50)
+    time = models.DateField(default=timezone.now)
 
 
 class CommentSection(models.Model):
@@ -196,6 +196,7 @@ class SiteUser(AbstractUser):
     watch_history = models.OneToOneField(WatchHistory, null=True, on_delete=models.CASCADE)
     friends = models.OneToOneField('friend', null=True, on_delete=models.CASCADE)
     profile_picture = models.FileField(upload_to='profile_pictures/',  default='/profile_pictures/export.png')
+    bio = models.CharField(max_length=500, default='')
 
     def __str__(self):
         return self.username
