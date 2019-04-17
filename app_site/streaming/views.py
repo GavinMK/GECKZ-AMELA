@@ -415,7 +415,10 @@ def homepage(request):
 
 @login_required(login_url='streaming:login')
 def account_page(request):
-    return render(request, 'streaming/accountPage.html')
+    context = {
+        'transactions': request.user.billing.transaction_set.all()
+    }
+    return render(request, 'streaming/accountPage.html', context)
 
 
 @login_required(login_url='streaming:login')
