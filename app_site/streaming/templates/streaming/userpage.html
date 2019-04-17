@@ -28,7 +28,9 @@
 {% endif %}
 
 <div class="profile-style" style="padding-bottom: 90px;">
-    <img style="border-radius: 50%;" src="/{{ user.profile_picture.url }}">
+    {% if user.profile_picture %}
+        <img style="border-radius: 50%;" src="/{{ user.profile_picture.url }}">
+    {% endif %}
     <header>{{ user.first_name }} {{ user.last_name }}</header>
     <p>@{{ user }}</p>
 </div>
@@ -57,7 +59,11 @@
         <div class="media-style" style="grid-auto-rows: 10vw;grid-template-columns: repeat(2, 50%);grid-gap: 3px;">
             {% for entry in friendsList %}
             <figure>
-                <a href="{% url 'streaming:user_page' username=entry.username %}"><img style="border-radius: 50%;" src="/{{ entry.profile_picture.url }}" style="float: left;">{{ entry.username }}</a>
+                <a href="{% url 'streaming:user_page' username=entry.username %}">
+                    {% if entry.profile_picture %}
+                        <img style="border-radius: 50%;" src="/{{ entry.profile_picture.url }}" style="float: left;">{{ entry.username }}
+                    {% endif %}
+                </a>
             </figure>
             {% endfor %}
         </div>

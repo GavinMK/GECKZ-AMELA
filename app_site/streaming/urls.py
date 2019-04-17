@@ -29,11 +29,12 @@ urlpatterns = [
     path('media/<str:title>/watch', views.watch_media, name='watch_media'),
     path('media/<str:title>/<int:season_number>/<int:episode_number>/watch', views.watch_media, name='watch_media'),
     path('media/<str:title>/<int:season_number>/<int:episode_number>/subscribe', views.subscription_page, name='subscribe'),
+    path('media/<str:title>/unsubscribe', views.unsubscription_page, name='unsubscribe'),
     path('media/<str:title>/rent', views.rental_page, name='rental'),
     path('rate/', views.post_rating, name='post_rating'), # We should only need this until the javascript is working (I think)
     path('editProfile/', views.editProfile, name="editProfile"),
     path('about/', views.about, name="about"),
     path('inactiveAccount/', views.inactiveAccount, name='inactiveAccount'),
     path('cancelPlan/', views.cancel_plan, name='cancel_plan'),
-    path('upload_picture/', views.profile_upload, name='upload_picture')
+    path('upload_picture/', views.profile_upload, name='upload_picture'),
 ]

@@ -1,8 +1,46 @@
 from .models import *
+from .constants import *
 from django.db.models import Q
 import re
 from django.core.paginator import Paginator
 
+
+
+def package_charge(user):
+    print("Attempting to charge " + str(user))
+    billing = user.billing
+    amount = BASE_COST
+    if billing.cc_num != 0:
+        if len(user.subscriptions.all()) > MAX_SUBS:
+            amount = amount + (ADDITIONAL_SUB_COST * (len(user.subscriptions.all()) - MAX_SUBS))
+        billing.next_payment_date = datetime.now().date() + timedelta(30)
+        for show in billing.unsub_list.all():
+            user.subscriptions.remove(show)
+            billing.unsub_list.remove(show)
+        transaction = Transaction(amount=amount, charged_to=user, part_of=billing, statement='package charge')
+        transaction.save()
+        billing.save()
+        print(str(user) + " has been charged " + str(transaction.amount) + ", next payment date is " + billing.next_payment_date.strftime('%c'))
+    else:
+        print(str(user) + " has no valid payment info, no charge occurred")
+
+
+def rental_charge(user):
+    print("Attempting to charge " + str(user))
+    billing = user.billing
+    if billing.cc_num != 0:
+        amount = len(user.rentals.all()) * RENTAL_COST
+        user.rentals.clear()
+        if amount != 0.0:
+            transaction = Transaction(amount=amount, charged_to=user, part_of=billing, statement='rental charge')
+            transaction.save()
+            billing.save()
+            print(str(user) + " has been charged " + str(
+                transaction.amount) + ", next payment date is " + billing.next_payment_date.strftime('%c'))
+        else:
+            print(str(user) + " has no movies")
+    else:
+        print(str(user) + " has no valid payment info, no charge occurred")
 
 
 def get_rating(ratings):
