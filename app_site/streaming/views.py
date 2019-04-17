@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.urls import reverse
+from os import listdir
 from django.shortcuts import render
 
 from .decorators import *
@@ -619,3 +620,16 @@ def profile_upload(request):
         request.user.profile_picture.save(profile_picture.name, profile_picture)
         return HttpResponseRedirect(reverse('streaming:user_page'))
     return render(request, 'streaming/profilePicture.html')
+
+@login_required(login_url='streaming:login')
+def pick_photo(request):
+    template = loader.get_template('streaming/profilePhoto.html')
+    if request.method == 'POST':
+        request.user.profile_picture = '/profile_pictures/' + request.POST.get('image_choice')
+        request.user.save()
+        return HttpResponseRedirect(reverse('streaming:user_page'))
+    photos = listdir('streaming/media/profile_pictures/')
+    context = {
+        'photos': photos,
+    }
+    return HttpResponse(template.render(context, request))
