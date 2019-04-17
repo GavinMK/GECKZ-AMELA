@@ -125,6 +125,10 @@ hr {
 	height: 100px;
 }
 
+#inboxCount{
+	text-align: center;
+}
+
 #company{
 	font-family: Oswald;
 	color: #ffd700;
@@ -174,20 +178,14 @@ nav a:hover {
     color: #1a1a1a;
 }
 
-nav a.active {
-  background-color: #4CAF50;
-  color: white;
-}
-
 /* This class centers stuff, but also does a lot of other random, unrelated things.*/
-.center {
-	text-align: center;
-	display: block;
-	margin-left: auto;
-	margin-right: auto;
-	width: 50%;
-}
-
+.center {		.center {
+	text-align: center;			text-align: center;
+	display: block;			display: block;
+	margin-left: auto;			margin-left: auto;
+	margin-right: auto;			margin-right: auto;
+	width: 50%;			width: 50%;
+}		}
 /* This class changes things to the alert color */
 .alert {
 	color: #ff2222;
@@ -201,27 +199,26 @@ nav a.active {
 }
 
 .inbox-style li {
-	/*text-align: center;*/ 
-	/* border-bottom: 1px solid #fffafa; */
+	text-align: center;
+	border-bottom: 1px solid #fffafa;
 	padding-bottom: 0;
 }
 
-.inbox-style li a,
-.inbox-style li p{
+.inbox-style li a{
 	display: block;
 	color: #fffafa;
-	padding: 10px;
+	padding: 20px 0;
 }
 
 .inbox-style li a:hover{
 	color: #ffd700;
 	background-color: #111;
 }
-/*
+
 .inbox-style li:last-child{
 	border-bottom: none;
 }
-*/
+
 .profile-style img{
 	float: left;
 	width: 200px;
