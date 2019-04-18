@@ -20,7 +20,7 @@ function submitOnce(b1, b2) {
 }
 
 function openPopUp() {
-    let modal = document.getElementById('myModal');
+    let modal = document.getElementById('popup');
     let span = document.getElementsByClassName("close")[0];
     modal.style.display = "block";
 
