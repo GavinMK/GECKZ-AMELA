@@ -55,19 +55,25 @@
 			No results found for '<span style="color: #ffd700;">{{ query }}</span>'.
 		</h1>
 	{% endif %}
-
+	<br>
 	{% if media.paginator.num_pages > 1 %}
 		<div class="pagination center">
 			<span class="step-links">
-				&lt;
-				{% for i in media.paginator.page_range %}
-					{% if media.number == forloop.counter %}
-						<b>{{ i }} </b>
-					{% else %}
-						<a href="?q={{ query }}&p={{ forloop.counter }}">{{ forloop.counter }}</a> 
-					{% endif %}
-				{% endfor %}
-				&gt;
+				{% if media.has_previous %}
+						<a href="?q={{ query }}&p=1">&laquo; first</a>
+						<span>&#8226;</span>
+						<a href="?q={{ query }}&p={{ media.previous_page_number }}">previous</a>
+				{% endif %}
+
+				<span>
+						Page {{ media.number }} of {{ media.paginator.num_pages }}
+				</span>
+
+				{% if media.has_next %}
+						<a href="?q={{ query }}&p={{ media.next_page_number }}">next</a>
+						<span>&#8226;</span>
+						<a href="?q={{ query }}&p={{ media.paginator.num_pages }}">last &raquo;</a>
+				{% endif %}
 			</span>
 		</div>
 	{% endif %}
