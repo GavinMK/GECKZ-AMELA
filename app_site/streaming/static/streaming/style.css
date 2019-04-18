@@ -348,7 +348,8 @@ h2{
 }
 
 .form-style  input[type=submit],
-.form-style  input[type=button]
+.form-style  input[type=button],
+#send
 {
 	background: #ffd700;
 	border: 1px solid #393e46;
@@ -357,7 +358,8 @@ h2{
     font-size: 15px;
 }
 
-.form-style  input[type=submit] {
+.form-style  input[type=submit],
+#send{
 	-webkit-transition-duration: 0.4s;
 	transition-duration: 0.4s;
 }
@@ -365,7 +367,8 @@ h2{
 .form-style  input[type=submit]:hover,
 #rating_sending,
 #comment_sending,
-#inbox_sending{
+#inbox_sending,
+#send:hover{
 	background-color: #1a1a1a;
 	color: #fffafa;
 	border: 1px solid #fffafa;
