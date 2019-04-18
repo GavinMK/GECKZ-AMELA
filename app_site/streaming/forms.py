@@ -54,3 +54,8 @@ class profile_form(forms.Form):
     bio = forms.CharField(label='bio')
     #fav_movies = forms.CharField(label='fav_movies')
     #fav_shows = forms.CharField(label='fav_shows')
+
+
+class notifications_form(forms.Form):
+    email_notification = forms.BooleanField(required=False)
+    inbox_notification = forms.BooleanField(required=False)

@@ -1,5 +1,6 @@
 {% extends "navPage.html" %}
 
+{% load static %}
 {% block content %}
     <header style="text-align: left;">Account Information</header>
     <hr>
@@ -11,8 +12,21 @@
             <p>Name: <span>{{ user.first_name }} {{ user.last_name }}</span></p>
             <p>Email: <span>{{ user.email }}</span></p>
             <label style="padding-right: 15px; color: #ffd700; font-size: 16px;">Receive Site Notification via:</label>
-                <input type="checkbox" onclick=""><span style="padding-right: 10px; font-size: 15px;"> Email</span>
-                <input type="checkbox" onclick=""><span style="font-size: 15px;"> Account Inbox</span>
+                <form action="{% url 'streaming:accountPage' %}" method="POST" style="margin: 0;">
+                    {% csrf_token %}
+                    {% if user.preferences.email_opt_in %}
+                        <input type="hidden" name="email" value="false"/>
+                        <input type="checkbox" name="email" value="true" checked><span style="font-size: 15px;"> Email</span>
+                    {% else %}
+                        <input type="checkbox" name="email"><span style="padding-right: 10px; font-size: 15px;"> Email</span>
+                    {% endif %}
+
+                    {% if user.preferences.inbox_opt_in %}             
+                        <input type="checkbox" name="inbox" checked><span style="font-size: 15px;"> Account Inbox</span>
+                    {% else %}
+                        <input type="checkbox" name="inbox"><span style="font-size: 15px;"> Account Inbox</span>
+                    {% endif %}
+                </form>
             <p style="padding-bottom: 64px;"></p>
             <div class="form-style" style="margin: 0;padding-bottom: 20px;">
                 <form action="{% url 'streaming:change' %}">

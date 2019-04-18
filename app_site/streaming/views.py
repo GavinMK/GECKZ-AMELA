@@ -14,7 +14,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
-from .forms import user_form, login_form, search_form, message_form, mark_message_as_read_form, billing_form, change_info, CommentForm, profile_form
+from .forms import user_form, login_form, search_form, message_form, mark_message_as_read_form, billing_form, change_info, CommentForm, profile_form, notifications_form
 
 from django.core.paginator import Paginator
 import re
@@ -461,6 +461,16 @@ def account_page(request):
         'cc_num_hidden' : cc_num_hidden,
         'transactions': request.user.billing.transaction_set.all(),
     }
+
+    form = notifications_form()
+
+    if request.method == 'POST':
+        form = notifications_form(request.POST)
+        print(form.errors)
+        if form.is_valid():
+            data = form.cleaned_data
+            print(data)
+
     return render(request, 'streaming/accountPage.html', context)
 
 

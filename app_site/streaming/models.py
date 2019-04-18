@@ -13,6 +13,7 @@ from datetime import datetime, timedelta
 
 class Preferences(models.Model):
     email_opt_in = models.BooleanField(default=True)
+    inbox_opt_in = models.BooleanField(default=True)
 
     def __str__(self):
         query = SiteUser.objects.filter(preferences=self)
