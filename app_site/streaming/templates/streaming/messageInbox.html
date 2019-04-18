@@ -13,7 +13,7 @@
     <section style="width: 73%;">
     <script src="{% static 'streaming/js/utility.js' %}" type="text/javascript"></script>
         <fieldset>
-            <legend>Send a message</legend><br>
+            <legend>Send a Message</legend><br>
                 <div class="form-style" style="margin: 0;padding-bottom: 20px;">
                     <form action="{% url 'streaming:messageInbox' %}" method="POST" style="margin: 0;" onsubmit="submitOnce('inbox_submit','inbox_sending')">
                         {% csrf_token %}
