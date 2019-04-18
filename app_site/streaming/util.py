@@ -135,28 +135,35 @@ def generate_user(data):
                                         inbox=inbox, billing=billing, watch_history=history, friends=friends)
 
 
-def filter_db_query(context, query, tv_show_list, movie_list):
-    words = query.split(" ")
+def filter_db_query(context, tv_show_list, movie_list):
+
     tv_results = tv_show_list
     movie_results = movie_list
     # We go through each word in the query, and check to make sure it matches at least some of the data
     # Each result has to match all of the words.
-    for word in words:
-        db_query = Q()
-        if context['filters']['Title']:
-            db_query |= Q(title__icontains=word)
-        if context['filters']['Genre']:
-            db_query |= Q(metadata__genre__icontains=word)
-        if context['filters']['Release Year']:
-            db_query |= Q(metadata__release_year__icontains=word)
-        if context['filters']['Studio']:
-            db_query |= Q(metadata__studio__icontains=word)
-        if context['filters']['Streaming Service']:
-            db_query |= Q(metadata__streaming_service__icontains=word)
-        if context['filters']['Actors']:
-            db_query |= Q(metadata__actor__name__icontains=word)
-        partial_tv_results = tv_show_list.filter(db_query)
-        partial_movie_results = movie_list.filter(db_query)
-        tv_results &= partial_tv_results
-        movie_results &= partial_movie_results
+    for search_filter in context['filters']:
+        # Filters that don't have a value don't need to be checked!
+        if search_filter.value != "":
+            words = search_filter.value.split(" ")
+            for word in words:
+                print(word)
+                db_query = Q()
+                if search_filter.name == 'Title':
+                    db_query |= Q(title__icontains=word)
+                elif search_filter.name == 'Genre':
+                    db_query |= Q(metadata__genre__icontains=word)
+                elif search_filter.name == 'Release Year':
+                    db_query |= Q(metadata__release_year__icontains=word)
+                elif search_filter.name == 'Studio':
+                    db_query |= Q(metadata__studio__icontains=word)
+                elif search_filter.name == 'Streaming Service':
+                    db_query |= Q(metadata__streaming_service__icontains=word)
+                elif search_filter.name == 'Actors':
+                    db_query |= Q(metadata__actor__name__icontains=word)
+                else:
+                    raise TypeError("Search filter '{0}' is not a recognized filter!".format(search_filter.name))
+                partial_tv_results = tv_show_list.filter(db_query)
+                partial_movie_results = movie_list.filter(db_query)
+                tv_results &= partial_tv_results
+                movie_results &= partial_movie_results
     return tuple(set(tv_results) | set(movie_results))

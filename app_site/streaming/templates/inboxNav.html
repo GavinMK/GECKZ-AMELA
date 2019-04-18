@@ -1,7 +1,7 @@
 <div class="inbox-style">
     <ul>
-        <li><a href="{% url 'streaming:messageInbox' %}">Message</a></li>
-        <li><a href="{% url 'streaming:sentInbox' %}">Sent</a></li>
+        <li><a href="{% url 'streaming:messageInbox' %}">Send Message</a></li>
+        <li><a href="{% url 'streaming:sentInbox' %}">Sent Messages</a></li>
         <li><a href="{% url 'streaming:inbox' %}">Unread Messages
             {% if user.inbox.num_unread_messages > 0 %} <span style="color: red;">({{user.inbox.num_unread_messages}})</span> {% endif %}</a></li>
         <li><a href="{% url 'streaming:readInbox' %}">Read Messages</a></li>
