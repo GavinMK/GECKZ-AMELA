@@ -18,7 +18,13 @@
                     <form action="{% url 'streaming:messageInbox' %}" method="POST" style="margin: 0;" onsubmit="submitOnce('inbox_submit','inbox_sending')">
                         {% csrf_token %}
                         <label for="username">To: </label><br>
-                        <input id="username" autocomplete="true" placeholder="Username" value="{{sendTo}}" type="text" name="username" required><br><br>
+                        <input id="username" list="friends" autocomplete=off placeholder="Username" value="{{sendTo}}" type="text" name="username" required>
+						<datalist id="friends">
+						{% for friend in friends %}
+							<option>{{ friend }}</option>
+						{% endfor %}
+						</datalist>
+						<br><br>
                         <h1>
                             {% if error_message != None %}
                                 {{ error_message }}

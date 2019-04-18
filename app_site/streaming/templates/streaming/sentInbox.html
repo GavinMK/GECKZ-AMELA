@@ -10,17 +10,21 @@
 	</aside>
 
     <section style="width: 73%;">
-    {% if messages_to %}
-    {% for message in messages_to reversed %}
-            <fieldset>
-                <legend>To: {{message.part_of.siteuser}}</legend>
-                <p>Sent: {{message.timestamp}}</p>
-                <p style="padding-left: 0px;color: #fffafa;font-size: 15px;">&emsp;{{message.content}}</p>
-            </fieldset>
-    {% endfor %}
-    {% else %}
-            <p>You have no sent messages.</p>
-    {% endif %}
+	
+		{% if messages_to|length > 0 %}
+			<p>You have {{ messages_to|length }} sent message{{ messages_to|length|pluralize }}.</p>
+		{% else %}
+			<p>You have no sent messages.</p>
+		{% endif %}
+		
+		{% for message in messages_to reversed %}
+				<fieldset>
+					<legend>To: {{message.part_of.siteuser}}</legend>
+					<p>Sent: {{message.timestamp}}</p>
+					<p style="padding-left: 0px;color: #fffafa;font-size: 15px;">&emsp;{{message.content}}</p>
+				</fieldset>
+		{% endfor %}
+
     </section>
 
 <script src="{% static 'streaming/js/utility.js' %}" type="text/javascript"></script>
