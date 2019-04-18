@@ -4,8 +4,8 @@
 {% block title %}{{ user }} - AMELA{% endblock %}
 {% block content %}
 
-{% if user != request.user %}
 <div class="form-style" style="width:100%;text-align: right;">
+    {% if user != request.user %}
         <form action="{% url 'streaming:user_page' username=user.username %}" method="post">
         {% csrf_token %}
             {% if not friends %}
@@ -15,18 +15,16 @@
             {% endif %}
         <input type="submit" name="message" value="Message" style="font-size: 18px;margin-left: 30px;">
         </form>
-    </div>
-{% else %}
-<div class="form-style" style="width:100%;text-align: right;">
-    <form action="{% url 'streaming:editProfile' %}">
-    <input type="submit" value="Edit Bio" style="font-size: 18px;margin-bottom: 20px;">
-    </form>
+    {% else %}
+        <form action="{% url 'streaming:editProfile' %}" style="display: inline-block;">
+        <input type="submit" value="Edit Bio" style="font-size: 18px;">
+        </form>
 
-    <form action="{% url 'streaming:pick_photo' %}">
-    <input type="submit" value="Change Profile Picture" style="font-size: 18px;">
-    </form>
+        <form action="{% url 'streaming:pick_photo' %}" style="display: inline-block;margin-left: 30px;">
+        <input type="submit" value="Change Profile Picture" style="font-size: 18px;">
+        </form>
+    {% endif %}
 </div>
-{% endif %}
 
 <div class="profile-style" style="padding-bottom: 90px;">
     {% if user.profile_picture %}
