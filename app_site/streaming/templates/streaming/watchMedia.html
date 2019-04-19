@@ -45,15 +45,11 @@
       "playlist": "https://cdn.jwplayer.com/v2/media/0dGtowyL" //replace 0dGtowyL with {{media.file_location}}
     });
 
-		player.setConfig([{
-			autostart: 'viewable'
-		}])
-
 		player.on('time', function(e) {
 		    $cookie.setItem('resumevideodata', Math.floor(e.position) + ':' + player.getDuration());
 		});
 
-		player.on('ready', function() {
+		player.on('firstFrame', function() {
 		    var cookieData = $cookie.getItem('resumevideodata');
 		    if(cookieData) {
 						console.log("cookie data found!");
@@ -62,6 +58,7 @@
 		        if(parseInt(resumeAt) < parseInt(videoDur)) {
 								console.log("attempting to resume at time " + resumeAt);
 		            player.seek(resumeAt);
+								console.log("success!");
 		        }
 		    }
 		});
