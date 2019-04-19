@@ -453,23 +453,34 @@ def homepage(request):
 @active_user
 def account_page(request):
 
+    #hide the user's cc number
     billing_cc_num = request.user.billing.cc_num
     cc_num_hidden = billing_cc_num%10000 #returns last 4 digits of the cc_num
     cc_num_hidden = "************" + str(cc_num_hidden)
 
+    form = notifications_form()
+
     context = {
+        'form' : form,
+        'message' : None,
         'cc_num_hidden' : cc_num_hidden,
         'transactions': request.user.billing.transaction_set.all(),
     }
 
-    form = notifications_form()
-
     if request.method == 'POST':
-        form = notifications_form(request.POST)
-        print(form.errors)
-        if form.is_valid():
-            data = form.cleaned_data
-            print(data)
+        if 'emailIn' in request.POST:
+            request.user.preferences.email_opt_in = True
+            context['message'] = "You are now opted in to email notifications."
+        elif 'emailOut' in request.POST:
+            request.user.preferences.email_opt_in = False
+            context['message'] = "You are now opted out of email notifications."
+        elif 'inboxIn' in request.POST:
+            request.user.preferences.inbox_opt_in = True
+            context['message'] = "You are now opted in to inbox notifications."
+        elif 'inboxOut' in request.POST:
+            request.user.preferences.inbox_opt_in = False
+            context['message'] = "You are now opted out of inbox notifications."
+        request.user.preferences.save()
 
     return render(request, 'streaming/accountPage.html', context)
 

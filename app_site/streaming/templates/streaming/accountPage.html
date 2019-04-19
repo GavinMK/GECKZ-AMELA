@@ -15,18 +15,22 @@
                 <form action="{% url 'streaming:accountPage' %}" method="POST" style="margin: 0;">
                     {% csrf_token %}
                     {% if user.preferences.email_opt_in %}
-                        <input type="hidden" name="email" value="false"/>
-                        <input type="checkbox" name="email" value="true" checked><span style="font-size: 15px;"> Email</span>
+                        <input type="submit" name="emailOut" value="Opt Out of Emails">
                     {% else %}
-                        <input type="checkbox" name="email"><span style="padding-right: 10px; font-size: 15px;"> Email</span>
+                        <input type="submit" name="emailIn" value="Opt In to Emails">
                     {% endif %}
 
                     {% if user.preferences.inbox_opt_in %}             
-                        <input type="checkbox" name="inbox" checked><span style="font-size: 15px;"> Account Inbox</span>
+                        <input type="submit" name="inboxOut" value="Opt Out of Inbox Messages">
                     {% else %}
-                        <input type="checkbox" name="inbox"><span style="font-size: 15px;"> Account Inbox</span>
+                        <input type="submit" name="inboxIn" value="Opt In to Inbox Messages">
                     {% endif %}
                 </form>
+            <h1>
+                {% if message != None %}
+                {{ message }}
+                {% endif %}
+            </h1>
             <p style="padding-bottom: 64px;"></p>
             <div class="form-style" style="margin: 0;padding-bottom: 20px;">
                 <form action="{% url 'streaming:change' %}">

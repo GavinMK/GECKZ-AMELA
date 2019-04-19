@@ -28,25 +28,22 @@ def package_charge(user):
 
 
 def send_inbox_message(user):
-    if user.username == "Trollend":
-        print("Sending a message to", user.username)
-        message_content = 'Dear valued customer, we are writing to inform you that you are awesome. Sincerely, the Amela Development Team.'
-        new_message = Message(content=message_content, from_user=SiteUser.objects.get(username="amela"), part_of=user.inbox)
-        new_message.save()
-        user.inbox.num_messages += 1
-        user.inbox.num_unread_messages += 1
-        user.inbox.save()
+    print("Sending a message to", user.username)
+    message_content = 'Dear valued customer, we are writing to inform you that you are awesome. Sincerely, the Amela Development Team.'
+    new_message = Message(content=message_content, from_user=SiteUser.objects.get(username="amela"), part_of=user.inbox)
+    new_message.save()
+    user.inbox.num_messages += 1
+    user.inbox.num_unread_messages += 1
+    user.inbox.save()
 
 
 def send_email(user):
-    if user.username == "Trollend":
-        #send the user an email
-        print("Sending an email to", user.username)
-        subject = 'Billing Cycle Update for ' + user.username
-        message = 'Dear valued customer, we are writing to inform you that you are awesome. Sincerely, the Amela Development Team.'
-        email_from = settings.EMAIL_HOST_USER
-        recipient_list = [user.email,]
-        send_mail(subject, message, email_from, recipient_list)
+    print("Sending an email to", user.username)
+    subject = 'Billing Cycle Update for ' + user.username
+    message = 'Dear valued customer, we are writing to inform you that you are awesome. Sincerely, the Amela Development Team.'
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [user.email,]
+    send_mail(subject, message, email_from, recipient_list)
 
 
 def rental_charge(user):
