@@ -61,9 +61,9 @@
 		<div class="pagination center">
 			<span class="step-links">
 				{% if media.has_previous %}
-						<a href="?q={{ query }}&p=1">&laquo; first</a>
+						<a href="?{% for filter in filters %}{{ filter.name }}={{ filter.value}}&{% endfor %}p=1">&laquo; first</a>
 						<span>&#8226;</span>
-						<a href="?q={{ query }}&p={{ media.previous_page_number }}">previous</a>
+						<a href="?{% for filter in filters %}{{ filter.name }}={{ filter.value}}&{% endfor %}p={{ media.previous_page_number }}">previous</a>
 				{% endif %}
 
 				<span>
@@ -71,9 +71,9 @@
 				</span>
 
 				{% if media.has_next %}
-						<a href="?q={{ query }}&p={{ media.next_page_number }}">next</a>
+						<a href="?{% for filter in filters %}{{ filter.name }}={{ filter.value}}&{% endfor %}p={{ media.next_page_number }}">next</a>
 						<span>&#8226;</span>
-						<a href="?q={{ query }}&p={{ media.paginator.num_pages }}">last &raquo;</a>
+						<a href="?{% for filter in filters %}{{ filter.name }}={{ filter.value}}&{% endfor %}p={{ media.paginator.num_pages }}">last &raquo;</a>
 				{% endif %}
 			</span>
 		</div>

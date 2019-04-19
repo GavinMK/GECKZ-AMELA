@@ -134,6 +134,8 @@ def search(request):
     template = loader.get_template('streaming/searchPage.html')
     all_media = list(Movie.objects.all()) + list(TVShow.objects.all())
 
+    # This method of gathering this data is slow and cumbersome (it scales with the number of movies + number of shows)
+    # A better long-term solution would involve storing this stuff in the database
     genres = set()
     for m in all_media:
         g_text = m.metadata.genre
