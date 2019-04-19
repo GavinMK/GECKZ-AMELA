@@ -55,8 +55,9 @@
 			No results found for '<span style="color: #ffd700;">{{ query }}</span>'.
 		</h1>
 	{% endif %}
-	<br><br><br><hr>
+	<br><br><br>
 	{% if media.paginator.num_pages > 1 %}
+		<hr>
 		<div class="pagination center">
 			<span class="step-links">
 				{% if media.has_previous %}

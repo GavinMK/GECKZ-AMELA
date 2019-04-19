@@ -13,7 +13,7 @@
     <section style="width: 73%;">
 
 		{% if user.inbox.num_read_messages > 0 %}
-            <p>You have {{ user.inbox.num_read_messages }} read message{{ user.inbox.num_read_messages|pluralize }}!</p>
+            <p>You have {{ user.inbox.num_read_messages }} read message{{ user.inbox.num_read_messages|pluralize }}.</p>
         {% else %}
             <p>You have no read messages.</p>
         {% endif %}
@@ -25,8 +25,8 @@
                     <p>Received: {{message.timestamp}}</p>
                     <p style="padding-left: 0px;color: #fffafa;font-size: 15px;">&emsp;{{message.content}}</p>
                 </fieldset>
+                <br>
             {% endif %}
-        <br>
         {% endfor %}
     </section>
 
