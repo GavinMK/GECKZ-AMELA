@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from django.urls import reverse
 from os import listdir
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from .decorators import *
 from .util import *
@@ -585,7 +585,7 @@ def billing(request):
                 if request.user.billing.next_payment_date <= datetime.now().date():
                     package_charge(request.user)
 
-                return render(request, 'streaming/accountPage.html')
+                return redirect('/streaming/account')
 
     return render(request, 'streaming/billing.html', context)
 

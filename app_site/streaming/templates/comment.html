@@ -2,7 +2,7 @@
     <div class="form-style" style="padding-bottom: 20px;width: 100%;">
         <form action="{% url 'streaming:post_comment' %}" method="post" onsubmit="submitOnce('comment_submit', 'comment_sending')">
             {% csrf_token %}
-            <input type="text" name="content" placeholder="Leave a comment" size="500" maxlength="500" style="width: 60%;" required>
+            <input type="text" name="content" placeholder="Leave a comment" size="500" maxlength="500" style="width: 83%;" required>
             <input type="hidden" name="url" value="{{ request.get_full_path }}">
             <input type="submit" value="Comment" id="comment_submit">
             <input disabled type="submit" name="sending" value="Posting..." id="comment_sending" hidden>
@@ -10,11 +10,11 @@
     </div>
     {% for comment in comments %}
         <hr>
-        <p><span>Posted By: </span><a href="{% url 'streaming:user_page' username=comment.posted_by %}">{{ comment.posted_by }}</a> <span> on {{ comment.timestamp }}</span> <br><br></p>
+        <p><span>Posted By: </span><a href="{% url 'streaming:user_page' username=comment.posted_by %}">{{ comment.posted_by }}</a> <span> on {{ comment.timestamp }}</span> <br></p>
         <span>"{{ comment.content }}"</span><br>
     {% endfor %}
 
-    <br><br>
+    <hr>
 
     {% if comments.has_previous %}
         <a href="?comment_page=1">&laquo; first</a>

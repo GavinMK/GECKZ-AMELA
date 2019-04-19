@@ -18,3 +18,20 @@ function submitOnce(b1, b2) {
     document.getElementById(b1).hidden = true;
     document.getElementById(b2).hidden = false;
 }
+
+function openPopUp() {
+    let modal = document.getElementById('popup');
+    let span = document.getElementsByClassName("close")[0];
+    modal.style.display = "block";
+
+    span.onclick = function() {
+      modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    }
+
+}
