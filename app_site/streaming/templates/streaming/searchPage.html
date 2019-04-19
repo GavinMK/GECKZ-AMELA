@@ -52,7 +52,7 @@
 					{% if media.number == forloop.counter %}
 						<b>{{ i }} </b>
 					{% else %}
-						<a href="?q={{ query }}&p={{ forloop.counter }}">{{ forloop.counter }}</a> 
+						<a href="?p={{ forloop.counter }}{% for filter in filters %}&{{ filter.name }}={{ filter.value}}{% endfor %}">{{ forloop.counter }}</a> 
 					{% endif %}
 				{% endfor %}
 				&gt;
