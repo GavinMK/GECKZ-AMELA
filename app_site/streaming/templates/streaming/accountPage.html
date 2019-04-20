@@ -11,9 +11,9 @@
             <p>Username: <span>{{ user }}</span></p>
             <p>Name: <span>{{ user.first_name }} {{ user.last_name }}</span></p>
             <p>Email: <span>{{ user.email }}</span></p>
-            <label style="padding-right: 15px; color: #ffd700; font-size: 16px;">Receive Site Notification via:</label>
-            <p>Note: You must be subscribed to one or the other so you may receive billing transactions.</p>
-                <form action="{% url 'streaming:accountPage' %}" method="POST" style="margin: 0;">
+            <p style="padding-bottom: 0;">Receive Site Notification via:</p>
+            <div class="form-style" style="margin: 0;width: 100%;">
+                <form action="{% url 'streaming:accountPage' %}" method="POST" style="margin: 0;display: inline-block;padding-bottom: 10px;">
                     {% csrf_token %}
                     {% if user.preferences.email_opt_in %}
                         <input type="submit" name="emailOut" value="Opt Out of Emails">
@@ -22,17 +22,19 @@
                     {% endif %}
 
                     {% if user.preferences.inbox_opt_in %}             
-                        <input type="submit" name="inboxOut" value="Opt Out of Inbox Messages">
+                        <input type="submit" name="inboxOut" style="margin-left: 30px;" value="Opt Out of Inbox Messages">
                     {% else %}
-                        <input type="submit" name="inboxIn" value="Opt In to Inbox Messages">
+                        <input type="submit" name="inboxIn" style="margin-left: 30px;" value="Opt In to Inbox Messages">
                     {% endif %}
                 </form>
-            <h1>
+            </div>
+            <span>
                 {% if message != None %}
-                {{ message }}
+                *{{ message }}*
                 {% endif %}
-            </h1>
-            <p style="padding-bottom: 64px;"></p>
+            </span>
+            <p><span>Note:</span> You must be subscribed to one or the other so you may receive billing transactions.</p>
+            <p></p>
             <div class="form-style" style="margin: 0;padding-bottom: 20px;">
                 <form action="{% url 'streaming:change' %}">
                     <input type="submit" value="Change User Information">
@@ -54,7 +56,7 @@
             <p>Credit Card Number: <span>{{ cc_num_hidden }}</span></p>
             <p>Expiration Date: <span>**/****</span></p>
             <p>CVC Number: <span>***</span></p>
-            <p></p>
+            <p style="padding-bottom: 73px;"></p>
             <div class="form-style" style="margin: 0;padding-bottom: 20px;">
                 <form action="{% url 'streaming:billing' %}">
                     <input type="submit" value="Change Billing Information">
