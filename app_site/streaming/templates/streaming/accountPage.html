@@ -12,6 +12,7 @@
             <p>Name: <span>{{ user.first_name }} {{ user.last_name }}</span></p>
             <p>Email: <span>{{ user.email }}</span></p>
             <label style="padding-right: 15px; color: #ffd700; font-size: 16px;">Receive Site Notification via:</label>
+            <p>Note: You must be subscribed to one or the other so you may receive billing transactions.</p>
                 <form action="{% url 'streaming:accountPage' %}" method="POST" style="margin: 0;">
                     {% csrf_token %}
                     {% if user.preferences.email_opt_in %}

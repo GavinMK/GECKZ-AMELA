@@ -473,13 +473,21 @@ def account_page(request):
             context['message'] = "You are now opted in to email notifications."
         elif 'emailOut' in request.POST:
             request.user.preferences.email_opt_in = False
-            context['message'] = "You are now opted out of email notifications."
+            if not request.user.preferences.inbox_opt_in: #the user is not subscribed to inbox messages and wishes to opt out of emails
+                request.user.preferences.inbox_opt_in = True
+                context['message'] = "You are now opted out of email notifications and into inbox notifications."
+            else:
+                context['message'] = "You are now opted out of email notifications."
         elif 'inboxIn' in request.POST:
             request.user.preferences.inbox_opt_in = True
             context['message'] = "You are now opted in to inbox notifications."
         elif 'inboxOut' in request.POST:
             request.user.preferences.inbox_opt_in = False
-            context['message'] = "You are now opted out of inbox notifications."
+            if not request.user.preferences.email_opt_in: #the user is not subscribed to emails and wishes to opt out of inbox messages
+                request.user.preferences.email_opt_in = True
+                context['message'] = "You are now opted out of inbox notifications and into email notifications."
+            else:
+                context['message'] = "You are now opted out of inbox notifications."
         request.user.preferences.save()
 
     return render(request, 'streaming/accountPage.html', context)
