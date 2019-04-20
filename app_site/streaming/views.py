@@ -470,24 +470,24 @@ def account_page(request):
     if request.method == 'POST':
         if 'emailIn' in request.POST:
             request.user.preferences.email_opt_in = True
-            context['message'] = "You are now opted in to email notifications."
+            context['message'] = "*You are now opted in to email notifications.*\n\n"
         elif 'emailOut' in request.POST:
             request.user.preferences.email_opt_in = False
             if not request.user.preferences.inbox_opt_in: #the user is not subscribed to inbox messages and wishes to opt out of emails
                 request.user.preferences.inbox_opt_in = True
-                context['message'] = "You are now opted out of email notifications and into inbox notifications."
+                context['message'] = "*You are now opted out of email notifications \nand into inbox notifications.*"
             else:
-                context['message'] = "You are now opted out of email notifications."
+                context['message'] = "*You are now opted out of email notifications.*\n\n"
         elif 'inboxIn' in request.POST:
             request.user.preferences.inbox_opt_in = True
-            context['message'] = "You are now opted in to inbox notifications."
+            context['message'] = "*You are now opted in to inbox notifications.*\n\n"
         elif 'inboxOut' in request.POST:
             request.user.preferences.inbox_opt_in = False
             if not request.user.preferences.email_opt_in: #the user is not subscribed to emails and wishes to opt out of inbox messages
                 request.user.preferences.email_opt_in = True
-                context['message'] = "You are now opted out of inbox notifications and into email notifications."
+                context['message'] = "*You are now opted out of inbox notifications \nand into email notifications.*"
             else:
-                context['message'] = "You are now opted out of inbox notifications."
+                context['message'] = "*You are now opted out of inbox notifications.*\n\n"
         request.user.preferences.save()
 
     return render(request, 'streaming/accountPage.html', context)
