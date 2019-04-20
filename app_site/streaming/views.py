@@ -275,7 +275,8 @@ def rental_page(request, title):
     if not media:
         return HttpResponse("Invalid media")
     if request.method == 'POST':
-        request.user.rentals.add(media)
+        rental = Rental.objects.create(siteuser=request.user, movie=media)
+        rental.save()
         return HttpResponseRedirect(reverse('streaming:watch_media', kwargs={'title': title}))
     context = {
         'user': request.user,
@@ -294,7 +295,8 @@ def subscription_page(request, title, season_number, episode_number):
     exceed_subs = len(request.user.subscriptions.all()) >= MAX_SUBS
     print(len(request.user.subscriptions.all()))
     if request.method == 'POST':
-        request.user.subscriptions.add(show)
+        subscription = Subscription.objects.create(siteuser=request.user, show=show)
+        subscription.save()
         return HttpResponseRedirect(reverse('streaming:watch_media', kwargs={'title': title,
                                                                              'season_number':season_number,
                                                                              'episode_number':episode_number}))
