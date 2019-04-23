@@ -456,3 +456,42 @@ h2{
 	text-decoration: none;
 	cursor: pointer;
 }
+
+.choice{
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+.description-popup{
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background-color: #fffafa;
+	overflow: hidden;
+	width: 100%;
+	height: 0;
+	transition: .5s ease;
+}
+
+.choice:hover .description-popup{
+	opacity: 0.8;
+	height: 130px;
+}
+
+.description{
+	opacity: 1;
+	color: #111;
+	font-size: 16px;
+	display: block;
+	display: -webkit-box;
+	max-width: 400px;
+	margin: 0 auto;
+	line-height: 1.4;
+	-webkit-line-clamp: 6;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	padding: 0 10px;
+}

@@ -6,7 +6,14 @@
 
 	{% for entry in media %}
 	<figure>
-		<a href="{% url 'streaming:display_media' title=entry.title %}"><img src="{% static "streaming/images/"|add:entry.thumbnail_path %}">{{ entry.title }}</a>
+		<div class="choice">
+			<a href="{% url 'streaming:display_media' title=entry.title %}">
+				<img src="{% static "streaming/images/"|add:entry.thumbnail_path %}">{{ entry.title }}
+				<div class="description-popup">
+					<div class="description">{{ entry.description }}</div>
+				</div>
+			</a>
+		</div>
 	</figure>
 	{% endfor %}
 
