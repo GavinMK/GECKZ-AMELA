@@ -11,7 +11,8 @@
 		<fieldset>
 			<legend>Account Information:</legend>
 			<label for="username">Username: </label><br>
-			<input id="username" type="text" name="username" required><br>
+			<input id="username" type="text" name="username" pattern="[a-zA-Z0-9-_]{1,20}"
+				   title="Username can only include letters, numbers, dashes, and underscores." required><br>
 			<h1>
 				{% if error_message != None %}
 				{{ error_message }}
@@ -28,9 +29,9 @@
 		<fieldset>
 			<legend>Personal Information:</legend>
 			<label for="first_name">First Name: </label><br>
-			<input id="first_name" type="text" name="first_name" required><br><br>
+			<input id="first_name" type="text" name="first_name" pattern="[A-Za-z]{1,20}" title="Letters only." required><br><br>
 			<label for="last_name">Last Name: </label><br>
-			<input id="last_name" type="text" name="last_name" required><br><br>
+			<input id="last_name" type="text" name="last_name" pattern="[A-Za-z]{1,20}" title="Letters only." required><br><br>
 			<label for="email">Email: </label><br>
 			<input id="email" type="email" name="email" required><br>
 		</fieldset>
