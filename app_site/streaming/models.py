@@ -42,7 +42,7 @@ class Actor(models.Model):
 
 class Billing(models.Model):
     name = models.CharField(default='', max_length=50)
-    cc_num = models.BigIntegerField(default=0)
+    cc_num = models.CharField(default='', max_length=19)
     cvc_num = models.IntegerField(default=0)
     exp_month = models.IntegerField(default=0)
     exp_year = models.IntegerField(default=0)
