@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('streaming', '0015_auto_20190419_1015'),
+        ('streaming', '0016_OldRentalDeletion_20190419_1015'),
     ]
 
     operations = [

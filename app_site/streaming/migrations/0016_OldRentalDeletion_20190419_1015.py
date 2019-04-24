@@ -9,7 +9,7 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('streaming', '0014_auto_20190417_0035'),
+        ('streaming', '0015_preferences_inbox_opt_in'),
     ]
 
     operations = [

@@ -53,13 +53,15 @@ def rental_charge(user):
     if billing.cc_num != 0:
         amount = 0
         for rental in Rental.objects.filter(siteuser=user):
-            if (datetime.now(timezone.utc) - rental.time_rented).days > rental.duration/24:
+            if (datetime.now(timezone.utc) - rental.time_rented).days >= rental.duration/24:
                 amount += RENTAL_COST
                 rental.delete()
-        transaction = Transaction(amount=amount, charged_to=user, part_of=billing, statement='rental charge')
-        transaction.save()
-        billing.save()
-        print(str(user) + " has been charged " + str(transaction.amount))
+        if amount != 0:
+            transaction = Transaction(amount=amount, charged_to=user, part_of=billing, statement='rental charge')
+            transaction.save()
+            billing.save()
+            print(str(user) + " has been charged " + str(transaction.amount))
+        print(str(user) + "has not been charged since they have no movies")
     else:
         print(str(user) + " has no valid payment info, no charge occurred")
 
