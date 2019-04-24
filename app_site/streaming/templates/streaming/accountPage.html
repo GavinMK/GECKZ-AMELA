@@ -21,15 +21,15 @@
                         <input type="submit" name="emailIn" value="Opt In to Emails">
                     {% endif %}
 
-                    {% if user.preferences.inbox_opt_in %}             
+                    {% if user.preferences.inbox_opt_in %}
                         <input type="submit" name="inboxOut" style="margin-left: 30px;" value="Opt Out of Inbox Messages">
                     {% else %}
                         <input type="submit" name="inboxIn" style="margin-left: 30px;" value="Opt In to Inbox Messages">
                     {% endif %}
                 </form>
             </div>
-                {% if message != None %}
-                <pre>{{ message }}</pre>
+                {% if message %}
+                <p>{{ message }}</p>
                 {% else %}
                 <p style="padding-bottom: 20px;"></p>
                 {% endif %}
