@@ -9,10 +9,12 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
 from datetime import datetime, timedelta
+from streaming.constants import *
 
 
 class Preferences(models.Model):
     email_opt_in = models.BooleanField(default=True)
+    inbox_opt_in = models.BooleanField(default=True)
 
     def __str__(self):
         query = SiteUser.objects.filter(preferences=self)
@@ -185,14 +187,13 @@ class WatchHistory(models.Model):
             return SiteUser.objects.get(watch_history=self).__str__() + ' Watch History'
         return 'Unassigned Watch History'
 
-
 class SiteUser(AbstractUser):
     preferences = models.OneToOneField(Preferences, on_delete=models.CASCADE)
     comment_section = models.OneToOneField(CommentSection, on_delete=models.CASCADE)
     inbox = models.OneToOneField(Inbox, on_delete=models.CASCADE)
     billing = models.OneToOneField(Billing, on_delete=models.CASCADE)
-    subscriptions = models.ManyToManyField(TVShow, blank=True)
-    rentals = models.ManyToManyField(Movie, blank=True)
+    subscriptions = models.ManyToManyField(TVShow, through='subscription', blank=True)
+    rentals = models.ManyToManyField(Movie, through='rental', blank=True)
     watch_history = models.OneToOneField(WatchHistory, null=True, on_delete=models.CASCADE)
     friends = models.OneToOneField('friend', null=True, on_delete=models.CASCADE)
     profile_picture = models.CharField(default='/profile_pictures/export.png', max_length=100)
@@ -234,3 +235,16 @@ class Message(models.Model):
 
     def __str__(self):
         return self.part_of.__str__() + ' message from ' + self.from_user.__str__() + ' at ' + self.timestamp.strftime('%x %X')
+
+
+class Subscription(models.Model):
+    siteuser = models.ForeignKey(SiteUser, on_delete=models.CASCADE)
+    show = models.ForeignKey(TVShow, on_delete=models.CASCADE)
+    time_rented = models.DateTimeField(default=timezone.now)
+
+
+class Rental(models.Model):
+    siteuser = models.ForeignKey(SiteUser, on_delete=models.CASCADE)
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    time_rented = models.DateTimeField(default=timezone.now)
+    duration = models.IntegerField(default=RENTAL_PERIOD)

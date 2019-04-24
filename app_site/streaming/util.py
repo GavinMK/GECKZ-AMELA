@@ -4,6 +4,8 @@ from django.db.models import Q
 import re
 from django.core.paginator import Paginator
 
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 def package_charge(user):
@@ -15,7 +17,8 @@ def package_charge(user):
             amount = amount + (ADDITIONAL_SUB_COST * (len(user.subscriptions.all()) - MAX_SUBS))
         billing.next_payment_date = datetime.now().date() + timedelta(30)
         for show in billing.unsub_list.all():
-            user.subscriptions.remove(show)
+            Subscription.objects.get(siteuser=user, show=show).delete()
+            #user.subscriptions.remove(show)
             billing.unsub_list.remove(show)
         transaction = Transaction(amount=amount, charged_to=user, part_of=billing, statement='package charge')
         transaction.save()
@@ -25,22 +28,60 @@ def package_charge(user):
         print(str(user) + " has no valid payment info, no charge occurred")
 
 
+def send_inbox_message(user):
+    print("Sending a message to", user.username)
+    message_content = 'Dear valued customer, we are writing to inform you that you are awesome. Sincerely, the Amela Development Team.'
+    new_message = Message(content=message_content, from_user=SiteUser.objects.get(username="amela"), part_of=user.inbox)
+    new_message.save()
+    user.inbox.num_messages += 1
+    user.inbox.num_unread_messages += 1
+    user.inbox.save()
+
+
+def send_email(user):
+    print("Sending an email to", user.username)
+    subject = 'Billing Cycle Update for ' + user.username
+    message = 'Dear valued customer, we are writing to inform you that you are awesome. Sincerely, the Amela Development Team.'
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [user.email,]
+    send_mail(subject, message, email_from, recipient_list)
+
+
 def rental_charge(user):
     print("Attempting to charge " + str(user))
     billing = user.billing
     if billing.cc_num != 0:
-        amount = len(user.rentals.all()) * RENTAL_COST
-        user.rentals.clear()
-        if amount != 0.0:
+        amount = 0
+        for rental in Rental.objects.filter(siteuser=user):
+            if (datetime.now(timezone.utc) - rental.time_rented).days >= rental.duration/24:
+                amount += RENTAL_COST
+                rental.delete()
+        if amount != 0:
             transaction = Transaction(amount=amount, charged_to=user, part_of=billing, statement='rental charge')
             transaction.save()
             billing.save()
-            print(str(user) + " has been charged " + str(
-                transaction.amount) + ", next payment date is " + billing.next_payment_date.strftime('%c'))
-        else:
-            print(str(user) + " has no movies")
+            print(str(user) + " has been charged " + str(transaction.amount))
+        print(str(user) + "has not been charged since they have no movies")
     else:
         print(str(user) + " has no valid payment info, no charge occurred")
+
+
+#def rental_charge(user):
+ #   print("Attempting to charge " + str(user))
+  #  billing = user.billing
+   # if billing.cc_num != 0:
+    #    amount = len(user.rentals.all()) * RENTAL_COST
+     #   user.rentals.clear()
+      #  if amount != 0.0:
+       #     transaction = Transaction(amount=amount, charged_to=user, part_of=billing, statement='rental charge')
+        #    transaction.save()
+         #   billing.save()
+          #  print(str(user) + " has been charged " + str(
+           #     transaction.amount) + ", next payment date is " + billing.next_payment_date.strftime('%c'))
+       # else:
+        #    print(str(user) + " has no movies")
+   # else:
+    #    print(str(user) + " has no valid payment info, no charge occurred")
 
 
 def get_rating(ratings):
