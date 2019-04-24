@@ -14,7 +14,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
-from .forms import user_form, login_form, search_form, message_form, mark_message_as_read_form, billing_form, change_info, CommentForm, profile_form
+from .forms import user_form, login_form, search_form, message_form, mark_message_as_read_form, billing_form, change_info, CommentForm, profile_form, notifications_form
 
 from django.core.paginator import Paginator
 import re
@@ -455,14 +455,43 @@ def homepage(request):
 @active_user
 def account_page(request):
 
+    #hide the user's cc number
     billing_cc_num = request.user.billing.cc_num
     cc_num_hidden = billing_cc_num%10000 #returns last 4 digits of the cc_num
     cc_num_hidden = "************" + str(cc_num_hidden)
 
+    form = notifications_form()
+
     context = {
+        'form' : form,
+        'message' : None,
         'cc_num_hidden' : cc_num_hidden,
         'transactions': request.user.billing.transaction_set.all(),
     }
+
+    if request.method == 'POST':
+        if 'emailIn' in request.POST:
+            request.user.preferences.email_opt_in = True
+            context['message'] = "*You are now opted in to email notifications.*\n\n"
+        elif 'emailOut' in request.POST:
+            request.user.preferences.email_opt_in = False
+            if not request.user.preferences.inbox_opt_in: #the user is not subscribed to inbox messages and wishes to opt out of emails
+                request.user.preferences.inbox_opt_in = True
+                context['message'] = "*You are now opted out of email notifications \nand into inbox notifications.*"
+            else:
+                context['message'] = "*You are now opted out of email notifications.*\n\n"
+        elif 'inboxIn' in request.POST:
+            request.user.preferences.inbox_opt_in = True
+            context['message'] = "*You are now opted in to inbox notifications.*\n\n"
+        elif 'inboxOut' in request.POST:
+            request.user.preferences.inbox_opt_in = False
+            if not request.user.preferences.email_opt_in: #the user is not subscribed to emails and wishes to opt out of inbox messages
+                request.user.preferences.email_opt_in = True
+                context['message'] = "*You are now opted out of inbox notifications \nand into email notifications.*"
+            else:
+                context['message'] = "*You are now opted out of inbox notifications.*\n\n"
+        request.user.preferences.save()
+
     return render(request, 'streaming/accountPage.html', context)
 
 
