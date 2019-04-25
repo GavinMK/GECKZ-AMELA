@@ -12,7 +12,7 @@ def package_charge(user):
     print("Attempting to charge " + str(user))
     billing = user.billing
     amount = BASE_COST
-    if billing.cc_num != 0:
+    if billing.cc_num != "":
         if len(user.subscriptions.all()) > MAX_SUBS:
             amount = amount + (ADDITIONAL_SUB_COST * (len(user.subscriptions.all()) - MAX_SUBS))
         billing.next_payment_date = datetime.now().date() + timedelta(30)
@@ -30,7 +30,7 @@ def package_charge(user):
 
 def send_inbox_message(user):
     print("Sending a message to", user.username)
-    message_content = 'Dear valued customer, we are writing to inform you that you are awesome. Sincerely, the Amela Development Team.'
+    message_content = 'Dear valued customer, we are writing to inform your active subscriptions will end in 5 days. Sincerely, the Amela Development Team.'
     new_message = Message(content=message_content, from_user=SiteUser.objects.get(username="amela"), part_of=user.inbox)
     new_message.save()
     user.inbox.num_messages += 1
@@ -41,7 +41,7 @@ def send_inbox_message(user):
 def send_email(user):
     print("Sending an email to", user.username)
     subject = 'Billing Cycle Update for ' + user.username
-    message = 'Dear valued customer, we are writing to inform you that you are awesome. Sincerely, the Amela Development Team.'
+    message = 'Dear valued customer, we are writing to inform you that your active subscriptions will end in 5 days. Sincerely, the Amela Development Team.'
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [user.email,]
     send_mail(subject, message, email_from, recipient_list)
@@ -50,7 +50,7 @@ def send_email(user):
 def rental_charge(user):
     print("Attempting to charge " + str(user))
     billing = user.billing
-    if billing.cc_num != 0:
+    if billing.cc_num != "":
         amount = 0
         for rental in Rental.objects.filter(siteuser=user):
             if (datetime.now(timezone.utc) - rental.time_rented).days >= rental.duration/24:
