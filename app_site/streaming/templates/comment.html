@@ -2,7 +2,7 @@
     <div class="form-style" style="padding-bottom: 20px;width: 100%;">
         <form action="{% url 'streaming:post_comment' %}" method="post" onsubmit="submitOnce('comment_submit', 'comment_sending')">
             {% csrf_token %}
-            <input type="text" name="content" placeholder="Leave a comment" size="500" maxlength="500" style="width: 83%;" required>
+			{% include "charCountField.html" with field_id="" field_name="content" field_limit=500 field_placeholder="Leave&nbsp;a&nbsp;comment" field_style="width: 83%" field_required="Yes"%}
             <input type="hidden" name="url" value="{{ request.get_full_path }}">
             <input type="submit" value="Comment" id="comment_submit">
             <input disabled type="submit" name="sending" value="Posting..." id="comment_sending" hidden>
