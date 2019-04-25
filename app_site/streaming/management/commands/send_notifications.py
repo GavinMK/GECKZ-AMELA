@@ -6,7 +6,7 @@ from streaming.util import *
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        print("Sending notifications to users...")
+        print("Sending notifications to users if their subscriptions end in 5 days...")
         for user in SiteUser.objects.all():
             
             d1 = datetime.strptime(str(user.billing.next_payment_date), "%Y-%m-%d")
