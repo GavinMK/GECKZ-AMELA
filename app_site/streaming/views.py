@@ -459,8 +459,10 @@ def account_page(request):
 
     #hide the user's cc number
     billing_cc_num = request.user.billing.cc_num
-    cc_num_hidden = billing_cc_num%10000 #returns last 4 digits of the cc_num
-    cc_num_hidden = "************" + str(cc_num_hidden)
+    cc_num_hidden = ''
+
+    if billing_cc_num != '': #the user has a cc number on record
+        cc_num_hidden ="************" + billing_cc_num[-4:] #returns last 4 digits of the cc_num
 
     form = notifications_form()
 
