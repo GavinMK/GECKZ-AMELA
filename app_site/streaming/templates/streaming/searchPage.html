@@ -30,7 +30,7 @@
 		</div>
 	{% else %}
 		<h1 id="search">
-			No results found for '<span style="color: #ffd700;">{{ query }}</span>'.
+			No results found{% if query %} for '<span style="color: #ffd700;">{{ query }}</span>'{% endif %}.
 		</h1>
 	{% endif %}
 	<br><br><br>
