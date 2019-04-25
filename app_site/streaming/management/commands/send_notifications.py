@@ -12,7 +12,9 @@ class Command(BaseCommand):
             d1 = datetime.strptime(str(user.billing.next_payment_date), "%Y-%m-%d")
             d2 = datetime.strptime(str(datetime.now().date()), "%Y-%m-%d")
             
-            if (abs((d2 - d1).days)) == 5: #send the user a notification if their subscription ends in 5 days
+            #if (abs((d2 - d1).days)) == 5: #send the user a notification if their subscription ends in 5 days
+            if user.username == "lala":
+                send_inbox_message(user)
                 if user.preferences.inbox_opt_in is True:
                     send_inbox_message(user)
                 if user.preferences.email_opt_in is True:

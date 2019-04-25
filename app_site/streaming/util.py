@@ -30,7 +30,11 @@ def package_charge(user):
 
 def send_inbox_message(user):
     print("Sending a message to", user.username)
-    message_content = 'Dear ' + user.username + ', \nWe want to inform you that your subscriptions will expire in 5 days. Unsubscribe from all the shows you are done watching to free up subscription slots. If you do not unsubscribe, your current subscriptions will auto-renew for the next cycle.\nSincerely,\nThe Amela Development Team'
+    message_content = '\nDear ' + user.username + ', \n\nWe want to inform you that your subscriptions ' \
+                                                'will expire in 5 days. Unsubscribe from all the shows you are done ' \
+                                                'watching to \nfree up subscription slots. If you do not unsubscribe, ' \
+                                                'your current subscriptions will auto-renew for the next cycle.' \
+                                                '\n\nSincerely,\nThe Amela Development Team'
     new_message = Message(content=message_content, from_user=SiteUser.objects.get(username="amela"), part_of=user.inbox)
     new_message.save()
     user.inbox.num_messages += 1
