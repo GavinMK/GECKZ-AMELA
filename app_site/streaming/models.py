@@ -58,7 +58,7 @@ class Billing(models.Model):
         self.save()
 
     def cancel(self):
-        self.cc_num = 0
+        self.cc_num = ""
         self.cvc_num = 0
         self.exp_month = 0
         self.exp_year = 0

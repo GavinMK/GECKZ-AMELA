@@ -12,7 +12,7 @@ def package_charge(user):
     print("Attempting to charge " + str(user))
     billing = user.billing
     amount = BASE_COST
-    if billing.cc_num != 0:
+    if billing.cc_num != "":
         if len(user.subscriptions.all()) > MAX_SUBS:
             amount = amount + (ADDITIONAL_SUB_COST * (len(user.subscriptions.all()) - MAX_SUBS))
         billing.next_payment_date = datetime.now().date() + timedelta(30)
@@ -50,7 +50,7 @@ def send_email(user):
 def rental_charge(user):
     print("Attempting to charge " + str(user))
     billing = user.billing
-    if billing.cc_num != 0:
+    if billing.cc_num != "":
         amount = 0
         for rental in Rental.objects.filter(siteuser=user):
             if (datetime.now(timezone.utc) - rental.time_rented).days >= rental.duration/24:
