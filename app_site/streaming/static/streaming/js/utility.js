@@ -33,5 +33,4 @@ function openPopUp() {
             modal.style.display = "none";
         }
     }
-
 }

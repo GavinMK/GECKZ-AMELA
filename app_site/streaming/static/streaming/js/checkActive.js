@@ -1,5 +1,2 @@
-for (var i = 0; i < document.links.length; i++) {
-    if (document.links[i].href == document.URL) {
-        document.links[i].className = 'active';
-    }
-}
+let id = location.pathname.split("/")[2];
+document.getElementById(id).classList.add("active");
