@@ -217,6 +217,11 @@ nav a.active{
 	padding: 20px 0;
 }
 
+.inbox-style a.active{
+    background: #ffd700;
+    color: #1a1a1a;
+}
+
 .inbox-style li a:hover{
 	color: #ffd700;
 	background-color: #111;
@@ -355,9 +360,7 @@ h2{
 }
 
 .form-style  input[type=submit],
-.form-style  input[type=button],
-#send
-{
+.form-style  input[type=button]{
 	background: #ffd700;
 	border: 1px solid #393e46;
 	padding: 5px 15px 5px 15px;
@@ -365,8 +368,7 @@ h2{
     font-size: 15px;
 }
 
-.form-style  input[type=submit],
-#send{
+.form-style  input[type=submit]{
 	-webkit-transition-duration: 0.4s;
 	transition-duration: 0.4s;
 }
