@@ -26,8 +26,9 @@
                     {% if message.from_user|stringformat:"s" == "amela" %}
                         <pre style="padding-left: 0;color: #fffafa;font-size: 15px;">{{message.content}}</pre>
                     {% else %}
-                        <p style="padding-left: 0;color: #fffafa;font-size: 15px;">{{message.content}}</p>
+                        <p class="break" style="padding-left: 0px;color: #fffafa;font-size: 15px;width: 900px;">{{message.content}}</p>
                     {% endif %}
+
                 </fieldset>
                 <br>
             {% endif %}
