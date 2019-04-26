@@ -75,6 +75,11 @@ def logout_requested(request):
 
 
 @login_required(login_url='streaming:login')
+def redirect_homepage(request):
+    return HttpResponseRedirect(reverse('streaming:homepage'))
+
+
+@login_required(login_url='streaming:login')
 @active_user
 def movies(request):
     template = loader.get_template('streaming/mediaList.html')
@@ -374,8 +379,10 @@ def watch_media(request, title, season_number=None, episode_number=None):
         media = Movie.objects.get(title=title)
         watch_event = WatchEvent(movie=media, part_of=history)
         watch_event.save()
+        movie = True
     if not media:
         show = TVShow.objects.get(title=title)
+        movie = False
         if not show:
             return HttpResponse("Invalid show")
         season = TVSeason.objects.get(part_of=show, season_number=season_number)
@@ -389,7 +396,8 @@ def watch_media(request, title, season_number=None, episode_number=None):
     if not media:
         return HttpResponse("Invalid Media Request")
     context = {
-        'media': media
+        'media': media,
+        'movie': movie
     }
     return HttpResponse(template.render(context, request))
 

@@ -33,7 +33,6 @@ function openPopUp() {
             modal.style.display = "none";
         }
     }
-
 }
 
 function charcountupdate(str, id, limit) {

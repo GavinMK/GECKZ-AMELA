@@ -20,12 +20,14 @@
 					</form>
 				</div>
 				{% endif %}
+			<script>document.getElementById("shows").classList.add("active");</script>
 			{% else %}
 			<div class="form-style" style="width: 100%;text-align: center;">
                 <form action="{% url 'streaming:watch_media' title=media.title%}">
                     <input type="submit" value="WATCH" style="font-size: 20px;">
                 </form>
             </div>
+			<script>document.getElementById("movies").classList.add("active");</script>
 			{% endif %}
 		</fieldset>
 		<br><br>

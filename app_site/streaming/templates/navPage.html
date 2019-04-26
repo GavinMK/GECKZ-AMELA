@@ -3,14 +3,14 @@
 {% block body %}
 	<nav class="bar">
 		<ul>
-		<li><a href="{% url 'streaming:homepage' %}">Home</a></li>
-		<li><a href="{% url 'streaming:accountPage' %}">Account</a></li>
-		<li><a href="{% url 'streaming:user_page' %}">Profile</a></li>
-		<li><a href="{% url 'streaming:inbox' %}">Inbox
+		<li><a id="home" href="{% url 'streaming:homepage' %}">Home</a></li>
+		<li><a id="account" href="{% url 'streaming:accountPage' %}">Account</a></li>
+		<li><a id="userpage" href="{% url 'streaming:user_page' %}">Profile</a></li>
+		<li><a id="inbox" href="{% url 'streaming:inbox' %}">Inbox
 			{% if request.user.inbox.num_unread_messages > 0 %}<span class="alert"> ({{request.user.inbox.num_unread_messages}})</span>{% endif %}</a></li>
-		<li><a href="{% url 'streaming:friends' %}">Friends</a></li>
-		<li><a href="{% url 'streaming:movies' %}">Movies</a></li>
-		<li><a href="{% url 'streaming:shows' %}">TV Shows</a></li>
+		<li><a id="friends" href="{% url 'streaming:friends' %}">Friends</a></li>
+		<li><a id="movies" href="{% url 'streaming:movies' %}">Movies</a></li>
+		<li><a id="shows" href="{% url 'streaming:shows' %}">TV Shows</a></li>
 		<li style="float: right;"><a href="{% url 'streaming:logout' %}">Logout</a></li>
 		<li style="float: right;color: #ffd700;padding-left: 30px;">Logged in as: {{ request.user }} </li>
 		<li style="float: right; text-align: right;">
