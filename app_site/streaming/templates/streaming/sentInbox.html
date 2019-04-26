@@ -21,7 +21,11 @@
 				<fieldset>
 					<legend>To: {{message.part_of.siteuser}}</legend>
 					<p>Sent: {{message.timestamp}}</p>
-					<pre style="padding-left: 0;color: #fffafa;font-size: 15px;">{{message.content}}</pre>
+				  	{% if message.from_user|stringformat:"s" == "amela" %}
+                        <pre style="padding-left: 0;color: #fffafa;font-size: 15px;">{{message.content}}</pre>
+                    {% else %}
+                        <p style="padding-left: 0;color: #fffafa;font-size: 15px;">{{message.content}}</p>
+                    {% endif %}
 				</fieldset>
 				<br>
 		{% endfor %}
