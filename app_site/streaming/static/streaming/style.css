@@ -199,9 +199,9 @@ nav a.active{
 }
 
 .break{
-	display:block;
-	width:750px;
-	word-wrap:break-word;
+	display: block;
+	width: 750px;
+	word-wrap: break-word;
 }
 
 .inbox-style ul{
