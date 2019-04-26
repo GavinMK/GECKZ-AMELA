@@ -8,6 +8,7 @@ urlpatterns = [
     path('createuser/', views.create_user_page, name='createUser'),
     path('login/', views.login_page, name='login'),
     path('logout/', views.logout_requested, name='logout'),
+    path('', views.redirect_homepage, name='redirect_homepage'),
     path('home/', views.homepage, name='homepage'),
     path('userpage/', views.user_page, name='user_page'),
     path('friends/<str:username>', views.user_page, name='user_page'),

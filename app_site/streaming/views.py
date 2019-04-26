@@ -75,6 +75,11 @@ def logout_requested(request):
 
 
 @login_required(login_url='streaming:login')
+def redirect_homepage(request):
+    return HttpResponseRedirect(reverse('streaming:homepage'))
+
+
+@login_required(login_url='streaming:login')
 @active_user
 def movies(request):
     template = loader.get_template('streaming/mediaList.html')

@@ -120,11 +120,13 @@ def get_comment_section(request, url_path):
         else:
             return media.comment_section
     else:
-        username_grabber = re.match(r'.*/userpage/([^?]*)', url)
+        username_grabber = re.match(r'.*/friends/([^?]*)', url)
         if username_grabber and username_grabber.group(1):
             user = SiteUser.objects.get(username=username_grabber.group(1))
             return user.comment_section
-        return request.user.comment_section
+        check_self = re.match(r'.*/userpage/', url)
+        if check_self:
+            return request.user.comment_section
     return None
 
 
