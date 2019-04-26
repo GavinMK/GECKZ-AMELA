@@ -23,7 +23,7 @@
                 <fieldset>
                     <legend>From: {{message.from_user}}</legend>
                     <p>Received: {{message.timestamp}}</p>
-                    <p style="padding-left: 0px;color: #fffafa;font-size: 15px;">&emsp;{{message.content}}</p>
+                    <p class="break" style="padding-left: 0px;color: #fffafa;font-size: 15px;width: 900px;">{{message.content}}</p>
                         <div class="form-style" style="margin: 0;padding-bottom: 20px;">
                             <form action="{% url 'streaming:inbox' %}" method="POST" style="margin: 0;">
                                 {% csrf_token %}

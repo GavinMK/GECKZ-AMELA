@@ -11,7 +11,7 @@
     {% for comment in comments %}
         <hr>
         <p><span>Posted By: </span><a href="{% url 'streaming:user_page' username=comment.posted_by %}">{{ comment.posted_by }}</a> <span> on {{ comment.timestamp }}</span> <br></p>
-        <span>"{{ comment.content }}"</span><br>
+        <span class="break">"{{ comment.content }}"</span><br>
     {% endfor %}
 
     <hr>
