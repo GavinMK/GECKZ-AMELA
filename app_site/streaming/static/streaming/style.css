@@ -198,6 +198,11 @@ nav a.active{
 	color: #ff2222;
 }
 
+.break{
+	display:block;
+	width:750px;
+	word-wrap:break-word;
+}
 
 .inbox-style ul{
 	border: 1px solid #fffafa;
