@@ -1,0 +1,2 @@
+<textarea class="limited-text-field" onkeyup="charcountupdate(this.value, this.id, {{ field_limit }})" id="{{ field_id }}" type="text" name="{{ field_name }}" maxlength={{ field_limit }} style={{ field_style|default:""}} {% if field_required %}required{%endif%} placeholder={{ field_placeholder|default:""}}>{{ field_value|default:"" }}</textarea><br>
+<span id="{{ field_id }}-count">--/{{ field_limit }}</span><br>

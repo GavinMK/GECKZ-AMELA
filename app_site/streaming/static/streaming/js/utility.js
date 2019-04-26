@@ -35,3 +35,8 @@ function openPopUp() {
     }
 
 }
+
+function charcountupdate(str, id, limit) {
+	var lng = str.length;
+	document.getElementById(id+"-count").innerHTML = lng + '/' + limit;
+}

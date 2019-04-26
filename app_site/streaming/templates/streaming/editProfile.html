@@ -11,7 +11,7 @@
 		<fieldset>
 			<legend>Edit Profile Information</legend><br>
 				<label for="bio">Bio: </label><br>
-		    <textarea id="bio" type="text" name="bio" value="">{{ user.bio }}</textarea><br><br>
+			{% include "charCountField.html" with field_id="bio" field_name="bio" field_value=user.bio field_limit=500%}<br><br>
 		    <input type="submit" value="Submit">
 		</fieldset>
 	</form>

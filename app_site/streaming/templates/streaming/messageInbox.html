@@ -31,7 +31,7 @@
                             {% endif %}
                         </h1>
                         <label for="content">Message: </label><br>
-                        <textarea id="content" autocomplete="false" type="text" name="content" style="width: 150%" required></textarea><br>
+						{% include "charCountField.html" with field_id="content" field_name="content" field_limit=3000 field_placeholder="" field_style="width:150%" field_required="Yes"%}<br>
                         <br>
                         <input type="submit" name="send" value="Send" id="inbox_submit">
                         <input disabled type="submit" name="sending" value="Sending..." id="inbox_sending" hidden>
