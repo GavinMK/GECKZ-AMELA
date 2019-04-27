@@ -10,8 +10,8 @@
         <header></header><br><br>
 		<fieldset>
 			<legend>Edit Profile Information</legend><br>
-				<label for="bio">Bio: </label><br>
-			{% include "charCountField.html" with field_id="bio" field_name="bio" field_value=user.bio field_limit=500%}<br><br>
+			<label for="bio">Bio: </label><br>
+			{% include "charCountField.html" with field_id="bio" field_name="bio" field_value=user.bio field_limit=500%}
 		    <input type="submit" value="Submit">
 		</fieldset>
 	</form>

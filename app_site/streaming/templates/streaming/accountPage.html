@@ -11,7 +11,7 @@
             <p>Username: <span>{{ user }}</span></p>
             <p>Name: <span>{{ user.first_name }} {{ user.last_name }}</span></p>
             <p>Email: <span>{{ user.email }}</span></p>
-            <p style="margin-bottom: 0;">Site Notifications <span>(Note: One form of communication is necessary)</span>:</p>
+            <p style="margin-bottom: 0;">Site Notifications: <br><span>(Note: One form of communication is necessary)</span></p>
             <div class="form-style" style="margin: 0;width: 100%;">
                 <form action="{% url 'streaming:accountPage' %}" method="POST" style="margin: 0;display: inline-block;padding-bottom: 10px;">
                     {% csrf_token %}
@@ -55,7 +55,7 @@
             <p>Credit Card Number: <span>{{ cc_num_hidden }}</span></p>
             <p>Expiration Date: <span>**/****</span></p>
             <p>CVC Number: <span>***</span></p>
-            <p style="padding-bottom: 41px;"></p>
+            <p style="padding-bottom: 60px;"></p>
             <div class="form-style" style="margin: 0;padding-bottom: 20px;">
                 <form action="{% url 'streaming:billing' %}">
                     <input type="submit" value="Change Billing Information">
