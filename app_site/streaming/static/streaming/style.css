@@ -199,10 +199,20 @@ nav a.active{
 	color: #ff2222;
 }
 
-.break{
-	display: block;
-	width: 750px;
-	word-wrap: break-word;
+@media only screen and (max-width: 1280px) {
+	.break {
+		display: block;
+		width: 670px;
+		word-wrap: break-word;
+	}
+}
+
+@media only screen and (min-width: 1281px) {
+	.break {
+		display: block;
+		width: 750px;
+		word-wrap: break-word;
+	}
 }
 
 .inbox-style ul{

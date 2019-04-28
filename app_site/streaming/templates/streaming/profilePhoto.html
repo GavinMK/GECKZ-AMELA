@@ -10,7 +10,7 @@
             <figure>
                 <form action="{% url 'streaming:pick_photo'%}" method="post">
                     {% csrf_token %}
-                    <img name="image_choice" style="width: 200px;height: 200px;border-radius: 50%;" src="{% static "streaming/profile_pictures/"|add:entry %}"/>
+                    <img name="image_choice" style="width: 180px;height: 180px;border-radius: 50%;" src="{% static "streaming/profile_pictures/"|add:entry %}"/>
                     <br><br>
                     <div class="form-style">
                         <input type="submit" name="image_choice" value="{{ entry }}">

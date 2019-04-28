@@ -10,7 +10,7 @@
 
 	<aside>
 		<fieldset style="border: 0">
-			<legend>Rating:<div class="stars-outer"><div class="stars-inner" style="width: {{ avg_rating_perc }}%;"></div></div> ({{ num_ratings }} rating{{ num_ratings|pluralize }})</legend><br>
+			<legend style="font-size: 20px;text-align: center;">Rating:<div class="stars-outer"><div class="stars-inner" style="width: {{ avg_rating_perc }}%;"></div></div> ({{ num_ratings }} rating{{ num_ratings|pluralize }})</legend><br>
 				<img id="photo" src="{% static "streaming/images/"|add:media.thumbnail_path %}"><br><br>
 			{% if episodes %}
 				{% if subscribed and not unsub_queued %}
