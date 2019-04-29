@@ -465,20 +465,30 @@ def homepage(request):
 @active_user
 def account_page(request):
 
-    #hide the user's cc number
+    #hide the user's sensitive cc information
     billing_cc_num = request.user.billing.cc_num
     cc_num_hidden = ''
+    expiration_month = request.user.billing.exp_month
+    expiration_year = request.user.billing.exp_year
+    cvc_num = request.user.billing.cvc_num
 
     if billing_cc_num != '': #the user has a cc number on record
         cc_num_hidden ="************" + billing_cc_num[-4:] #returns last 4 digits of the cc_num
+    if expiration_month == 0: #the user has a canceled plan or has never entered information
+        expiration_month = None
+        expiration_year = None
+        cvc_num = None
 
     form = notifications_form()
 
     context = {
         'form' : form,
         'message' : None,
-        'cc_num_hidden' : cc_num_hidden,
+        'cc_num_hidden': cc_num_hidden,
         'transactions': request.user.billing.transaction_set.all(),
+        'expiration_month': expiration_month,
+        'expiration_year': expiration_year,
+        'cvc_num': cvc_num,
     }
 
     if request.method == 'POST':

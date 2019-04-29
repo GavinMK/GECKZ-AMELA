@@ -30,8 +30,8 @@ class mark_message_as_read_form(forms.Form):
 
 class billing_form(forms.Form):
     name = forms.CharField(label='Name on Card', max_length=40)
-    cc_num = forms.IntegerField(label='Card Number')
-    cvc_num = forms.IntegerField(label='CVC Number')
+    cc_num = forms.CharField(label='Card Number')
+    cvc_num = forms.CharField(label='CVC Number')
     exp_month = forms.IntegerField(label='Expiration Month')
     exp_year = forms.IntegerField(label='Expiration Year')
 
