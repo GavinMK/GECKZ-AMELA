@@ -672,14 +672,16 @@ def change(request):
 
             if passWord is None: #the user entered the wrong password
                 context['error_message'] = "Incorrect password. Please retype your current password to change your user information"
-                render(request, 'streaming/changeInfo.html', context)
+                return render(request, 'streaming/changeInfo.html', context)
             else:
+                if len(SiteUser.objects.filter(username=data['username'])) == 1 and data['username'] != request.user.username: #the user entered a username that already exists, and it isn't their current username
+                    context['error_message'] = "That user already exists. Please enter a unique username."
+                    return render(request, 'streaming/changeInfo.html', context)
                 user = request.user
                 user.username = data['username']
                 user.first_name = data['first_name']
                 user.last_name = data['last_name']
                 user.email = data['email']
-
                 user.save()
 
                 return render(request, 'streaming/accountPage.html')
