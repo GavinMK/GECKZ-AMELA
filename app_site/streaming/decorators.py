@@ -16,7 +16,7 @@ def anonymous_only_redirect(function):
 
 def relog_required(function):
     def wrap(request, *args, **kwargs):
-        if (datetime.now(timezone.utc) - request.user.last_login).total_seconds() > 60:
+        if (datetime.now(timezone.utc) - request.user.last_login).total_seconds() > 300:
             logout(request)
         return function(request, *args, **kwargs)
     return wrap
