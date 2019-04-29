@@ -19,4 +19,17 @@ if __name__ == "__main__":
                 "forget to activate a virtual environment?"
             )
         raise
+
+    is_testing = 'tests' in sys.argv
+    if is_testing:
+        import coverage
+        cov = coverage.coverage(source=['streaming'], omit=['*/tests/*', 'streaming/migrations/*', 'streaming/management/*', '*/__init__.py'])
+        #cov.set_option('report:show_missing', True)
+        cov.erase()
+        cov.start()
     execute_from_command_line(sys.argv)
+    if is_testing:
+        cov.stop()
+        cov.save()
+        cov.html_report(directory='covhtml')
+        cov.report()
