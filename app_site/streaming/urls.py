@@ -37,6 +37,5 @@ urlpatterns = [
     path('about/', views.about, name="about"),
     path('inactiveAccount/', views.inactiveAccount, name='inactiveAccount'),
     path('cancelPlan/', views.cancel_plan, name='cancel_plan'),
-    path('upload_picture/', views.profile_upload, name='upload_picture'),
     path('userpage/pick_photo/', views.pick_photo, name='pick_photo'),
 ]

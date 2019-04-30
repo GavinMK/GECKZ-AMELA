@@ -383,18 +383,9 @@ def watch_media(request, title, season_number=None, episode_number=None):
     if not media:
         show = TVShow.objects.get(title=title)
         movie = False
-        if not show:
-            return HttpResponse("Invalid show")
-        season = TVSeason.objects.get(part_of=show, season_number=season_number)
-        if not season:
-            return HttpResponse("Invalid season number")
-        media = TVEpisode.objects.get(part_of=season, episode_number=episode_number)
-        if not media:
-            return HttpResponse("Invalid episode number")
+        media = get_episode(show, season_number, episode_number)
         watch_event = WatchEvent(tv=media, part_of=history)
         watch_event.save()
-    if not media:
-        return HttpResponse("Invalid Media Request")
     context = {
         'media': media,
         'movie': movie
@@ -691,13 +682,6 @@ def change(request):
 def about(request):
     return render(request, 'streaming/about.html')
 
-
-def profile_upload(request):
-    if request.method == 'POST' and request.FILES['profile_picture']:
-        profile_picture = request.FILES['profile_picture']
-        request.user.profile_picture.save(profile_picture.name, profile_picture)
-        return HttpResponseRedirect(reverse('streaming:user_page'))
-    return render(request, 'streaming/profilePicture.html')
 
 @login_required(login_url='streaming:login')
 def pick_photo(request):
