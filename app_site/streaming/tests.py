@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.contrib.auth.models import AnonymousUser, User
 from django.test import RequestFactory, TestCase, Client
+from django.apps import apps
 
 from .views import *
 from .util import *
@@ -47,40 +48,8 @@ class SimpleTest(TestCase):
         #self.c.login(username='test123', password='test')
 
 
-    def test_userpage(self):
-        print("Testing userpage")
-        # Create an instance of a GET request.
-        request = self.factory.get('/streaming/userpage/')
 
-        # Recall that middleware are not supported. You can simulate a
-        # logged-in user by setting request.user manually.
-        request.user = self.get_user()
-
-        # Or you can simulate an anonymous user by setting request.user to
-        # an AnonymousUser instance.
-        #request.user = AnonymousUser()
-
-        # Test my_view() as if it were deployed at /customer/details
-        response = user_page(request)
-        # Use this syntax for class-based views.
-        self.assertEqual(response.status_code, 200)
-
-
-    '''def test_logout(self):
-        print("Testing logout")
-        request = self.factory.get('/streaming/homepage/')
-        request.user = self.get_user()
-        response = logout_requested(request)
-        self.assertEqual(response.status_code, 200)'''
-
-    def test_movies(self):
-        pass
-
-    def test_show(self):
-        pass
-
-
-    def test_generic_test(self):
+    def test_views(self):
         self.generic_test('create user page', self.factory.get('/streaming/createUser/'), AnonymousUser(), create_user_page, 200)
         #self.generic_test('login', self.factory.post('/streaming/login/', {'username': 'test123', 'password':'test'}), AnonymousUser(), login_page, 200)
         response = self.c.post('/streaming/createuser/', {'username': 'test123', 'password':'test', 'email': 'test213@23.com', 'first_name': 'first', 'last_name': 'last'})
@@ -90,6 +59,7 @@ class SimpleTest(TestCase):
         #self.generic_test('logout', self.factory.get('/streaming/login/'), self.get_user(), logout_requested, 200) #breaks becuase not actually logged in
         self.generic_test('redirect homepage', self.factory.get('/streaming/homepage/'), self.get_user(), redirect_homepage, 302)
         self.generic_test('search', self.factory.get('/streaming/search/?Title=test&Genre=test&Release+Year=test&Studio=test&Streaming+Service=test&Actors=test'), self.get_user(), search, 200)
+        self.generic_test('userpage', self.factory.get('/streaming/userpage/'), self.get_user(), user_page, 200)
         self.generic_test('user search', self.factory.get('/streaming/userSearchPage/'), self.get_user(), user_search, 200)
         self.generic_test('movies', self.factory.get('/streaming/mediaList/'), self.get_user(), movies, 200)
         self.generic_test('shows', self.factory.get('/streaming/mediaList/'), self.get_user(), shows, 200)
@@ -102,6 +72,8 @@ class SimpleTest(TestCase):
         user = self.get_user()
         subscription = Subscription.objects.create(siteuser=user, show=get_media('Bonanza'))
         subscription.save()
+        s = SearchFilter('Title', self.factory.get('/streaming/search/?Title=test&Genre=test&Release+Year=test&Studio=test&Streaming+Service=test&Actors=test'), ())
+        str(s)
         self.generic_test('watch media', self.factory.get('/streaming/watchMedia/'), user, watch_media, 200, None, {'title':'Bonanza', 'season_number':'1', 'episode_number':'29'}) #TODO look into this not working
         #post request for post comments here
         self.generic_test('post rating', self.factory.post('/streaming/media/Bonanza/1/29/', {'url':'http://127.0.0.1:8000/streaming/media/Bonanza/1/29/', 'rating':'5'}), self.get_user(), post_rating, 302)
@@ -128,7 +100,7 @@ class SimpleTest(TestCase):
 
     def test_utils(self):
         user = self.get_user()
-        if not user.billing.cc_num: self.populate_billing(user)
+        self.populate_billing(user)
         package_charge(user)
         send_inbox_message(user)
         send_email(user)
@@ -146,6 +118,13 @@ class SimpleTest(TestCase):
         }
         user1 = generate_user(user_info)
         user1.delete()
+
+    def test_models(self):
+        for name, model in apps.all_models['streaming'].items():
+            print('Testing', name, 'to string')
+            for item in model.objects.all():
+                str(item)
+
 
 
 

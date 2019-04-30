@@ -18,7 +18,7 @@ class Preferences(models.Model):
 
     def __str__(self):
         query = SiteUser.objects.filter(preferences=self)
-        return "Unassigned" if len(query) == 0 else query[0]
+        return "Unassigned" if len(query) == 0 else str(query[0])
 
 
 class Metadata(models.Model):
