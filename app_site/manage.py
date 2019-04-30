@@ -23,7 +23,7 @@ if __name__ == "__main__":
     is_testing = 'tests' in sys.argv
     if is_testing:
         import coverage
-        cov = coverage.coverage(source=['streaming'], omit=['*/tests/*', 'streaming/migrations/*', 'streaming/management/*', '*/__init__.py'])
+        cov = coverage.coverage(source=['streaming'], omit=['*/tests/*', 'streaming/migrations/*', 'streaming/management/*', '*/__init__.py', 'streaming/admin.py'])
         #cov.set_option('report:show_missing', True)
         cov.erase()
         cov.start()
