@@ -101,9 +101,6 @@ class SimpleTest(TestCase):
         self.notification_prefs()
         self.messaging()
 
-        s = SearchFilter('Title', self.factory.get('/streaming/search/?Title=test&Genre=test&Release+Year=test&Studio=test&Streaming+Service=test&Actors=test'), ())
-        str(s)
-
 
     def comment_test(self):
         self.generic_test('post comment', self.factory.get('/streaming/userpage/'), self.get_user(), post_comment, 302) #get request
@@ -164,14 +161,15 @@ class SimpleTest(TestCase):
         self.generic_test('message inbox', self.factory.post('/streaming/messageInbox/', {'send': '', 'username': 'z-ach', 'content': 'hi!'}), self.get_user(), messageInbox, 302)
         self.generic_test('message inbox send to self', self.factory.post('/streaming/messageInbox/', {'send': '', 'username': 'test123', 'content': 'hi!'}), self.get_user(), messageInbox, 200)
         self.generic_test('message inbox invalid user', self.factory.post('/streaming/messageInbox/', {'send': '', 'username': 'asfasfewa', 'content': 'hi!'}), self.get_user(), messageInbox, 200)
-        self.generic_test('message inbox invalid user', self.factory.post('/streaming/messageInbox/', {'sef': 'a'}), self.get_user(), messageInbox, 200) #form invalid TODO form invalid messageInbox
+        self.generic_test('message inbox invalid user', self.factory.post('/streaming/messageInbox/', {'send': 1}), self.get_user(), messageInbox, 200) #form invalid TODO form invalid messageInbox
         self.generic_test('message inbox invalid user', self.factory.get('/streaming/messageInbox/'), self.get_user(), messageInbox, 200) #get request
 
         message = Message.objects.filter(from_user=SiteUser.objects.get(username='amela'), part_of=self.get_user().inbox)[0]
 
         self.generic_test('inbox', self.factory.post('/streaming/inbox/', {'read': message}), self.get_user(), inbox, 302) #trigger post set read message
         self.generic_test('inbox', self.factory.post('/streaming/inbox/', {'read': 1}), self.get_user(), inbox, 200) #post but invalid read
-        self.generic_test('inbox', self.factory.post('/streaming/inbox/', {1: 1}), self.get_user(), inbox, 200) #post invalid form
+        self.generic_test('inbox', self.factory.post('/streaming/inbox/', {'read': False, '1': None}), self.get_user(), inbox, 200) #post invalid form
+        self.generic_test('inbox', self.factory.post('/streaming/inbox/', {'': None}), self.get_user(), inbox, 200) #post invalid form
         self.generic_test('inbox', self.factory.get('/streaming/inbox/'), self.get_user(), inbox, 200) #trigger get
 
         self.generic_test('sent inbox', self.factory.get('/streaming/sentInbox/'), self.get_user(), sentInbox, 200)
@@ -257,6 +255,14 @@ class SimpleTest(TestCase):
         }
         user1 = generate_user(user_info)
         user1.delete()
+        try:
+            s = SearchFilter('a', self.factory.get('/streaming/search/?a=test&Genre=test&Release+Year=test&Studio=test&Streaming+Service=test&Actors=test'), ())
+            str(s)
+            context = {'filters': (s,)}
+            filter_db_query(context, TVShow.objects.all(), Movie.objects.all())
+        except TypeError:
+            pass
+
 
 
     def util_test_billing(self):
