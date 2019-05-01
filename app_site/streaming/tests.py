@@ -61,28 +61,27 @@ class SimpleTest(TestCase):
 
 
     def test_views(self):
-        #self.generic_test('login', self.factory.post('/streaming/login/', {'username': 'test123', 'password':'test'}), AnonymousUser(), login_page, 200)
         self.user_creation_test()
         self.login_test()
         #self.generic_test('logout', self.factory.get('/streaming/login/'), self.get_user(), logout_requested, 200) #breaks becuase not actually logged in
         self.generic_test('redirect homepage', self.factory.get('/streaming/homepage/'), self.get_user(), redirect_homepage, 302)
-        self.generic_test('search', self.factory.get('/streaming/search/?Title=test&Genre=test&Release+Year=test&Studio=test&Streaming+Service=test&Actors=test'), self.get_user(), search, 200)
-        self.generic_test('search', self.factory.get('/streaming/search/?Title='), self.get_user(), search, 200)
+        self.generic_test('search', self.factory.get('/streaming/search/?Title=test&Genre=test&Release+Year=test&Studio=test&Streaming+Service=test&Actors=test'), self.get_user(), search, 200) #valid search with all
+        self.generic_test('search', self.factory.get('/streaming/search/?Title='), self.get_user(), search, 200) #valid search with just title
+        self.generic_test('search', self.factory.get('/streaming/search/?Qitles=123'), self.get_user(), search, 200) #invalid search
 
         self.generic_test('user search', self.factory.get('/streaming/usersearch/?q=test'), self.get_user(), user_search, 200)
         self.generic_test('user search', self.factory.get('/streaming/usersearch/'), self.get_user(), user_search, 200)
         self.generic_test('movies', self.factory.get('/streaming/mediaList/'), self.get_user(), movies, 200)
         self.generic_test('shows', self.factory.get('/streaming/mediaList/'), self.get_user(), shows, 200)
-        self.generic_test('post comment', self.factory.post('/streaming/userpage/', {'url':'/streaming/userpage/', 'content':'test, might delete later'}), self.get_user(), post_comment, 302)
-        self.generic_test('post comment', self.factory.post('/streaming/userpage/', {'url':'/streaming/userpage/', 'content':'test, might delete later'*500}), self.get_user(), post_comment, 302)
-        self.generic_test('display media', self.factory.get('/streaming/mediaDisplay/'), self.get_user(), display_media, 200, ['Bonanza'])
-        self.generic_test('display episode', self.factory.get('/streaming/tvEpsisode/'), self.get_user(), display_episode, 200, ['Bonanza', '1', '29'])
 
+        self.display_media()
+        self.comment_test()
         self.user_page_test()
         self.subs()
         self.watchmedia()
         self.rating()
         self.billing()
+        self.change_test()
 
         self.generic_test('friends', self.factory.get('/streaming/friendPage/'), self.get_user(), friends, 200)
         self.generic_test('homepage', self.factory.get('/streaming/homepage/'), self.get_user(), homepage, 200)
@@ -92,9 +91,6 @@ class SimpleTest(TestCase):
 
         self.generic_test('inactive account', self.factory.get('/streaming/inactiveAccount/'), self.get_user(), inactiveAccount, 200)
         self.generic_test('cancel plan', self.factory.get('/streaming/accountPage/'), self.get_user(), cancel_plan, 200)
-
-        self.generic_test('change', self.factory.post('/streaming/changeInfo/', {'old_password': 'test', 'username': 'test123', 'email': 'test213@23.com', 'first_name': 'first', 'last_name': 'last'}), self.get_user(), change, 200) #valid pw
-        self.generic_test('change', self.factory.post('/streaming/changeInfo/', {'old_password': 'invalid', 'username': 'test123', 'email': 'test213@23.com', 'first_name': 'first', 'last_name': 'last'}), self.get_user(), change, 200) #invalid pw
 
         self.generic_test('about', self.factory.get('/streaming/about/'), self.get_user(), about, 200)
 
@@ -109,8 +105,18 @@ class SimpleTest(TestCase):
         str(s)
 
 
+    def comment_test(self):
+        self.generic_test('post comment', self.factory.get('/streaming/userpage/'), self.get_user(), post_comment, 302) #get request
+        self.generic_test('post comment', self.factory.post('/streaming/userpage/', {'url':'/streaming/userpage/', 'content':'test, might delete later'}), self.get_user(), post_comment, 302) #post with successful comment on own userpage
+        self.generic_test('post comment', self.factory.post('/streaming/userpage/', {'url':'/streaming/userpage/', 'content':'test, might delete later'*500}), self.get_user(), post_comment, 302) #post with comment too long
+        self.generic_test('post comment', self.factory.post('/streaming/friends/GavinDaGOAT', {'url':'/streaming/friends/GavinDaGOAT', 'content':'test, might delete later'}), self.get_user(), post_comment, 302) #post with successful comment on friend page
+        self.generic_test('post comment', self.factory.post('/streaming/media/Frankenstein/', {'url':'/streaming/media/Frankenstein/', 'content':'test, might delete later'}), self.get_user(), post_comment, 302) #post with successful comment on media page
+
+
+
     def user_creation_test(self):
         self.generic_test('create user page', self.factory.get('/streaming/createUser/'), AnonymousUser(), create_user_page, 200)
+        response = self.c.post('/streaming/createuser/', {'1': 1}) #invalid form
         response = self.c.post('/streaming/createuser/', {'username': 'test1234', 'password':'test', 'email': 'test213@23.com', 'first_name': 'first', 'last_name': 'last'}) #create new
         response = self.c.post('/streaming/createuser/', {'username': 'test1234', 'password':'test', 'email': 'test213@23.com', 'first_name': 'first', 'last_name': 'last'}) #test already exists
         delObj = SiteUser.objects.get(username='test1234')
@@ -118,27 +124,39 @@ class SimpleTest(TestCase):
 
 
     def login_test(self):
-        response = self.c.get('/streaming/login/?next=/streaming/')
-        response = self.c.post('/streaming/login/?next=/streaming/', {'username':'test123', 'password': 'wrong'})
-        response = self.c.post('/streaming/login/?next=/streaming/', {'username':'test123', 'password': 'test', 'redirect': 'None'})
+        self.c.get('/streaming/login/?next=/streaming/') #get request
+        self.c.put('/streaming/login/?next=/streaming/') #put request (tests elif at end)
+        self.c.post('/streaming/login/?next=/streaming/', {'1': 1}) #post with invalid form
+        self.c.post('/streaming/login/?next=/streaming/', {'username':'test123', 'password': 'wrong'}) #post with wrong password
+        self.c.post('/streaming/login/?next=/streaming/', {'username':'test123', 'password': 'test', 'redirect': 'None'}) #post, right pw, no redirect
         self.c.logout()
-        response = self.c.post('/streaming/login/?next=/streaming/', {'username':'test123', 'password': 'test'})
-        self.c.login(username='test123', password='test')
-        self.c.get('/streaming/logout/')
+        self.c.post('/streaming/login/?next=/streaming/', {'username':'test123', 'password': 'test'}) #successful post login
+        self.c.login(username='test123', password='test') #login with client
+        self.c.get('/streaming/logout/') #test logout view (requires client logged in)
 
 
     def user_page_test(self):
         self.generic_test('userpage', self.factory.get('/streaming/userpage/'), self.get_user(), user_page, 200)
-        self.generic_test('userpage', self.factory.post('/streaming/userpage/', {'follow_button': 'Follow'}), self.get_user(), user_page, 200)
-        self.generic_test('userpage', self.factory.post('/streaming/userpage/', {'follow_button': 'Unfollow'}), self.get_user(), user_page, 200)
+        self.generic_test('userpage', self.factory.post('/streaming/userpage/', {'follow_button': 'Follow'}), self.get_user(), user_page, 200) #follow
+        self.generic_test('userpage', self.factory.post('/streaming/userpage/', {'follow_button': 'Unfollow'}), self.get_user(), user_page, 200) #unfollow
+        self.generic_test('userpage', self.factory.post('/streaming/userpage/', {'follow_button': 'no'}), self.get_user(), user_page, 200) #branch
+        self.generic_test('userpage', self.factory.post('/streaming/userpage/', {}), self.get_user(), user_page, 200) #empty post
         self.generic_test('userpage', self.factory.post('/streaming/userpage/', {'message': ''}), self.get_user(), user_page, 200)
+        self.generic_test('userpage', self.factory.post('/streaming/userpage/', {'message': ''}), self.get_user(), user_page, 200, ['z-ach'])
 
+
+    def change_test(self):
+        self.generic_test('change', self.factory.post('/streaming/changeInfo/', {'old_password': 'test', 'username': 'test123', 'email': 'test213@23.com', 'first_name': 'first', 'last_name': 'last'}), self.get_user(), change, 200) #valid pw
+        self.generic_test('change', self.factory.post('/streaming/changeInfo/', {'old_password': 'invalid', 'username': 'test123', 'email': 'test213@23.com', 'first_name': 'first', 'last_name': 'last'}), self.get_user(), change, 200) #invalid pw
+        self.generic_test('change', self.factory.get('/streaming/changeInfo/'), self.get_user(), change, 200) #get request
+        self.generic_test('change', self.factory.post('/streaming/changeInfo/', {'old_password': 'test'}), self.get_user(), change, 200) #invalid form
 
 
     def notification_prefs(self):
         user = self.get_user()
+        self.generic_test('account page', self.factory.get('/streaming/accountPage/'), user, account_page, 200)
         self.populate_billing(user)
-        for key in ['emailIn', 'inboxIn', 'emailOut', 'emailIn', 'inboxOut', 'emailOut', 'inboxOut']:
+        for key in ['emailIn', 'inboxIn', 'emailOut', 'emailIn', 'inboxOut', 'emailOut', 'inboxOut', 'asdf']:
             self.generic_test('account page', self.factory.post('/streaming/accountPage/', {key: ''}), user, account_page, 200)
 
 
@@ -146,9 +164,14 @@ class SimpleTest(TestCase):
         self.generic_test('message inbox', self.factory.post('/streaming/messageInbox/', {'send': '', 'username': 'z-ach', 'content': 'hi!'}), self.get_user(), messageInbox, 302)
         self.generic_test('message inbox send to self', self.factory.post('/streaming/messageInbox/', {'send': '', 'username': 'test123', 'content': 'hi!'}), self.get_user(), messageInbox, 200)
         self.generic_test('message inbox invalid user', self.factory.post('/streaming/messageInbox/', {'send': '', 'username': 'asfasfewa', 'content': 'hi!'}), self.get_user(), messageInbox, 200)
+        self.generic_test('message inbox invalid user', self.factory.post('/streaming/messageInbox/', {'sef': 'a'}), self.get_user(), messageInbox, 200) #form invalid TODO form invalid messageInbox
+        self.generic_test('message inbox invalid user', self.factory.get('/streaming/messageInbox/'), self.get_user(), messageInbox, 200) #get request
+
         message = Message.objects.filter(from_user=SiteUser.objects.get(username='amela'), part_of=self.get_user().inbox)[0]
 
         self.generic_test('inbox', self.factory.post('/streaming/inbox/', {'read': message}), self.get_user(), inbox, 302) #trigger post set read message
+        self.generic_test('inbox', self.factory.post('/streaming/inbox/', {'read': 1}), self.get_user(), inbox, 200) #post but invalid read
+        self.generic_test('inbox', self.factory.post('/streaming/inbox/', {1: 1}), self.get_user(), inbox, 200) #post invalid form
         self.generic_test('inbox', self.factory.get('/streaming/inbox/'), self.get_user(), inbox, 200) #trigger get
 
         self.generic_test('sent inbox', self.factory.get('/streaming/sentInbox/'), self.get_user(), sentInbox, 200)
@@ -157,11 +180,15 @@ class SimpleTest(TestCase):
 
     def billing(self):
         self.c.login(username='test123', password='test')
-        self.c.post('/streaming/billing/', {'name': 'test123', 'cc_num':'1234123412341234', 'cvc_num': '123', 'exp_month':'12', 'exp_year':'2000'})
+        self.c.post('/streaming/billing/', {'name': 'test123', 'cc_num':'1234123412341234', 'cvc_num': '123', 'exp_month':'12', 'exp_year':'2000'}) #invalid cc year
+        self.c.post('/streaming/billing/', {'name': 'test123'}) #invalid form
+        self.c.get('/streaming/billing/') #get request
+        self.c.post('/streaming/billing/', {'name': 'test123', 'cc_num':'1234123412341234', 'cvc_num': '123', 'exp_month':'12', 'exp_year':'2020'}) #valid with old billing date
+
         user = SiteUser.objects.get(username='test123')
         user.billing.next_payment_date = datetime.now() - timedelta(days=2)
         user.billing.save()
-        self.c.post('/streaming/billing/', {'name': 'test123', 'cc_num':'1234123412341234', 'cvc_num': '123', 'exp_month':'12', 'exp_year':'2020'})
+        self.c.post('/streaming/billing/', {'name': 'test123', 'cc_num':'1234123412341234', 'cvc_num': '123', 'exp_month':'12', 'exp_year':'2020'}) #valid
 
 
     def rating(self):
@@ -175,7 +202,14 @@ class SimpleTest(TestCase):
         self.generic_test('post rating', self.factory.get('/streaming/media/Bonanza/1/29/'), self.get_user(), post_rating, 302) #test get request
 
 
+    def display_media(self):
+        self.generic_test('display media', self.factory.get('/streaming/mediaDisplay/'), self.get_user(), display_media, 200, ['Bonanza']) #get display media with tv show
+        self.generic_test('display media', self.factory.get('/streaming/mediaDisplay/'), self.get_user(), display_media, 200, ['Frankenstein']) #get display media with movie
+        self.generic_test('display episode', self.factory.get('/streaming/tvEpsisode/'), self.get_user(), display_episode, 200, ['Bonanza', '1', '29']) #get display tv episode
+
     def watchmedia(self):
+        self.generic_test('watch tv', self.factory.get('/streaming/watchMedia/'), self.get_user(), watch_media, 302, None, {'title':'asfas', 'season_number':'1', 'episode_number':'2'}) #try to view with invalid show
+        self.generic_test('watch tv', self.factory.get('/streaming/watchMedia/'), self.get_user(), watch_media, 302, None, {'title':'Medic', 'season_number':'1', 'episode_number':'2'}) #try to view with no subscription
         user = self.create_subscription(self.get_user())
         self.generic_test('watch tv', self.factory.get('/streaming/watchMedia/'), user, watch_media, 200, None, {'title':'Bonanza', 'season_number':'1', 'episode_number':'29'}) #valid
         r = Rental(siteuser=user, movie=get_media('Frankenstein'), duration=-50)
@@ -199,16 +233,21 @@ class SimpleTest(TestCase):
 
     def test_utils(self):
         user = self.get_user()
-        self.populate_billing(user)
-        user = self.create_subscription(user)
-        package_charge(user)
+        self.util_test_billing()
         send_inbox_message(user)
         send_email(user)
-        r = Rental(siteuser=user, movie=get_media('Frankenstein'), duration=-50)
-        r.save()
-        rental_charge(user)
-        get_comment_section(self.factory.get('/streaming/media/Bonanza/1/29/'), '/streaming/media/Bonanza/1/29/')
-        validate_password('asdfASFAE214$#@!')
+        get_comment_section(self.factory.get('/streaming/media/Bonanza/1/29/'), '/streaming/media/Bonanza/1/29/') #get media comment section
+        get_comment_section(self.factory.get('/streaming/userpage/'), '') #get invalid comment section
+        media = get_media('Bonanza') #get valid media
+        get_season(media, '1') #get valid season
+        get_season(media, '10') #get invalid season
+        get_episode(media, '1', '-1') #get invalid episode
+        get_episode(media, '1', '29') #get valid episode
+        get_episode(media, None, '29') #pass invalid season
+        validate_password('asdfASFAE214$#@!') #valid password
+        validate_password('asdfASFAE$#@!') #invalid password no numbers
+        validate_password('1') #invalid password too short
+        validate_password('1'*10) #invalid password no chars
         user_info = {
             'username': 'abcdefg',
             'email': 'test213@23.com',
@@ -220,6 +259,32 @@ class SimpleTest(TestCase):
         user1.delete()
 
 
+    def util_test_billing(self):
+        user = self.get_user()
+        user.billing.cc_num = ''
+        user.billing.save()
+        package_charge(user) #package charge with no cc num
+        rental_charge(user) #rental charge with no cc num
+        self.populate_billing(user) #add cc num
+        user = self.create_subscription(user) #add sub
+        package_charge(user) #charge with sub
+        for x in range(10): #add 10 subs to trigger extra fee
+            s = Subscription(siteuser=user, show=get_media('Bonanza'))
+            s.save()
+        package_charge(user) #charge with over basic plan # of slots
+        for show in Subscription.objects.filter(siteuser=user, show=get_media('Bonanza')): #delete added subs
+            show.delete()
+        rental_charge(user) #rental charge with no rentals
+        r = Rental(siteuser=user, movie=get_media('Frankenstein'), duration=20) #add rental
+        r.save()
+        rental_charge(user) #rental charge with unexpired rental
+        r.delete()
+        r = Rental(siteuser=user, movie=get_media('Frankenstein'), duration=-50) #add rental
+        r.save()
+        rental_charge(user) #rental charge with rental
+        r.delete()
+
+
     def test_models(self):
         pass
         for name, model in apps.all_models['streaming'].items():
@@ -227,6 +292,28 @@ class SimpleTest(TestCase):
             for item in model.objects.all():
                 str(item)
 
+
+    def test_decorators(self):
+        client = Client()
+        response = client.get('/streaming/login/') #get login page while logged out - no redirect
+        self.assertEqual(response.status_code, 200)
+        response = client.get('/streaming/') #get homepage while logged out - should redirect
+        self.assertEqual(response.status_code, 302)
+
+        client.login(username='test123', password='test')
+
+        response = client.get('/streaming/login/') #get login page while logged in - should redirect
+        self.assertEqual(response.status_code, 302)
+
+        user = self.get_user()
+        user.billing.next_payment_date = datetime.now() - timedelta(days=10)
+        user.billing.save()
+        self.generic_test('decorator @active_user', self.factory.get('/streaming/userpage/'), self.get_user(), user_page, 302) #test inactive account, should redirect
+
+        temp_user = SiteUser.objects.get(username='test123')
+        temp_user.last_login = datetime.now(timezone.utc) - timedelta(days=5)
+        temp_user.save()
+        client.get('/streaming/billing/') #get request should trigger relog
 
 
 

@@ -25,6 +25,7 @@ if __name__ == "__main__":
         import coverage
         cov = coverage.coverage(source=['streaming'], omit=['*/tests/*', 'streaming/migrations/*', 'streaming/management/*', '*/__init__.py', 'streaming/admin.py', 'streaming/tests.py'])
         #cov.set_option('report:show_missing', True)
+        cov.set_option("run:branch", True)
         cov.erase()
         cov.start()
     execute_from_command_line(sys.argv)
