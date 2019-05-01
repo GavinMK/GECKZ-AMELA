@@ -1,0 +1,14 @@
+{% extends "simplePage.html" %}
+
+{% block content %}
+{% load static %}
+<div class="form-style">
+    <br><br>
+    <header></header><br><br>
+    <fieldset>
+        <legend>Uh - Oh!</legend>
+        <p>Looks like something went wrong here.</p>
+        <h2><a style="text-decoration: underline;" href="{% url 'streaming:homepage' %}">Let's just go back to civilization.</a></h2>
+    </fieldset>
+</div>
+{% endblock %}
