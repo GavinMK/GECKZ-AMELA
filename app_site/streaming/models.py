@@ -94,11 +94,11 @@ class RatingSection(models.Model):
 
     def __str__(self):
         tv_query = TVShow.objects.filter(rating_section=self)
-        if tv_query: return tv_query[0].__str__() + ' Rating Section'
+        if tv_query: return tv_query[0].__str__()
         ep_query = TVEpisode.objects.filter(rating_section=self)
-        if ep_query: return ep_query[0].__str__() + ' Rating Section'
+        if ep_query: return ep_query[0].__str__()
         movie_query = Movie.objects.filter(rating_section=self)
-        if movie_query: return movie_query[0].__str__() + ' Rating Section'
+        if movie_query: return movie_query[0].__str__()
         return 'Unassigned'
 
 
