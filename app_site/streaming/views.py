@@ -520,13 +520,15 @@ def inbox(request, sendTo=None):
             if form.is_valid():
                 data = form.cleaned_data
                 for message in messages_from:
-                    if (message.__str__() == data['read']):
+                    if (message.__str__() == data['read'] or (data['read'] == "%all%" and not message.read)):
                         message.read = True
                         message.part_of.num_read_messages += 1
                         message.part_of.num_unread_messages -= 1
                         message.save() #save the changes to the Message object
                         message.part_of.save() #save the changes to the Inbox object
-                        return HttpResponseRedirect(reverse('streaming:inbox'))
+                        if not data['read'] == "%all%":
+                            break
+                return HttpResponseRedirect(reverse('streaming:inbox'))
 
     context = {
         'form': form,
