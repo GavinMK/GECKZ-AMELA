@@ -53,8 +53,16 @@
             <p>Next Payment Date: <span>{{ user.billing.next_payment_date }}</span></p>
             <p>Name on Card: <span>{{ user.billing.name }}</span></p>
             <p>Credit Card Number: <span>{{ cc_num_hidden }}</span></p>
-            <p>Expiration Date: <span>**/****</span></p>
-            <p>CVC Number: <span>***</span></p>
+            <p>Expiration Date: 
+                {% if expiration_month != None %}
+                    <span>**/****</span>
+                {% endif %}
+            </p>
+            <p>CVC Number:
+                {% if cvc_num != None %}
+                    <span>***</span>
+                {% endif %}
+            </p>
             <p style="padding-bottom: 60px;"></p>
             <div class="form-style" style="margin: 0;padding-bottom: 20px;">
                 <form action="{% url 'streaming:billing' %}">
