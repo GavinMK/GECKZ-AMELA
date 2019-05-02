@@ -4,6 +4,10 @@ from django.conf.urls import url
 from . import views
 
 app_name = 'streaming'
+
+handler404 = 'staff.views.handler404'
+handler500 = 'staff.views.handler500'
+
 urlpatterns = [
     path('createuser/', views.create_user_page, name='createUser'),
     path('login/', views.login_page, name='login'),

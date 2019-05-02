@@ -713,3 +713,11 @@ def pick_photo(request):
         'photos': photos,
     }
     return HttpResponse(template.render(context, request))
+
+
+def handler400(request):
+    return render(request, '404.html', status=404)
+
+
+def handler500(request):
+    return render(request, '500.html', status=500)
