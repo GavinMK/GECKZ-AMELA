@@ -193,7 +193,6 @@ def filter_db_query(context, tv_show_list, movie_list):
         if search_filter.value != "":
             words = search_filter.value.split(" ")
             for word in words:
-                print(word)
                 db_query = Q()
                 if search_filter.name == 'Title':
                     db_query |= Q(title__icontains=word)
