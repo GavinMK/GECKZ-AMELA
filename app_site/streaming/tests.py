@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.contrib.auth.models import AnonymousUser, User
 from django.test import RequestFactory, TestCase, Client
 from django.apps import apps
+from django.conf import settings
 
 from .views import *
 from .util import *
@@ -24,6 +25,7 @@ class SimpleTest(TestCase):
         user = generate_user(user_info)
         return user
 
+
     def populate_billing(self, user):
         user.billing.cc_num = '1234123412341234'
         user.billing.cvc_num = 123
@@ -31,16 +33,19 @@ class SimpleTest(TestCase):
         user.billing.change_date()
         user.save()
 
+
     def create_subscription(self, user):
         if not Subscription.objects.filter(siteuser=user):
             subscription = Subscription.objects.create(siteuser=user, show=get_media('Bonanza'))
             subscription.save()
         return user
 
+
     def manage_subs(self, user):
         for sub in Subscription.objects.filter(siteuser=user):
             print("deleteing")
             sub.delete()
+
 
     def get_user(self):
         user = None
@@ -52,28 +57,25 @@ class SimpleTest(TestCase):
         user.last_login = datetime.now()
         return user
 
+
     def setUp(self):
-        # Every test needs access to the request factory.
+        if settings.DATABASES['default']['HOST'] != '':
+            raise Exception('Do not run this test on AWS hosted DBs, use a local DB')
         self.factory = RequestFactory()
         self.c = Client()
-        #self.c.login(username='test123', password='test')
-
 
 
     def test_views(self):
         self.user_creation_test()
         self.login_test()
-        #self.generic_test('logout', self.factory.get('/streaming/login/'), self.get_user(), logout_requested, 200) #breaks becuase not actually logged in
         self.generic_test('redirect homepage', self.factory.get('/streaming/homepage/'), self.get_user(), redirect_homepage, 302)
         self.generic_test('search', self.factory.get('/streaming/search/?Title=test&Genre=test&Release+Year=test&Studio=test&Streaming+Service=test&Actors=test'), self.get_user(), search, 200) #valid search with all
         self.generic_test('search', self.factory.get('/streaming/search/?Title='), self.get_user(), search, 200) #valid search with just title
         self.generic_test('search', self.factory.get('/streaming/search/?Qitles=123'), self.get_user(), search, 200) #invalid search
-
         self.generic_test('user search', self.factory.get('/streaming/usersearch/?q=test'), self.get_user(), user_search, 200)
         self.generic_test('user search', self.factory.get('/streaming/usersearch/'), self.get_user(), user_search, 200)
         self.generic_test('movies', self.factory.get('/streaming/mediaList/'), self.get_user(), movies, 200)
         self.generic_test('shows', self.factory.get('/streaming/mediaList/'), self.get_user(), shows, 200)
-
         self.display_media()
         self.comment_test()
         self.user_page_test()
@@ -82,22 +84,15 @@ class SimpleTest(TestCase):
         self.rating()
         self.billing()
         self.change_test()
-
         self.generic_test('friends', self.factory.get('/streaming/friendPage/'), self.get_user(), friends, 200)
         self.generic_test('homepage', self.factory.get('/streaming/homepage/'), self.get_user(), homepage, 200)
-
         self.generic_test('edit profile', self.factory.post('/streaming/editProfile/', {'bio': 'testing1234'}), self.get_user(), editProfile, 302) #valid test
         self.generic_test('edit profile', self.factory.post('/streaming/editProfile/', {'io': 'testing1234'}), self.get_user(), editProfile, 200) #testing invalid post
-
         self.generic_test('inactive account', self.factory.get('/streaming/inactiveAccount/'), self.get_user(), inactiveAccount, 200)
         self.generic_test('cancel plan', self.factory.get('/streaming/accountPage/'), self.get_user(), cancel_plan, 200)
-
         self.generic_test('about', self.factory.get('/streaming/about/'), self.get_user(), about, 200)
-
         self.generic_test('pick photo', self.factory.post('/streaming/profilePhoto/', {'image_choice':'mad.png'}), self.get_user(), pick_photo, 302) #change photo
         self.generic_test('pick photo', self.factory.get('/streaming/profilePhoto/'), self.get_user(), pick_photo, 200) # don't change photo
-
-
         self.notification_prefs()
         self.messaging()
 
@@ -108,7 +103,6 @@ class SimpleTest(TestCase):
         self.generic_test('post comment', self.factory.post('/streaming/userpage/', {'url':'/streaming/userpage/', 'content':'test, might delete later'*500}), self.get_user(), post_comment, 302) #post with comment too long
         self.generic_test('post comment', self.factory.post('/streaming/friends/GavinDaGOAT', {'url':'/streaming/friends/GavinDaGOAT', 'content':'test, might delete later'}), self.get_user(), post_comment, 302) #post with successful comment on friend page
         self.generic_test('post comment', self.factory.post('/streaming/media/Frankenstein/', {'url':'/streaming/media/Frankenstein/', 'content':'test, might delete later'}), self.get_user(), post_comment, 302) #post with successful comment on media page
-
 
 
     def user_creation_test(self):
@@ -255,7 +249,7 @@ class SimpleTest(TestCase):
         }
         user1 = generate_user(user_info)
         user1.delete()
-        try:
+        try: # needed because this test will raise an error
             s = SearchFilter('a', self.factory.get('/streaming/search/?a=test&Genre=test&Release+Year=test&Studio=test&Streaming+Service=test&Actors=test'), ())
             str(s)
             context = {'filters': (s,)}
@@ -292,7 +286,6 @@ class SimpleTest(TestCase):
 
 
     def test_models(self):
-        pass
         for name, model in apps.all_models['streaming'].items():
             print('Testing', name, 'to string')
             for item in model.objects.all():
@@ -324,7 +317,6 @@ class SimpleTest(TestCase):
 
 
     def generic_test(self, element, request, user, view, status_code, args=None, kwargs=None):
-        #print("Testing", element)
         request.user = user
         if not args and not kwargs:
             response = view(request)
@@ -333,6 +325,3 @@ class SimpleTest(TestCase):
         elif kwargs:
             response = view(request, **kwargs)
         self.assertEqual(response.status_code, status_code)
-
-
-#test
