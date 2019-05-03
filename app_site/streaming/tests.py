@@ -89,10 +89,14 @@ class SimpleTest(TestCase):
         self.generic_test('edit profile', self.factory.post('/streaming/editProfile/', {'bio': 'testing1234'}), self.get_user(), editProfile, 302) #valid test
         self.generic_test('edit profile', self.factory.post('/streaming/editProfile/', {'io': 'testing1234'}), self.get_user(), editProfile, 200) #testing invalid post
         self.generic_test('inactive account', self.factory.get('/streaming/inactiveAccount/'), self.get_user(), inactiveAccount, 200)
-        self.generic_test('cancel plan', self.factory.get('/streaming/accountPage/'), self.get_user(), cancel_plan, 200)
+        self.generic_test('cancel plan', self.factory.get('/streaming/accountPage/'), self.get_user(), cancel_plan, 200) #cancel plan
+        self.generic_test('view no cc info', self.factory.get('/streaming/accountPage/'), self.get_user(), account_page, 200) #cc info should be blank with canceled plan
         self.generic_test('about', self.factory.get('/streaming/about/'), self.get_user(), about, 200)
         self.generic_test('pick photo', self.factory.post('/streaming/profilePhoto/', {'image_choice':'mad.png'}), self.get_user(), pick_photo, 302) #change photo
         self.generic_test('pick photo', self.factory.get('/streaming/profilePhoto/'), self.get_user(), pick_photo, 200) # don't change photo
+        self.generic_test('404', self.factory.get('/streaming/404/'), self.get_user(), handler400, 404) # 404 request
+        self.generic_test('500', self.factory.get('/streaming/500/'), self.get_user(), handler500, 500) # 500 request
+
         self.notification_prefs()
         self.messaging()
 
@@ -138,6 +142,7 @@ class SimpleTest(TestCase):
 
     def change_test(self):
         self.generic_test('change', self.factory.post('/streaming/changeInfo/', {'old_password': 'test', 'username': 'test123', 'email': 'test213@23.com', 'first_name': 'first', 'last_name': 'last'}), self.get_user(), change, 200) #valid pw
+        self.generic_test('change', self.factory.post('/streaming/changeInfo/', {'old_password': 'test', 'username': 'z-ach', 'email': 'test213@23.com', 'first_name': 'first', 'last_name': 'last'}), self.get_user(), change, 200) #invalid change username
         self.generic_test('change', self.factory.post('/streaming/changeInfo/', {'old_password': 'invalid', 'username': 'test123', 'email': 'test213@23.com', 'first_name': 'first', 'last_name': 'last'}), self.get_user(), change, 200) #invalid pw
         self.generic_test('change', self.factory.get('/streaming/changeInfo/'), self.get_user(), change, 200) #get request
         self.generic_test('change', self.factory.post('/streaming/changeInfo/', {'old_password': 'test'}), self.get_user(), change, 200) #invalid form
@@ -161,8 +166,9 @@ class SimpleTest(TestCase):
         message = Message.objects.filter(from_user=SiteUser.objects.get(username='amela'), part_of=self.get_user().inbox)[0]
 
         self.generic_test('inbox', self.factory.post('/streaming/inbox/', {'read': message}), self.get_user(), inbox, 302) #trigger post set read message
-        self.generic_test('inbox', self.factory.post('/streaming/inbox/', {'read': 1}), self.get_user(), inbox, 200) #post but invalid read
-        self.generic_test('inbox', self.factory.post('/streaming/inbox/', {'read': False, '1': None}), self.get_user(), inbox, 200) #post invalid form
+        self.generic_test('inbox', self.factory.post('/streaming/inbox/', {'read': '%all%'}), self.get_user(), inbox, 302) #trigger post set read message all
+        self.generic_test('inbox', self.factory.post('/streaming/inbox/', {'read': 1}), self.get_user(), inbox, 302) #post but invalid read
+        self.generic_test('inbox', self.factory.post('/streaming/inbox/', {'read': False, '1': None}), self.get_user(), inbox, 302) #post invalid form
         self.generic_test('inbox', self.factory.post('/streaming/inbox/', {'': None}), self.get_user(), inbox, 200) #post invalid form
         self.generic_test('inbox', self.factory.get('/streaming/inbox/'), self.get_user(), inbox, 200) #trigger get
 
@@ -181,6 +187,8 @@ class SimpleTest(TestCase):
         user.billing.next_payment_date = datetime.now() - timedelta(days=2)
         user.billing.save()
         self.c.post('/streaming/billing/', {'name': 'test123', 'cc_num':'1234123412341234', 'cvc_num': '123', 'exp_month':'12', 'exp_year':'2020'}) #valid
+        self.populate_billing(user)
+        self.c.get('/streaming/account') #view canceled plan TODO: test not working as expected
 
 
     def rating(self):
@@ -309,6 +317,7 @@ class SimpleTest(TestCase):
         user.billing.save()
         self.generic_test('decorator @active_user', self.factory.get('/streaming/userpage/'), self.get_user(), user_page, 302) #test inactive account, should redirect
 
+        client.login(username='test123', password='test')
         temp_user = SiteUser.objects.get(username='test123')
         temp_user.last_login = datetime.now(timezone.utc) - timedelta(days=5)
         temp_user.save()
